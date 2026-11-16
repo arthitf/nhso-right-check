@@ -68,6 +68,7 @@ class Settings:
     srm_cache_seconds: int = 600            # ตรวจคนเดิมซ้ำภายในเวลานี้ ใช้ผลเดิม ไม่เรียก API ซ้ำ (ประหยัดโควตา)
     batch_limit: int = 300                  # check-batch เกินจำนวนนี้ต้องยืนยัน (--allow-large)
     db_path: Path = Path("nhso_right_check_log.sqlite3")
+    env_file: Path = Path(".env")
 
     @classmethod
     def load(cls, env_file: str | os.PathLike | None = ".env") -> "Settings":
@@ -78,6 +79,8 @@ class Settings:
         if env not in ("test", "prod"):
             raise ValueError("NHSO_ENV ต้องเป็น test หรือ prod")
         s = cls(env=env)
+        if env_file:
+            s.env_file = Path(env_file)
         if g("SRM_TOKEN_FILE"):
             s.srm_token_file = Path(os.path.expandvars(g("SRM_TOKEN_FILE")))
         s.srm_access_token = g("SRM_ACCESS_TOKEN", "")
@@ -100,3 +103,25 @@ class Settings:
         if g("DB_PATH"):
             s.db_path = Path(g("DB_PATH"))
         return s
+
+
+def save_env(path: str | os.PathLike, updates: dict[str, str]) -> None:
+    """อัปเดตค่าในไฟล์ .env (แก้บรรทัดเดิม/เพิ่มบรรทัดใหม่ เก็บบรรทัดอื่นไว้ตามเดิม) และตั้งสิทธิไฟล์ให้เจ้าของอ่านได้คนเดียว"""
+    p = Path(path)
+    lines = p.read_text(encoding="utf-8").splitlines() if p.is_file() else []
+    done = set()
+    for i, raw in enumerate(lines):
+        key = raw.split("=", 1)[0].strip().lstrip("#").strip() if "=" in raw else ""
+        if key in updates and key not in done:
+            lines[i] = f"{key}={updates[key]}"
+            done.add(key)
+    for k, v in updates.items():
+        if k not in done:
+            lines.append(f"{k}={v}")
+    p.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    try:
+        os.chmod(p, 0o600)
+    except OSError:
+        pass
+    for k, v in updates.items():   # ให้ค่าใหม่มีผลทันทีโดยไม่ต้องปิดเปิดโปรแกรม
+        os.environ[k] = v

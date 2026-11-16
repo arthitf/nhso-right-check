@@ -121,13 +121,13 @@ footer b{color:var(--ink)}
   <h3>แบบตัวติดตั้ง (Windows)</h3>
   <ol class="steps">
     <li>ดับเบิลคลิก <code>nhso-right-check-windows-setup.exe</code> แล้วกด Next ไปจนจบ (ไม่ต้องใช้สิทธิ Admin)</li>
-    <li>เมื่อติดตั้งเสร็จ โปรแกรมจะเปิดไฟล์ <code>.env</code> ให้กรอกค่า (ดูข้อ 2 ด้านล่าง) จากนั้นบันทึกไฟล์</li>
-    <li>เปิดโปรแกรมจากไอคอน <b>ตรวจสอบสิทธิ สปสช.</b> บน Desktop หรือ Start Menu (ใน Start Menu มีเมนู “ตั้งค่า (.env)” และ “คู่มือ” ด้วย) เวลาอัปเดตเป็นเวอร์ชันใหม่ ค่าใน .env จะไม่ถูกทับ</li>
+    <li>เปิดโปรแกรมจากไอคอน <b>ตรวจสอบสิทธิ สปสช.</b> บน Desktop หรือ Start Menu</li>
+    <li>ไปที่แท็บ <b>06 ตั้งค่า</b> ส่วน B กรอก ระบบ (Production/Test), HCODE, เลขบัตรผู้บันทึก และ TOKEN KEY จากอีเมล สปสช. แล้วกด <b>บันทึกการตั้งค่า</b> (ทำครั้งเดียว อัปเดตเวอร์ชันใหม่ค่าไม่หาย)</li>
   </ol>
   <h3>แบบแตกไฟล์ใช้ได้เลย (Windows / macOS / Linux)</h3>
   <ol class="steps">
     <li>แตกไฟล์ zip ไว้ในโฟลเดอร์ เช่น <code>Desktop\nhso-right-check</code></li>
-    <li>เปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วเปิดด้วย Notepad กรอกค่าตามนี้
+    <li>เปิดโปรแกรมแล้วตั้งค่าที่แท็บ <b>06 ตั้งค่า</b> ได้เลย หรือจะเปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วแก้ด้วย Notepad ก็ได้
 <pre>NHSO_ENV=test                 <span class="c"># test = ทดสอบ, prod = ใช้จริง</span>
 HCODE=xxxxx                   <span class="c"># รหัสหน่วยบริการ 5 หลัก</span>
 NHSO_ENDPOINT_TOKEN=xxxxxxxx  <span class="c"># TOKEN KEY ที่ สปสช. ส่งทางอีเมล</span>
@@ -139,11 +139,11 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
         <tr><th>Linux</th><td><code>chmod +x nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
       </table>
     </li>
-    <li>เบราว์เซอร์จะเปิดหน้า <code>http://127.0.0.1:8765</code> ขึ้นมาเอง (ทำงานในเครื่องตัวเองเท่านั้น) ถ้าปิดหน้าต่างดำ โปรแกรมจะปิดตาม</li>
+    <li>โปรแกรมจะเปิดเป็นหน้าต่างของตัวเอง (Windows ใช้ Edge WebView2 ที่มากับ Windows 10/11, macOS ใช้ WebKit) ปิดหน้าต่าง = ปิดโปรแกรม ถ้าเครื่องไม่มี WebView (เช่น Linux บางรุ่น) จะเปิดในเบราว์เซอร์ที่ <code>http://127.0.0.1:8765</code> แทน ทำงานในเครื่องตัวเองเท่านั้น</li>
   </ol>
   <h3>Token ตรวจสอบสิทธิ (SRM)</h3>
   <div class="flow"><span>เสียบบัตร</span><i>→</i><span>Login SRM Portal + PIN</span><i>→</i><span>กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal”</span><i>→</i><span>token.txt</span><i>→</i><span>โปรแกรมอ่านให้เอง</span></div>
-  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>06 ตั้งค่า Token</b> แล้ววาง token เองได้</p>
+  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>06 ตั้งค่า</b> ส่วน A แล้ววาง token เองได้ ถ้าโปรแกรมเตือนว่า token เก่า ให้เสียบบัตร Login SRM Portal ใหม่</p>
   <div class="note tip">ไฟ <b>SRM</b> / <b>ENDPOINT</b> ที่แถบล่างของโปรแกรม ถ้าเป็นสีเขียว แปลว่าตั้งค่า token ครบแล้ว</div>
 </div></section>
 
@@ -241,7 +241,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
   <h2><b>07</b>ปัญหาที่พบบ่อย</h2>
   <table>
     <tr><th>อาการ</th><th>วิธีแก้</th></tr>
-    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 06</td></tr>
+    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 06 ตั้งค่า</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
     <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
     <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>

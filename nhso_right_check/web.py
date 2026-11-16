@@ -16,12 +16,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from . import __author__, __version__
-from .config import Settings
+from .config import Settings, save_env
 from .endpoint import EndpointClient, EndpointError, is_success
 from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, parse_token_text, summarize, write_private
 from .rights import all_rights, groups
 from .store import ClaimStore
-from .validation import ValidationError, mask_pid
+from .validation import ValidationError, mask_pid, require_hcode, require_pid
 
 log = logging.getLogger(__name__)
 STATIC = Path(__file__).parent / "static"
@@ -49,6 +49,49 @@ class App:
             "tokenFile": str(self.s.srm_token_file),
             "usageToday": self.store.usage_today(), "cacheSeconds": self.s.srm_cache_seconds,
         }
+
+    def settings(self, _b: dict) -> dict:
+        """ค่าตั้งปิดสิทธิ (ไม่ส่ง token เต็มออกไป)"""
+        t = self.s.endpoint_token
+        return {"env": self.s.env, "hcode": self.s.hcode, "sourceId": self.s.source_id,
+                "recorderPid": mask_pid(self.s.recorder_pid) if self.s.recorder_pid else "",
+                "recorderSet": bool(self.s.recorder_pid),
+                "endpointTokenSet": bool(t), "endpointTokenTail": t[-4:] if len(t) >= 8 else "",
+                "envFile": str(Path(self.s.env_file).resolve())}
+
+    def save_settings(self, b: dict) -> dict:
+        updates: dict[str, str] = {}
+        env = (b.get("env") or self.s.env).lower()
+        if env not in ("test", "prod"):
+            raise ValidationError("ระบบต้องเป็น test หรือ prod")
+        updates["NHSO_ENV"] = env
+        if (b.get("hcode") or "").strip():
+            updates["HCODE"] = require_hcode(b["hcode"])
+        if "sourceId" in b:
+            src = (b.get("sourceId") or "").strip()
+            if len(src) > 50 or any(c in src for c in "\r\n="):
+                raise ValidationError("SOURCE_ID ไม่ถูกต้อง")
+            updates["SOURCE_ID"] = src
+        rp = (b.get("recorderPid") or "").strip()
+        if rp and "x" not in rp:  # ค่าที่ปิดบางส่วน (ค่าเดิม) ไม่ต้องบันทึกซ้ำ
+            updates["RECORDER_PID"] = require_pid(rp, "เลขบัตรผู้บันทึก")
+        tok = (b.get("endpointToken") or "").strip()
+        if tok:  # เว้นว่าง = ใช้ค่าเดิม
+            if len(tok) > 500 or any(c in tok for c in "\r\n ="):
+                raise ValidationError("TOKEN KEY มีรูปแบบไม่ถูกต้อง")
+            updates["NHSO_ENDPOINT_TOKEN"] = tok
+        if env == "prod" and self.s.env != "prod" and b.get("confirm") != "YES":
+            raise ValidationError("เปลี่ยนเป็น Production ต้องพิมพ์ YES เพื่อยืนยัน")
+        save_env(self.s.env_file, updates)
+        self._reload()
+        return {"saved": True, **self.settings({})}
+
+    def _reload(self) -> None:
+        override = self.s.srm_access_token
+        self.s = Settings.load(self.s.env_file)
+        self.s.srm_access_token = override
+        self.srm = SRMClient(self.s, on_call=self.store.count_call)
+        self.ep = EndpointClient(self.s)
 
     def check(self, b: dict) -> dict:
         self.srm.reload_token() if not self.s.srm_access_token else None
@@ -114,7 +157,7 @@ class App:
     def rights(self, _b: dict) -> dict:
         return {"rights": all_rights(), "groups": groups()}
 
-    ROUTES = {"rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
+    ROUTES = {"settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
               "history": history, "token": set_token}
 
 
@@ -183,7 +226,44 @@ def make_handler(app: App, port: int):
     return Handler
 
 
-def serve(settings: Settings, port: int = 8765, open_browser: bool = True) -> None:
+def _hide_own_console() -> None:
+    """Windows: ซ่อนหน้าต่างดำ เฉพาะกรณีดับเบิลคลิกเปิดโปรแกรม (ไม่ซ่อน cmd ที่ผู้ใช้เปิดเอง)"""
+    import sys
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        procs = (ctypes.c_uint * 4)()
+        if k32.GetConsoleProcessList(procs, 4) <= 1:   # console นี้เป็นของโปรแกรมเราเอง
+            ctypes.windll.user32.ShowWindow(k32.GetConsoleWindow(), 0)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _open_app_window(url: str) -> bool:
+    """เปิดหน้าจอเป็นหน้าต่างโปรแกรม (pywebview: Windows = Edge WebView2, macOS = WebKit)
+    คืน False ถ้าเครื่องนี้เปิดไม่ได้ จะใช้เบราว์เซอร์แทน"""
+    try:
+        import webview  # pywebview
+    except Exception:  # noqa: BLE001
+        return False
+    try:
+        try:
+            webview.settings["OPEN_EXTERNAL_LINKS_IN_BROWSER"] = True
+        except Exception:  # noqa: BLE001
+            pass
+        webview.create_window(f"ตรวจสอบสิทธิ สปสช. v{__version__} — พัฒนาโดย {__author__}", url,
+                              width=1100, height=820, min_size=(760, 560))
+        _hide_own_console()
+        webview.start()          # บล็อกจนกว่าจะปิดหน้าต่าง
+        return True
+    except Exception as e:  # noqa: BLE001
+        log.warning("เปิดหน้าต่างโปรแกรมไม่ได้ (%s) — ใช้เบราว์เซอร์แทน", e)
+        return False
+
+
+def serve(settings: Settings, port: int = 8765, open_browser: bool = True, window: bool = True) -> None:
     app = App(settings)
     httpd = None
     for p in range(port, port + 20):  # ถ้า port ไม่ว่างให้ลองตัวถัดไป
@@ -198,6 +278,21 @@ def serve(settings: Settings, port: int = 8765, open_browser: bool = True) -> No
     url = f"http://127.0.0.1:{port}/"
     print(f"ตรวจสอบสิทธิ สปสช. v{__version__} — พัฒนาโดย {__author__}")
     print(f"เปิดหน้าจอที่ {url}   (ปิดหน้าต่างนี้ = ปิดโปรแกรม / กด Ctrl+C)")
+    if window and open_browser:
+        t = threading.Thread(target=httpd.serve_forever, daemon=True)
+        t.start()
+        if _open_app_window(url):
+            return  # ปิดหน้าต่าง = ปิดโปรแกรม
+        print("(ไม่มี WebView ในเครื่อง — เปิดในเบราว์เซอร์แทน)")
+        webbrowser.open(url)
+        try:
+            t.join()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+        return
     if open_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:

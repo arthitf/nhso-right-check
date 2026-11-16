@@ -36,6 +36,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt pyinstaller pytest
+      - name: App window (pywebview) — Windows / macOS
+        if: runner.os != 'Linux'
+        run: pip install "pywebview>=5.0"
       - run: python -m pytest -q
       - run: python build.py
       - name: Package

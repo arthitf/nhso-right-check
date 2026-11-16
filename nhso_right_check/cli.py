@@ -330,7 +330,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     u = sub.add_parser("ui", help="เปิดหน้าจอโปรแกรม (Web UI ในเครื่อง)")
     u.add_argument("--port", type=int, default=8765)
-    u.add_argument("--no-browser", action="store_true")
+    u.add_argument("--no-browser", action="store_true", help="ไม่เปิดหน้าจออัตโนมัติ")
+    u.add_argument("--browser", action="store_true", help="เปิดในเบราว์เซอร์แทนหน้าต่างโปรแกรม")
     u.set_defaults(func=cmd_ui)
     return p
 
@@ -349,7 +350,7 @@ def cmd_rights(a, s: Settings) -> int:
 
 def cmd_ui(a, s: Settings) -> int:
     from .web import serve
-    serve(s, port=a.port, open_browser=not a.no_browser)
+    serve(s, port=a.port, open_browser=not a.no_browser, window=not a.browser)
     return 0
 
 

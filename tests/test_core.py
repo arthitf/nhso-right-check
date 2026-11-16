@@ -297,3 +297,36 @@ def test_usage_counter(settings):
     st = ClaimStore(settings.db_path)
     st.count_call("srm"); st.count_call("srm")
     assert st.usage_today()["srm"] == 2
+
+
+# ---------- หน้าตั้งค่า ----------
+def test_save_env_keeps_other_lines(tmp_path, monkeypatch):
+    from nhso_right_check.config import save_env
+    p = tmp_path / ".env"
+    p.write_text("# comment\nNHSO_ENV=test\nHTTP_TIMEOUT=30\n# NHSO_CLAIM_PATH=x\n", encoding="utf-8")
+    for k in ("NHSO_ENV", "HCODE"):
+        monkeypatch.delenv(k, raising=False)
+    save_env(p, {"NHSO_ENV": "prod", "HCODE": "13814"})
+    t = p.read_text(encoding="utf-8")
+    assert "NHSO_ENV=prod" in t and "HCODE=13814" in t and "HTTP_TIMEOUT=30" in t and "# comment" in t
+
+
+def test_web_settings_roundtrip(tmp_path, monkeypatch):
+    from nhso_right_check.web import App
+    monkeypatch.chdir(tmp_path)
+    for k in ("NHSO_ENV", "HCODE", "RECORDER_PID", "NHSO_ENDPOINT_TOKEN", "SOURCE_ID"):
+        monkeypatch.delenv(k, raising=False)
+    (tmp_path / ".env").write_text("NHSO_ENV=test\n", encoding="utf-8")
+    app = App(Settings.load(tmp_path / ".env"))
+    with pytest.raises(ValidationError, match="YES"):
+        app.save_settings({"env": "prod", "hcode": "13814"})
+    r = app.save_settings({"env": "prod", "confirm": "YES", "hcode": "13814", "recorderPid": RECORDER,
+                           "endpointToken": "abcd-1234-efgh-5678"})
+    assert r["env"] == "prod" and r["endpointTokenSet"] and r["endpointTokenTail"] == "5678"
+    assert "abcd-1234" not in json.dumps(r)              # ไม่ส่ง token เต็มกลับไปหน้าจอ
+    assert app.s.endpoint_base.startswith("https://nhsoapi")  # ใช้ URL production ทันที
+    # เว้น token ว่าง = ใช้ค่าเดิม, recorder แบบ mask = ค่าเดิม
+    r2 = app.save_settings({"env": "prod", "hcode": "13814", "recorderPid": r["recorderPid"], "endpointToken": ""})
+    assert r2["endpointTokenSet"] and app.s.recorder_pid == RECORDER
+    with pytest.raises(ValidationError):
+        app.save_settings({"env": "prod", "hcode": "123"})

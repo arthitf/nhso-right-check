@@ -86,6 +86,9 @@ dialog .title{background:var(--blue);color:#fff}
 dialog .body{padding:16px}
 .spin{display:inline-block;width:14px;height:14px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:r .6s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes r{to{transform:rotate(360deg)}}
+h3.sec{font-size:16px;margin:4px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sec .num{font:700 12px var(--mono);background:var(--blue);color:#fff;border:2px solid var(--line);border-radius:4px;padding:0 6px}
+h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 .note-quota{margin-top:12px;font-size:13px;border:2px solid var(--line);border-left:8px solid var(--amber);border-radius:4px;padding:6px 10px;background:#fff8e6}
 .note-quota a{color:var(--blue);font-weight:700}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:4px;font-size:14px;display:none}
@@ -113,7 +116,7 @@ dialog .body{padding:16px}
     <button role="tab" data-tab="cancel"><span class="num">03</span>ยกเลิกปิดสิทธิ</button>
     <button role="tab" data-tab="history"><span class="num">04</span>ประวัติ</button>
     <button role="tab" data-tab="rights"><span class="num">05</span>ตารางสิทธิ</button>
-    <button role="tab" data-tab="token"><span class="num">06</span>ตั้งค่า Token</button>
+    <button role="tab" data-tab="token"><span class="num">06</span>ตั้งค่า</button>
   </nav>
 
   <!-- 01 ตรวจสอบสิทธิ -->
@@ -186,13 +189,28 @@ dialog .body{padding:16px}
 
   <!-- 06 token -->
   <section class="pane" id="p-token">
-    <h2>ตั้งค่า Token</h2>
+    <h2>ตั้งค่า</h2>
+
+    <h3 class="sec"><span class="num">A</span>ตรวจสอบสิทธิ — SRM Token <small>เปลี่ยนบ่อย · อ่านจาก token.txt อัตโนมัติ</small></h3>
     <div id="tokInfo" class="card"><header>SRM TOKEN</header><div class="body">กำลังโหลด…</div></div>
-    <form id="fToken" style="margin-top:16px">
-      <label>วาง token เอง (access_token หรือเนื้อหาทั้งไฟล์ token.txt)
-        <textarea name="text" rows="4" placeholder="ใช้เมื่อหาไฟล์ token.txt ไม่เจอ — เว้นว่างแล้วกดบันทึก = ลบ token ที่วางไว้"></textarea></label>
-      <div class="row"><button class="btn go">บันทึก Token</button><span class="hint">เก็บในเครื่องนี้เท่านั้น (.srm_token.txt)</span></div>
-    </form>
+    <details style="margin-top:10px"><summary>วาง token เอง (ใช้เมื่อหาไฟล์ token.txt ไม่เจอ)</summary>
+    <form id="fToken" style="margin-top:8px">
+      <textarea name="text" rows="3" placeholder="access_token หรือเนื้อหาทั้งไฟล์ token.txt — เว้นว่างแล้วกดบันทึก = ลบ token ที่วางไว้"></textarea>
+      <div class="row"><button class="btn go">บันทึก SRM Token</button><span class="hint">เก็บในเครื่องนี้เท่านั้น</span></div>
+    </form></details>
+
+    <h3 class="sec" style="margin-top:26px"><span class="num">B</span>ปิดสิทธิ — NHSO ENDPOINT <small>ตั้งครั้งเดียว · เปลี่ยนเมื่อได้ TOKEN ใหม่</small></h3>
+    <form id="fSet" class="card"><header><span>ค่าหน่วยบริการ</span><span id="setState"></span></header><div class="body">
+      <div class="grid">
+        <label>ระบบ<select name="env"><option value="prod">Production (ใช้งานจริง)</option><option value="test">Test Zone (ทดสอบ)</option></select></label>
+        <label>HCODE (รหัสหน่วยบริการ 5 หลัก) <span class="req">*</span><input name="hcode" class="mono" inputmode="numeric" maxlength="5"></label>
+        <label>เลขบัตรผู้บันทึก (RECORDER_PID) <span class="req">*</span><input name="recorderPid" class="mono" inputmode="numeric" maxlength="13" placeholder="13 หลัก"></label>
+        <label>SOURCE_ID <span class="hint">(ว่าง = ใช้ HCODE)</span><input name="sourceId" class="mono" maxlength="50"></label>
+      </div>
+      <label style="margin-top:12px">TOKEN KEY ระบบ NHSO ENDPOINT (จากอีเมล สปสช.) <span class="req">*</span>
+        <input name="endpointToken" type="password" class="mono" autocomplete="off" placeholder="วาง TOKEN KEY — เว้นว่าง = ใช้ค่าเดิม"></label>
+      <div class="row"><button class="btn go">บันทึกการตั้งค่า</button><span class="hint" id="envPath"></span></div>
+    </div></form>
   </section>
 
   <div class="status">
@@ -227,7 +245,14 @@ let ENV="test";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mask=p=>p&&p.length===13?`${p[0]}-xxxx-xxxxx-${p.slice(10,12)}-${p[12]}`:p;
 const thDate=(v,t)=>{if(!v)return "";const d=new Date(v);return isNaN(d)?v:(t?d.toLocaleString("th-TH"):d.toLocaleDateString("th-TH",{dateStyle:"long"}))};
+const ago=m=>m<1?"เมื่อสักครู่":m<60?`${m} นาทีที่แล้ว`:m<1440?`${Math.round(m/60)} ชั่วโมงที่แล้ว`:m<43200?`${Math.round(m/1440)} วันที่แล้ว`:`${Math.round(m/43200)} เดือนที่แล้ว`;
 const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
+function copyText(t){
+  const done=()=>toast("คัดลอกแล้ว");
+  if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(done,()=>fallback());
+  fallback();
+  function fallback(){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}
+}
 function toast(t){const e=$("#toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",1800)}
 
 async function api(name,body={}){
@@ -311,10 +336,12 @@ async function loadStatus(){
     $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";$("#sUsage").textContent=(s.usageToday||{}).srm||0;
     const srmOk=s.srmToken.length>0||s.srmTokenOverride;
     $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
-    $("#tokInfo").outerHTML=card(srmOk?"ok":"err","SRM TOKEN",
-      (s.srmToken.length?s.srmToken.map(t=>`<div>✔ ${esc(t.source)} — อัปเดต ${t.ageMin} นาทีที่แล้ว<br><span class="hint">${esc(t.path)}</span></div>`).join(""):
-       `<div>✘ ไม่พบ token<br><span class="hint">รอไฟล์ที่ ${esc(s.tokenFile)} — เสียบบัตรแล้ว Login SRM Portal หรือวาง token ด้านล่าง</span></div>`)+
-      `<div style="margin-top:8px">ENDPOINT TOKEN: ${s.endpointToken?"✔ ตั้งค่าแล้ว":"✘ ยังไม่ตั้ง (.env → NHSO_ENDPOINT_TOKEN)"} · RECORDER_PID: ${s.recorder?"✔":"✘"}</div>`).replace('class="card','id="tokInfo" class="card');
+    const old=s.srmToken.length&&s.srmToken[0].ageMin>12*60;
+    $("#tokInfo").outerHTML=card(srmOk&&!old?"ok":"err","SRM TOKEN",
+      (s.srmToken.length?s.srmToken.map(t=>`<div>${t.ageMin>12*60?"⚠":"✔"} ${esc(t.source)} — อัปเดต<b> ${ago(t.ageMin)}</b><br><span class="hint">${esc(t.path)}</span></div>`).join("")+
+        (old?`<div class="note-quota" style="margin-top:8px">token นี้เก่าแล้ว อาจหมดอายุ — <b>เสียบบัตร → Login SRM Portal</b> → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” แล้วโปรแกรมจะอ่าน token ใหม่ให้เอง</div>`:""):
+       `<div>✘ ไม่พบ token<br><span class="hint">รอไฟล์ที่ ${esc(s.tokenFile)} — เสียบบัตรแล้ว Login SRM Portal หรือวาง token เอง</span></div>`)).replace('class="card','id="tokInfo" class="card');
+    loadSettings();
   }catch(e){console.error(e)}
 }
 
@@ -367,7 +394,7 @@ $("#bClose").onclick=async e=>{
     $("#rClose").innerHTML=r.success?card("ok","ปิดสิทธิสำเร็จ",`<div class="hint">authenCode</div><div class="big-code">${esc(r.authenCode)}</div>`+
         kv({"seq":r.seq,"transactionId":r.transactionId,"สิทธิ":r.mainInsclCode})+`<div class="row"><button class="btn" id="cpy">คัดลอก authenCode</button></div>`,r)
       :card("err","ปิดสิทธิไม่สำเร็จ",`<b>${esc(r.dataError||"ไม่ทราบสาเหตุ")}</b>`+kv({"transactionId":r.transactionId}),r);
-    const c=$("#cpy");if(c)c.onclick=()=>navigator.clipboard.writeText(r.authenCode).then(()=>toast("คัดลอกแล้ว"));
+    const c=$("#cpy");if(c)c.onclick=()=>copyText(r.authenCode);
   }catch(err){$("#rClose").innerHTML=errCard(err)}finally{busy(btn,0)}
 };
 
@@ -413,6 +440,27 @@ $("#fClose").main_inscl.oninput=e=>{const v=e.target.value.toUpperCase();const x
 $("#fToken").onsubmit=async e=>{
   e.preventDefault();const btn=e.submitter;busy(btn,1);
   try{const r=await api("token",{text:e.target.text.value});e.target.text.value="";toast(r.cleared?"ลบ token ที่วางไว้แล้ว":"บันทึก token แล้ว");loadStatus()}
+  catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
+
+/* 06 B ตั้งค่าปิดสิทธิ */
+async function loadSettings(){
+  try{const c=await api("settings");const f=$("#fSet");
+    f.env.value=c.env;f.hcode.value=c.hcode||"";f.sourceId.value=c.sourceId&&c.sourceId!==c.hcode?c.sourceId:"";
+    f.recorderPid.value=c.recorderPid||"";f.endpointToken.value="";
+    f.endpointToken.placeholder=c.endpointTokenSet?`ตั้งค่าแล้ว (…${c.endpointTokenTail}) — วางใหม่เมื่อได้ TOKEN ใหม่ / เว้นว่าง = ใช้ค่าเดิม`:"วาง TOKEN KEY ที่ได้จากอีเมล สปสช.";
+    const ok=c.endpointTokenSet&&c.hcode&&c.recorderSet;
+    $("#setState").innerHTML=ok?'<span class="pill y">พร้อมปิดสิทธิ</span>':'<span class="pill n">ยังตั้งค่าไม่ครบ</span>';
+    $("#envPath").textContent="บันทึกที่ "+c.envFile;
+  }catch(e){console.error(e)}
+}
+$("#fSet").recorderPid.onfocus=e=>{if(e.target.value.includes("x"))e.target.value=""};
+$("#fSet").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter,d=Object.fromEntries(new FormData(e.target));
+  d.recorderPid=(d.recorderPid||"").replace(/[^\dx]/gi,"");
+  if(d.env==="prod"&&ENV!=="prod"){const ok=await confirmBox("เปลี่ยนเป็น Production",`<p>การปิดสิทธิจะส่งไประบบ<b>ใช้งานจริง</b>ของ สปสช.</p>`,"ยืนยันใช้ Production");if(!ok)return;d.confirm="YES"}
+  busy(btn,1);
+  try{await api("save_settings",d);toast("บันทึกการตั้งค่าแล้ว");loadStatus()}
   catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
 };
 

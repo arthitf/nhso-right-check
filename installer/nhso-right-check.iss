@@ -1,7 +1,7 @@
 ﻿; ตัวติดตั้ง Windows (Inno Setup 6) — พัฒนาโดย arthit.f
-; build: iscc /DAppVersion=0.3.2 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
+; build: iscc /DAppVersion=0.4.0 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
 #ifndef AppVersion
-  #define AppVersion "0.3.2"
+  #define AppVersion "0.4.0"
 #endif
 
 [Setup]
@@ -44,5 +44,4 @@ Name: "{group}\ถอนการติดตั้ง"; Filename: "{uninstallex
 Name: "{userdesktop}\ตรวจสอบสิทธิ สปสช."; Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "notepad.exe"; Parameters: """{app}\.env"""; Description: "เปิดไฟล์ตั้งค่า (.env) เพื่อใส่ HCODE / TOKEN"; Flags: postinstall nowait skipifsilent
-Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Description: "เปิด ตรวจสอบสิทธิ สปสช."; Flags: postinstall nowait skipifsilent unchecked
+Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Description: "เปิดโปรแกรม (ตั้งค่าที่แท็บ 06 ตั้งค่า)"; Flags: postinstall nowait skipifsilent
