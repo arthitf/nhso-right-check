@@ -144,7 +144,7 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
   </ol>
   <h3>Token ตรวจสอบสิทธิ (SRM)</h3>
   <div class="flow"><span>เสียบบัตร</span><i>→</i><span>Login SRM Portal + PIN</span><i>→</i><span>กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal”</span><i>→</i><span>token.txt</span><i>→</i><span>โปรแกรมอ่านให้เอง</span></div>
-  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>05 ตั้งค่า Token</b> แล้ววาง token เองได้</p>
+  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>06 ตั้งค่า Token</b> แล้ววาง token เองได้</p>
   <div class="note tip">ไฟ <b>SRM</b> / <b>ENDPOINT</b> ที่แถบล่างของโปรแกรม ถ้าเป็นสีเขียว แปลว่าตั้งค่า token ครบแล้ว</div>
 </div></section>
 
@@ -168,6 +168,8 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
   <p>ใส่ <b>transactionId</b> แล้วกด <span class="btnlike">กดยกเลิกปิดสิทธิ</span> ถ้าไม่ใส่ seq โปรแกรมจะหาจากประวัติให้เอง (ระบบส่ง <code>paymentStatus = CANCEL</code>)</p>
   <h3>04 ประวัติ</h3>
   <p>แสดง 100 รายการล่าสุด ข้อมูลเก็บในไฟล์ <code>nhso_right_check_log.sqlite3</code> ในเครื่อง เลขบัตรบนหน้าจอจะถูกปิดบางส่วนไว้</p>
+  <h3>05 ตารางสิทธิ</h3>
+  <p>ตารางรหัสสิทธิ (vr_l_right) 277 รหัส ใช้ค้นหาว่ารหัสแต่ละตัวคือสิทธิอะไร (เช่น UCS, WEL, OFC, SSS, BKK, E45) และอยู่ในกลุ่มสิทธิหลักกลุ่มไหน (U, C, S, L, B, E …) หน้าตรวจสอบสิทธิจะแสดงชื่อสิทธิกับกลุ่มให้อัตโนมัติ และช่อง “สิทธิ” ในหน้าปิดสิทธิจะมีรายการให้เลือก</p>
 </div></section>
 
 <section id="batch" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
@@ -212,7 +214,7 @@ git push -u origin main</pre>
   <h3>ค. สร้างไฟล์โปรแกรม Windows / Mac / Linux อัตโนมัติ</h3>
   <ol class="steps">
     <li>ในหน้า repo ไปที่ <b>Releases → Draft a new release</b></li>
-    <li>ตั้ง Tag เป็น <code>v0.2.0</code> แล้วกด <b>Publish release</b></li>
+    <li>ตั้ง Tag เป็น <code>v0.3.0</code> แล้วกด <b>Publish release</b></li>
     <li>รอประมาณ 5–10 นาที ดูความคืบหน้าได้ที่แท็บ <b>Actions</b> เสร็จแล้วไฟล์ zip ของทั้ง 3 OS จะถูกแนบไว้ใน Release และปุ่มดาวน์โหลดในหน้านี้จะใช้งานได้ทันที</li>
   </ol>
   <h3>ง. เปิดหน้าคู่มือนี้เป็นเว็บ (เลือกได้)</h3>
@@ -251,6 +253,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
   config.py      ตั้งค่า, base URL test/prod
   srm.py         ตรวจสอบสิทธิ + จัดการ token
   endpoint.py    ปิดสิทธิ / ยกเลิก + ตรวจข้อมูลตาม spec
+  rights.py      ตารางรหัสสิทธิ vr_l_right (data/*.csv)
   validation.py  เลขบัตร, จำนวนเงิน (≤8 หลัก ทศนิยม 2), hcode
   store.py       ประวัติ SQLite
   web.py         หน้าจอ (local server ใช้ standard library)
@@ -263,7 +266,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
   <h2><b>08</b>ปัญหาที่พบบ่อย</h2>
   <table>
     <tr><th>อาการ</th><th>วิธีแก้</th></tr>
-    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 05</td></tr>
+    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 06</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
     <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
     <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>

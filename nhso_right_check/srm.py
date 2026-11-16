@@ -14,6 +14,7 @@ from typing import Any
 import requests
 
 from .config import Settings
+from .rights import lookup as right_lookup
 from .validation import mask_pid, require_pid
 
 log = logging.getLogger(__name__)
@@ -172,6 +173,9 @@ def main_fund(result: dict) -> dict | None:
 def summarize(result: dict) -> dict:
     """แปลงผลตรวจสอบสิทธิให้เป็นแถวเดียว (ใช้แสดงผล / เขียน CSV)"""
     f = main_fund(result) or {}
+    code = _name(f.get("mainInscl"), "id")
+    rt = right_lookup(code)
+    others = [_name(x.get("mainInscl"), "id") for x in (result.get("funds") or []) if x is not f]
     return {
         "pid": result.get("pid", ""),
         "name": " ".join(x for x in (result.get("tname"), result.get("fname"), result.get("lname")) if x),
@@ -180,7 +184,12 @@ def summarize(result: dict) -> dict:
         "deathDate": result.get("deathDate") or "",
         "checkDate": result.get("checkDate", ""),
         "mainInscl": _name(f.get("mainInscl"), "id"),
-        "mainInsclName": _name(f.get("mainInscl")),
+        "mainInsclName": _name(f.get("mainInscl")) or rt["name"],
+        "rightName": rt["name"],
+        "rightEn": rt["en"],
+        "rightGroup": rt["groupId"],
+        "rightGroupName": rt["groupName"],
+        "otherFunds": ",".join(c for c in others if c),
         "subInscl": _name(f.get("subInscl"), "id"),
         "subInsclName": _name(f.get("subInscl")),
         "startDateTime": f.get("startDateTime", ""),

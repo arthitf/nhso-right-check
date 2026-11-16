@@ -229,3 +229,23 @@ def test_network_error_becomes_srm_error(settings):
     settings.srm_access_token = "AAA"
     with pytest.raises(SRMError, match="เชื่อมต่อ"):
         SRMClient(settings, Boom([])).right_search(VALID_PID)
+
+
+# ---------- ตารางสิทธิ ----------
+def test_rights_lookup():
+    from nhso_right_check.rights import all_rights, lookup
+    u = lookup("ucs")
+    assert u["known"] and u["groupId"] == "U" and "หลักประกันสุขภาพ" in u["name"]
+    assert lookup("BKK")["groupId"] == "B"
+    assert lookup("COR")["known"] and not lookup("ZZZ")["known"]
+    assert len(all_rights()) >= 277
+
+
+def test_payload_accepts_codes_from_rights_table(settings):
+    p = build_claim_payload(_req(main_inscl_code="bkk"), settings)
+    assert p["mainInsclCode"] == "BKK"
+
+
+def test_summary_explains_right():
+    s = summarize(SRM_RESULT)
+    assert s["rightGroup"] == "U" and s["rightGroupName"] and s["otherFunds"] == "SSS"

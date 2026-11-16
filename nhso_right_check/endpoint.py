@@ -20,6 +20,7 @@ from typing import Any
 import requests
 
 from .config import Settings
+from .rights import is_known
 from .validation import ValidationError, mask_pid, require_hcode, require_pid, to_amount
 
 log = logging.getLogger(__name__)
@@ -90,8 +91,8 @@ def build_claim_payload(req: ClaimRequest, s: Settings) -> dict:
     if not req.claim_service_code:
         raise ValidationError("ต้องระบุ claimServiceCode (รหัสบริการ เช่น PG0060001)")
     inscl = (req.main_inscl_code or "").upper()
-    if inscl not in VALID_MAININSCL:
-        raise ValidationError(f"mainInsclCode ไม่ถูกต้อง: {req.main_inscl_code!r}")
+    if not inscl or not (inscl in VALID_MAININSCL or is_known(inscl)):
+        raise ValidationError(f"mainInsclCode ไม่พบในตารางสิทธิ: {req.main_inscl_code!r}")
 
     paid = to_amount(req.paid_amount, "paidAmount")
     privilege = to_amount(req.privilege_amount, "privilegeAmount")

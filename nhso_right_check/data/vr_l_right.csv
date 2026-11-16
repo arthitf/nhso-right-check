@@ -1,0 +1,278 @@
+right_id,right_name,right_order,right_main,right_desc,source
+UCS,สิทธิหลักประกันสุขภาพแห่งชาติ,1,U,Universal Coverage Scheme,1
+HUC,สิทธิข้าราชการ (เบิกจ่ายสำนักงานหลักประกันสุขภาพแห่งชาติ),1,U,สิทธิข้าราชการ (เบิกจ่ายสำนักงานหลักประกันสุขภาพแห่งชาติ),1
+WEL,สิทธิหลักประกันสุขภาพแห่งชาติ (ยกเว้นการร่วมจ่ายค่าบริการ 30 บาท),4,U,Welfare Scheme,1
+SSS,สิทธิประกันสังคม,17,S,Social Security Scheme,3
+SSI,สิทธิประกันสังคมกรณีทุพพลภาพ,18,S,"Social Security Scheme With ""Invalidity"" Status",3
+OFC,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,20,C,Government Or State Enterprise Officer,2
+POL,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,21,C,Private School Teacher & Government Or State Enterprise Officer & Local Government Officer Scheme,2
+SOL,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,22,S,Social Security Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme,3
+IOL,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,23,S,"Social Security Scheme With ""Invalidity"" Status & Government Or State Enterprise Officer & Local Government Officer Scheme",3
+SOF,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,25,S,Social Security Scheme & Government Or State Enterprise Officer,14
+SLG,สิทธิประกันสังคม/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,32,S,Social Security Scheme & Local Government Officer Scheme,3
+SIL,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,33,S,"Social Security Scheme With ""Invalidity"" Status & Local Government Officer Scheme",3
+LGO,สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,34,L,Local Government Officer Scheme,4
+FRG,สถานะคนไทยในต่างประเทศ,35,O,Foreign Resident,12
+SLB,สิทธิประกันสังคม/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,36,S,Social Security Scheme & Local Government Officer Scheme & Parliament Bureaucrat,3
+OFL,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,37,C,Government Or State Enterprise Officer & Local Government Officer Scheme,2
+BFC,สิทธิข้าราชการการเมือง,40,C,Parliament Bureaucrat,9
+LBF,สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,41,L,Local Government Officer Scheme & Parliament Bureaucrat,4
+PLB,สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,42,L,Private School Teacher & Local Government Officer Scheme & Parliament Bureaucrat,4
+VLB,สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,43,L,Veteran Scheme & Local Government Officer Scheme & Parliament Bureaucrat,4
+L01,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,44,S,"Social Security Scheme With ""Invalidity"" Status & Veteran Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme",3
+VOL,สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,46,C,Veteran Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme,2
+L02,สิทธิครูเอกชน/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,47,L,Private School Teacher & Veteran Scheme & Local Government Officer Scheme & Parliament Bureaucrat,4
+L03,สิทธิครูเอกชน/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,48,C,Private School Teacher & Veteran Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme,2
+L04,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,49,S,Private School Teacher & Social Security Scheme & Veteran Scheme & Local Government Officer Scheme,3
+VPL,สิทธิครูเอกชน/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,51,L,Private School Teacher & Veteran Scheme & Local Government Officer Scheme,4
+L05,สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,52,S,Social Security Scheme & Veteran Scheme & Local Government Officer Scheme & Parliament Bureaucrat,3
+VIL,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,53,S,"Social Security Scheme With ""Invalidity"" Status & Veteran Scheme & Local Government Officer Scheme",3
+L06,สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,54,S,Social Security Scheme & Veteran Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme,3
+VSL,สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,55,S,Social Security Scheme & Veteran Scheme & Local Government Officer Scheme,3
+VLG,สิทธิทหารผ่านศึก/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,56,L,Veteran Scheme & Local Government Officer Scheme,4
+L07,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,57,S,Social Security Scheme & Private School Teacher & Local Government Officer Scheme & Parliament Bureaucrat,3
+L08,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,58,S,Social Security Scheme & Private School Teacher & Government Or State Enterprise Officer & Local Government Officer Scheme,3
+NRH,บุคคลต่างด้าว (ซื้อประกันสุขภาพ),59,H,Non Thai Resident With Health Insurance,8
+NRD,บุคคลต่างด้าว,70,O,Non Thai Resident,11
+VET,สิทธิทหารผ่านศึก,71,O,Veteran Scheme,13
+VOF,สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,72,C,Veteran Scheme & Government Or State Enterprise Officer,24
+VSS,สิทธิประกันสังคม/สิทธิทหารผ่านศึก,73,S,Social Security Scheme & Veteran Scheme,25
+VBF,สิทธิทหารผ่านศึก/สิทธิข้าราชการการเมือง,74,C,Veteran Scheme & Parliament Bureaucrat,26
+VSO,สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,75,S,Social Security Scheme & Veteran Scheme & Government Or State Enterprise Officer,27
+VSB,สิทธิประกันสังคม/สิทธิทหารผ่านศึก/สิทธิข้าราชการการเมือง,76,S,Social Security Scheme & Veteran Scheme & Parliament Bureaucrat,28
+PVT,สิทธิครูเอกชน,77,O,Private School Teacher,10
+PSS,สิทธิประกันสังคม/สิทธิครูเอกชน,78,S,Social Security Scheme & Private School Teacher,29
+POF,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,79,C,Private School Teacher & Government Or State Enterprise Officer,2
+PBF,สิทธิครูเอกชน/สิทธิข้าราชการการเมือง,80,C,Private School Teacher & Parliament Bureaucrat,22
+PSO,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,81,S,Social Security Scheme & Private School Teacher & Government Or State Enterprise Officer,23
+PSB,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการการเมือง,82,S,Social Security Scheme & Private School Teacher & Parliament Bureaucrat,31
+VPT,สิทธิครูเอกชน/สิทธิทหารผ่านศึก,83,O,Private School Teacher & Veteran Scheme,32
+VPS,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิทหารผ่านศึก,84,S,Private School Teacher & Social Security Scheme & Veteran Scheme,33
+VPO,สิทธิครูเอกชน/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,85,C,Private School Teacher & Veteran Scheme & Government Or State Enterprise Officer,34
+VPB,สิทธิครูเอกชน/สิทธิทหารผ่านศึก/สิทธิข้าราชการการเมือง,86,C,Private School Teacher & Veteran Scheme & Parliament Bureaucrat,35
+PLG,สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,87,L,Private School Teacher & Local Government Officer Scheme,4
+PSL,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,88,S,Social Security Scheme & Private School Teacher & Local Government Officer Scheme,3
+PIL,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,89,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Local Government Officer Scheme",3
+SIF,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,91,S,"Social Security Scheme With ""Invalidity"" Status & Government Or State Enterprise Officer",3
+PSI,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพพลภาพ,92,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status",3
+VIO,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิทหารผ่านศึก/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,93,S,"Social Security Scheme With ""Invalidity"" Status & Veteran Scheme & Government Or State Enterprise Officer",3
+VSI,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิทหารผ่านศึก,94,S,"Social Security Scheme With ""Invalidity"" Status & Veteran Scheme",3
+STP,บุคคลผู้มีปัญหาสถานะและสิทธิ,95,T,Stateless People,8
+005,บุคคลที่ไม่อยู่ตามทะเบียนบ้าน (รอยืนยันสิทธิ),98,N,,11
+B03,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,316,C,Private School Teacher & Government & Bangkok Metropolitan Officer & Veteran Scheme,2
+B04,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,317,S,Private School Teacher & Social Security Scheme & Bangkok Metropolitan Officer & Veteran Scheme,3
+B05,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,318,S,Social Security Scheme & Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,3
+B06,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,319,S,Social Security Scheme & Government  & Bangkok Metropolitan Officer & Veteran Scheme,3
+B07,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,320,B,Private School Teacher & Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,5
+B09,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,321,S,"Social Security Scheme With ""Invalidity"" Status & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme",3
+B10,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,322,B,Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,5
+B11,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,323,C,Private School Teacher & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,2
+B12,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,324,S,Private School Teacher & Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+B13,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,325,S,Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,3
+B14,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,326,S,Social Security Scheme & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+B23,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,327,S,"Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme",3
+B24,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,328,B,Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,5
+B25,สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,329,C,Government & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,2
+B26,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,330,B,Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,5
+B27,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,331,S,Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+B28,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,332,S,"Social Security Scheme With ""Invalidity"" Status & Government & Bangkok Metropolitan Officer & Veteran Scheme",3
+E01,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,333,S,Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer,3
+E02,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,334,S,Social Security Scheme & Government & Government Officer & Local Government Officer Scheme,3
+E03,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,335,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+E04,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,336,S,Social Security Scheme & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+E05,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,337,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+E06,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,338,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme",3
+E07,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,339,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Local Government Officer Scheme & Veteran Scheme",3
+E08,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,340,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Veteran Scheme",3
+E09,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,341,E,Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,6
+E10,สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,342,E,Government Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,6
+E11,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,343,E,Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,6
+E12,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,344,E,Government & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,6
+E13,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,345,C,Government & Government Officer & Local Government Officer Scheme & Veteran Scheme,2
+E14,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,346,E,Private School Teacher & Government Officer & Parliament Bureaucrat & Veteran Scheme,6
+E15,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,347,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,6
+E16,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,348,E,Private School Teacher & Government Officer & Local Government Officer Scheme & Veteran Scheme,6
+E17,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,349,C,Private School Teacher & Government & Government Officer & Veteran Scheme,2
+E18,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,350,S,Private School Teacher & Social Security Scheme & Government Officer & Veteran Scheme,3
+E19,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,351,S,Social Security Scheme & Government Officer & Parliament Bureaucrat & Veteran Scheme,3
+E20,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,352,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,3
+E21,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,353,S,Social Security Scheme & Government Officer & Local Government Officer Scheme & Veteran Scheme,3
+E22,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,354,S,Social Security Scheme & Government & Government Officer & Veteran Scheme,3
+E23,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,355,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Bangkok Metropolitan Officer",3
+E24,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,356,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+E25,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,357,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Local Government Officer Scheme",3
+E26,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,358,S,Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer,3
+E27,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,359,S,Social Security Scheme & Private School Teacher & Government Officer & Local Government Officer Scheme,3
+E28,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,360,S,Social Security Scheme & Private School Teacher & Government & Government Officer,3
+E29,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,361,E,Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer,6
+E30,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,362,C,Private School Teacher & Government & Government Officer & Local Government Officer Scheme,2
+E31,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,363,S,Social Security Scheme & Private School Teacher & Government Officer & Parliament Bureaucrat,3
+E32,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,364,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,6
+E33,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,365,E,Private School Teacher & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,6
+E34,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,366,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer",3
+E35,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,367,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Government Officer & Local Government Officer Scheme",3
+E36,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,368,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,6
+E37,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,369,E,Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,6
+E38,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,370,E,Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,6
+E39,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,371,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Local Government Officer Scheme & Veteran Scheme",3
+E40,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,372,E,Private School Teacher & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,6
+E41,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,373,C,Private School Teacher & Government & Government Officer & Local Government Officer Scheme & Veteran Scheme,2
+E42,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,374,S,Private School Teacher & Social Security Scheme & Government Officer & Local Government Officer Scheme & Veteran Scheme,3
+E43,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,375,S,Social Security Scheme & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,3
+E44,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,376,S,Social Security Scheme & Government & Government Officer & Local Government Officer Scheme & Veteran Scheme,3
+E45,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,377,S,Social Security Scheme & Private School Teacher & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+E46,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,378,S,Social Security Scheme & Private School Teacher & Government & Government Officer & Local Government Officer Scheme,3
+E47,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,379,S,Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+E48,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,380,S,Social Security Scheme & Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer,3
+E49,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,381,E,Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,6
+E50,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,382,S,Private School Teacher & Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,3
+E51,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,383,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,3
+E52,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,384,S,Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,3
+E53,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,385,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,6
+E54,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,386,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+E55,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,387,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme",3
+E56,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,388,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,6
+E57,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,389,E,Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,6
+E58,สิทธิครูเอกชน/สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,390,S,Private School Teacher & Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+E59,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,391,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,3
+E60,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,392,S,Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+E61,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,393,S,Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+E62,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,394,S,Social Security Scheme & Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+E63,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,395,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+E64,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,396,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,6
+E65,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,397,E,Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,6
+E66,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,398,S,Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+E67,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,399,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+E68,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,400,S,Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+E69,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,401,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme",3
+E70,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,402,E,Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat & Veteran Scheme,6
+E71,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,403,E,Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,6
+E72,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,404,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,6
+E73,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,405,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,3
+E74,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,406,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer & Bangkok Metropolitan Officer & Veteran Scheme",3
+EBF,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,407,E,Government Officer & Parliament Bureaucrat,6
+EBV,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,408,E,Government Officer & Parliament Bureaucrat & Veteran Scheme,6
+EKB,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,409,E,Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,6
+EKK,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,410,E,Government Officer & Bangkok Metropolitan Officer,6
+EKL,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,411,E,Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,6
+EKV,สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,412,E,Government Officer & Bangkok Metropolitan Officer & Veteran Scheme,6
+ELB,สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,413,E,Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,6
+ELG,สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,414,E,Government Officer & Local Government Officer Scheme,6
+ELV,สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,415,E,Government Officer & Local Government Officer Scheme & Veteran Scheme,6
+EVT,สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,416,E,Government Officer & Veteran Scheme,6
+IEK,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,417,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Bangkok Metropolitan Officer",3
+IEL,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,418,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Local Government Officer Scheme",3
+IEV,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,419,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer & Veteran Scheme",3
+IOE,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,420,S,"Social Security Scheme With ""Invalidity"" Status & Government & Government Officer",3
+OEK,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,421,E,Government & Government Officer & Bangkok Metropolitan Officer,6
+OEL,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,422,C,Government & Government Officer & Local Government Officer Scheme,2
+OEV,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,423,C,Government & Government Officer & Veteran Scheme,2
+OFE,สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,424,C,Government & Government Officer,2
+PEB,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,425,E,Private School Teacher & Government Officer & Parliament Bureaucrat,6
+PEK,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,426,E,Private School Teacher & Government Officer & Bangkok Metropolitan Officer,6
+PEL,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,427,E,Private School Teacher & Government Officer & Local Government Officer Scheme,6
+PEP,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ,428,E,Private School Teacher & Government Officer,6
+PEV,สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,429,E,Private School Teacher & Government Officer & Veteran Scheme,6
+PIE,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ,430,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Government Officer",3
+POE,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,431,C,Private School Teacher & Government & Government Officer,2
+SEB,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,432,S,Social Security Scheme & Government Officer & Parliament Bureaucrat,3
+SEK,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,433,S,Social Security Scheme & Government Officer & Bangkok Metropolitan Officer,3
+SEL,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,434,S,Social Security Scheme & Government Officer & Local Government Officer Scheme,3
+SEV,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ/สิทธิทหารผ่านศึก,436,S,Social Security Scheme & Government Officer & Veteran Scheme,3
+SIE,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิหน่วยงานรัฐ,437,S,"Social Security Scheme With ""Invalidity"" Status & Government Officer",3
+SOE,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,438,S,Social Security Scheme & Government & Government Officer,3
+SPE,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ,439,S,Social Security Scheme & Private School Teacher & Government Officer,3
+SSE,สิทธิประกันสังคม/สิทธิหน่วยงานรัฐ,440,S,Social Security Scheme & Government Officer,3
+VIK,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,441,S,"Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer & Veteran Scheme",3
+VKB,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,442,B,Bangkok Metropolitan Officer & Parliament Bureaucrat & Veteran Scheme,5
+VKK,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,443,B,Bangkok Metropolitan Officer & Veteran Scheme,5
+VLK,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิทหารผ่านศึก,444,B,Bangkok Metropolitan Officer & Local Government Officer Scheme & Veteran Scheme,5
+VOK,สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,445,C,Government & Bangkok Metropolitan Officer & Veteran Scheme,2
+VPK,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,446,B,Private School Teacher & Bangkok Metropolitan Officer & Veteran Scheme,5
+VSK,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิทหารผ่านศึก,447,S,Social Security Scheme & Bangkok Metropolitan Officer & Veteran Scheme,3
+BKK,สิทธิข้าราชการกรุงเทพมหานคร,459,B,Bangkok Metropolitan Officer,5
+KBF,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,460,B,Bangkok Metropolitan Officer & Parliament Bureaucrat,5
+OKK,สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,461,C,Government & Bangkok Metropolitan Officer,2
+PKB,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,462,B,Private School Teacher & Bangkok Metropolitan Officer & Parliament Bureaucrat,5
+POK,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,463,C,Private School Teacher & Government & Bangkok Metropolitan Officer,2
+PSK,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร,464,S,Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer,3
+PKK,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร,465,B,Private School Teacher & Bangkok Metropolitan Officer,5
+SKB,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,466,S,Social Security Scheme & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+IFK,สิทธิประกันสังคมกรณีทุพพลภาพ/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,467,S,"Social Security Scheme With ""Invalidity"" Status & Government & Bangkok Metropolitan Officer",3
+SOK,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,468,S,Social Security Scheme & Government & Bangkok Metropolitan Officer,3
+SIK,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร,469,S,"Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer",3
+SKK,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร,470,S,Social Security Scheme & Bangkok Metropolitan Officer,3
+KLB,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,471,B,Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,5
+KLG,สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,472,B,Bangkok Metropolitan Officer & Local Government Officer Scheme,5
+OKL,สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,473,C,Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,2
+PKL,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,474,B,Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme,5
+IKL,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,475,S,"Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+SKL,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,476,S,Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+PIK,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร,477,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer",3
+B01,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,478,S,Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+B02,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,479,S,Social Security Scheme & Private School Teacher & Government & Bangkok Metropolitan Officer,3
+B08,สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,480,S,"Social Security Scheme With ""Invalidity"" Status & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+B15,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,481,S,Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+B16,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,482,S,Social Security Scheme & Private School Teacher & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+B17,สิทธิครูเอกชน/สิทธิประกันสังคมกรณีทุพลภาพ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,483,S,"Private School Teacher & Social Security Scheme With ""Invalidity"" Status & Bangkok Metropolitan Officer & Local Government Officer Scheme",3
+B18,สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,484,B,Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,5
+B19,สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,485,C,Private School Teacher & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,2
+B20,สิทธิประกันสังคม/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,486,S,Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+B21,สิทธิประกันสังคม/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,487,S,Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+B22,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,488,S,Social Security Scheme & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+OFB,สิทธิข้าราชการ/สิทธิข้าราชการการเมือง,494,C,Government & Parliament Bureaucrat,2
+OBV,สิทธิข้าราชการ/สิทธิข้าราชการการเมือง/สิทธิทหารผ่านศึก,495,C,Government & Parliament Bureaucrat & Veteran Scheme,2
+SBF,สิทธิประกันสังคม/สิทธิข้าราชการการเมือง,496,S,Social Security Scheme & Parliament Bureaucrat,3
+SOB,สิทธิประกันสังคม/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,497,S,Social Security Scheme & Government Or State Enterprise Officer & Parliament Bureaucrat,3
+GOF,สิทธิหน่วยงานรัฐ,498,E,Government Officer,42
+DIS,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ),500,D,Disability Social Security Scheme,3
+D02,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,501,D,Disability Social Security Scheme & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+NRU,บุคคลต่างด้าว,501,O,Non Thai Resident Unspecifiled,41
+D03,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,502,D,Disability Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer,3
+D04,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,503,D,Disability Social Security Scheme & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D05,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,504,D,Disability Social Security Scheme & Government & Government Officer & Local Government Officer Scheme,3
+D01,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,505,D,Disability Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+D13,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,506,D,Disability Social Security Scheme & Private School Teacher & Government & Bangkok Metropolitan Officer,3
+D14,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,507,D,Disability Social Security Scheme & Private School Teacher & Government & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D15,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,508,D,Disability Social Security Scheme & Private School Teacher & Government & Government Officer,3
+D16,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,509,D,Disability Social Security Scheme & Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer,3
+D17,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,510,D,Disability Social Security Scheme & Private School Teacher & Government & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D18,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,511,D,Disability Social Security Scheme & Private School Teacher & Government & Government Officer & Local Government Officer Scheme,3
+D26,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,512,D,Disability Social Security Scheme & Private School Teacher & Government Or State Enterprise Officer & Local Government Officer Scheme,3
+D12,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,513,D,Disability Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+D10,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,514,D,Disability Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D11,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,515,D,Disability Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+D27,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,516,D,Disability Social Security Scheme & Private School Teacher & Local Government Officer Scheme & Parliament Bureaucrat,3
+D19,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,517,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer,3
+D22,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,518,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+D20,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,519,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D21,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,520,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+D25,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,521,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Parliament Bureaucrat,3
+D23,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,522,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Local Government Officer Scheme,3
+D24,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,523,D,Disability Social Security Scheme & Private School Teacher & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+D08,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,524,D,Disability Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+D06,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,525,D,Disability Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+D07,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,526,D,Disability Social Security Scheme & Government Officer & Bangkok Metropolitan Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+D09,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,527,D,Disability Social Security Scheme & Government Officer & Local Government Officer Scheme & Parliament Bureaucrat,3
+DBF,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการการเมือง,528,D,Disability Social Security Scheme & Parliament Bureaucrat,3
+DBK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิข้าราชการการเมือง,529,D,Disability Social Security Scheme & Bangkok Metropolitan Officer & Parliament Bureaucrat,3
+DGB,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,530,D,Disability Social Security Scheme & Government Officer & Parliament Bureaucrat,3
+DGK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการกรุงเทพมหานคร,531,D,Disability Social Security Scheme & Government Officer & Bangkok Metropolitan Officer,3
+DGL,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,532,D,Disability Social Security Scheme & Government Officer & Local Government Officer Scheme,3
+DGO,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิหน่วยงานรัฐ,533,D,Disability Social Security Scheme & Government Officer,3
+DKK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการกรุงเทพมหานคร,535,D,Disability Social Security Scheme & Bangkok Metropolitan Officer,3
+DLB,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น/สิทธิข้าราชการการเมือง,536,D,Disability Social Security Scheme & Local Government Officer Scheme & Parliament Bureaucrat,3
+DLG,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,537,D,Disability Social Security Scheme & Local Government Officer Scheme,3
+DLK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการกรุงเทพมหานคร/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,538,D,Disability Social Security Scheme & Bangkok Metropolitan Officer & Local Government Officer Scheme,3
+DOB,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิข้าราชการการเมือง,539,D,Disability Social Security Scheme & Government Or State Enterprise Officer & Parliament Bureaucrat,3
+DOF,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,540,D,Disability Social Security Scheme & Government Or State Enterprise Officer,3
+DOG,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,541,D,Disability Social Security Scheme & Government & Government Officer,3
+DOK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิข้าราชการกรุงเทพมหานคร,542,D,Disability Social Security Scheme & Government & Bangkok Metropolitan Officer,3
+DOL,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,543,D,Disability Social Security Scheme & Government Or State Enterprise Officer & Local Government Officer Scheme,3
+DPB,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการการเมือง,544,D,Disability Social Security Scheme & Private School Teacher & Parliament Bureaucrat,3
+DPG,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิหน่วยงานรัฐ,545,D,Disability Social Security Scheme & Private School Teacher & Government Officer,3
+DPK,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการกรุงเทพมหานคร,546,D,Disability Social Security Scheme & Private School Teacher & Bangkok Metropolitan Officer,3
+DPL,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,547,D,Disability Social Security Scheme & Private School Teacher & Local Government Officer Scheme,3
+DPO,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน/สิทธิข้าราชการ/สิทธิหน่วยงานรัฐ,548,D,Disability Social Security Scheme & Private School Teacher & Government Or State Enterprise Officer,3
+DPV,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ)/สิทธิครูเอกชน,549,D,Disability Social Security Scheme & Private School Teacher,3
+WVO,องค์การสงเคราะห์ทหารผ่านศึก,550,C,The War Veterans Organization of Thailand,2

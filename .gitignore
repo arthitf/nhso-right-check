@@ -7,8 +7,8 @@ token.txt
 # ข้อมูลผู้ป่วย / ผลลัพธ์
 *.sqlite3
 *_result.csv
-data/
-output/
+/data/
+/output/
 
 # Python
 __pycache__/

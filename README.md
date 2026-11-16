@@ -10,7 +10,7 @@
 run.bat            ← ดับเบิลคลิก/รันเปล่า = เปิดหน้าจอในเบราว์เซอร์ (http://127.0.0.1:8765)
 ```
 
-แท็บ: 01 ตรวจสอบสิทธิ · 02 ปิดสิทธิ (ปุ่ม **กดปิดสิทธิ**) · 03 ยกเลิกปิดสิทธิ · 04 ประวัติ · 05 ตั้งค่า Token
+แท็บ: 01 ตรวจสอบสิทธิ · 02 ปิดสิทธิ (ปุ่ม **กดปิดสิทธิ**) · 03 ยกเลิกปิดสิทธิ · 04 ประวัติ · 05 ตารางสิทธิ (vr_l_right) · 06 ตั้งค่า Token
 
 ## ดาวน์โหลดโปรแกรม (ไม่ต้องลง Python)
 
@@ -82,6 +82,10 @@ run.bat cancel --trans 13814261116083000123 --send
 
 REM ประวัติ
 run.bat history -n 50
+
+REM ค้นหาตารางรหัสสิทธิ
+run.bat rights UCS
+run.bat rights ข้าราชการ
 ```
 
 ถ้าส่งไป `--env prod` โปรแกรมจะให้พิมพ์ `YES` ยืนยันก่อนทุกครั้ง (ข้ามได้ด้วย `--yes`)
@@ -136,6 +140,7 @@ nhso_right_check/
   srm.py         ตรวจสอบสิทธิ SRM + จัดการ token
   endpoint.py    ปิดสิทธิ / ยกเลิก NHSO ENDPOINT
   validation.py  ตรวจ pid, จำนวนเงิน, hcode
+  rights.py      ตารางรหัสสิทธิ (data/vr_l_right.csv, vr_l_right_main.csv)
   store.py       ประวัติ SQLite
   cli.py         คำสั่ง
   web.py         หน้าจอ (local web server, stdlib)

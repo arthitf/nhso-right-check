@@ -19,6 +19,7 @@ from . import __author__, __version__
 from .config import Settings
 from .endpoint import EndpointClient, EndpointError, is_success
 from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, parse_token_text, summarize
+from .rights import all_rights, groups
 from .store import ClaimStore
 from .validation import ValidationError, mask_pid
 
@@ -106,7 +107,10 @@ class App:
         self.srm._token = pair
         return {"saved": True, "length": len(pair.access_token), "refresh": bool(pair.refresh_token)}
 
-    ROUTES = {"status": status, "check": check, "close": close, "cancel": cancel,
+    def rights(self, _b: dict) -> dict:
+        return {"rights": all_rights(), "groups": groups()}
+
+    ROUTES = {"rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
               "history": history, "token": set_token}
 
 

@@ -285,11 +285,27 @@ def build_parser() -> argparse.ArgumentParser:
     h.add_argument("-n", "--limit", type=int, default=20)
     h.set_defaults(func=cmd_history)
 
+    rt = sub.add_parser("rights", help="ค้นหาตารางรหัสสิทธิ (vr_l_right)")
+    rt.add_argument("query", nargs="?", default="", help="รหัสหรือคำค้น เช่น UCS, ข้าราชการ")
+    rt.set_defaults(func=cmd_rights)
+
     u = sub.add_parser("ui", help="เปิดหน้าจอโปรแกรม (Web UI ในเครื่อง)")
     u.add_argument("--port", type=int, default=8765)
     u.add_argument("--no-browser", action="store_true")
     u.set_defaults(func=cmd_ui)
     return p
+
+
+def cmd_rights(a, s: Settings) -> int:
+    from .rights import all_rights
+    q = a.query.strip().lower()
+    n = 0
+    for r in all_rights():
+        if not q or q in r["id"].lower() or q in r["name"].lower() or q in r["en"].lower():
+            print(f"{r['id']:5} [{r['groupId'] or '-'}] {r['name']}")
+            n += 1
+    print(f"-- {n} รายการ")
+    return 0
 
 
 def cmd_ui(a, s: Settings) -> int:

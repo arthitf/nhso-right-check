@@ -1,0 +1,12 @@
+main_id,main_desc,main_en_desc,remark
+E,สิทธิหน่วยงานรัฐ,Government Officer,เพื่อรับรองข้อมูลสิทธิหน่วยงานรัฐ
+H,บุคคลคนต่างด้าว (ซื้อประกันสุขภาพ),Non Thai Resident With Health Insurance,เพื่อรองรับบุคคลคนต่างด้าว กรณีซื้อบัตร
+U,สิทธิหลักประกันสุขภาพแห่งชาติ,Universal Coverage Scheme,แก้ไข wordding
+D,สิทธิหลักประกันสุขภาพแห่งชาติ (ผู้ประกันตนคนพิการ),Disability Social Security Scheme,แก้ไข wordding
+S,สิทธิประกันสังคม,Social Security Scheme,Initial
+C,สิทธิข้าราชการ/สิทธิรัฐวิสาหกิจ,Government or State Enterprise Officer,Initial
+O,สิทธิและสถานะอื่นๆ,Et Cetera (Etc.),Initial
+N,บุคคลที่ยังไม่ได้รับการลงทะเบียน,Non Registered People,Initial
+B,สิทธิข้าราชการกรุงเทพมหานคร,Bangkok Metropolitan Officer,เพื่อรับรองข้อมูลสิทธิข้าราชการกรุงเทพมหานคร
+L,สิทธิสวัสดิการพนักงานส่วนท้องถิ่น,Local Government Officer Scheme,เพื่อรองรับข้อมูลอปท.
+T,บุคคลผู้มีปัญหาสถานะและสิทธิ,Stateless People,Initial
