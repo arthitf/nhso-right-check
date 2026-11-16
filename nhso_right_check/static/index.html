@@ -150,12 +150,34 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <div class="row" style="margin-top:0">
       <span id="agState" class="hint"><span class="led"></span>กำลังตรวจ Agent…</span>
     </div>
+    <details id="agGuide" class="card" style="margin-top:10px"><summary style="padding:8px 12px;margin:0;font:600 14px var(--thai);color:var(--blue)">วิธีติดตั้ง NHSO Secure SmartCard Agent (ทำครั้งแรกครั้งเดียว) และ API ที่ใช้</summary>
+      <div class="body">
+        <ol class="agsteps">
+          <li>เตรียมไฟล์ <code>secureagent-1.2.4</code> (Production) จาก สปสช. แตกไว้ เช่น <code>C:\NHSOSecureSmartCardAgent</code> (ถ้ามีเวอร์ชันเก่า ให้ <code>uninstall.bat</code> และลบโฟลเดอร์เดิมก่อน)</li>
+          <li>เปิดไฟล์ <code>userconfig.properties</code> ด้วย Notepad ใส่ TOKEN ของหน่วยบริการ: <code>nhso.service.token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code> แล้วบันทึก</li>
+          <li>คลิกขวา <code>install.bat</code> → <b>Run as Administrator</b> รอจนเสร็จ (จะมี service ชื่อ <code>NHSOSecureSmartCardAgent</code> ใน Windows Services)</li>
+          <li>เปิด <a href="http://localhost:8189" target="_blank" rel="noopener noreferrer">http://localhost:8189</a> ต้องเห็นหน้าสถานะ Agent และเครื่องอ่านบัตร</li>
+          <li>กลับมาที่โปรแกรมนี้ ไฟ <b>AGENT</b> ที่แถบล่างต้องเป็น<b>สีเขียว</b> → เสียบบัตรแล้วกด “อ่านบัตร + ตรวจสิทธิ” ได้เลย</li>
+        </ol>
+        <div class="hint" style="margin:6px 0 10px">ได้ TOKEN ใหม่: แก้ <code>userconfig.properties</code> แล้วคลิกขวา <code>restart.bat</code> → Run as Administrator · ต้องใช้ proxy: แก้ <code>NHSOSecureSmartCardAgent.xml</code> ก่อนติดตั้ง · port 8189 และ 50204 ต้องว่าง · Agent อยู่เครื่องอื่น: ตั้งที่อยู่ที่แท็บ 08 ตั้งค่า → D</div>
+        <table>
+          <tr><th>ปุ่มในหน้านี้</th><th>API ของ Agent ที่เรียก</th><th>ได้อะไร</th></tr>
+          <tr><td>อ่านบัตร + ตรวจสิทธิ</td><td><code>GET /api/smartcard/read?readImageFlag=true</code></td><td>ข้อมูลบัตร รูปหน้าบัตร สิทธิ หน่วยบริการ ประเภทบริการที่ใช้ได้ (claimTypes) และ correlationId</td></tr>
+          <tr><td>อ่านบัตรอย่างเดียว</td><td><code>GET /api/smartcard/read-card-only?readImageFlag=true</code></td><td>ข้อมูลในบัตร + รูป (ไม่ต่อ สปสช. ปิดสิทธิไม่ได้)</td></tr>
+          <tr><td>กดปิดสิทธิ</td><td><code>POST /api/nhso-service/save-endpoint</code></td><td>seq + authenCode</td></tr>
+          <tr><td>authen code ล่าสุดของคนนี้</td><td><code>GET /api/nhso-service/latest-authen-code/{pid}</code></td><td>authen code ล่าสุดที่หน่วยบริการเคยขอ</td></tr>
+          <tr><td>ไฟ AGENT</td><td><code>GET /actuator/health</code></td><td>Agent ทำงานอยู่หรือไม่</td></tr>
+        </table>
+        <div class="hint" style="margin-top:8px">ดูสเปก API ทั้งหมดของ Agent ได้ที่ <a href="http://localhost:8189/swagger" target="_blank" rel="noopener noreferrer">http://localhost:8189/swagger</a></div>
+      </div>
+    </details>
     <div class="row">
       <button class="btn go big" id="agRead">อ่านบัตร + ตรวจสิทธิ</button>
       <button class="btn" id="agReadOnly" title="ใช้ตอนเชื่อมต่อ สปสช. ไม่ได้ — อ่านได้แต่ข้อมูลในบัตร ปิดสิทธิไม่ได้">อ่านบัตรอย่างเดียว</button>
       <button class="btn" id="agClear">ล้างข้อมูลบนจอ</button>
       <span class="hint">ให้ผู้ป่วยเสียบบัตรประชาชนที่เครื่องอ่านบัตรก่อนกด · ไม่ต้องใช้ SRM token (Agent ใช้ TOKEN ของหน่วยบริการเอง)</span>
     </div>
+    <div class="hint mono" style="margin-top:4px">API: GET /api/smartcard/read · GET /api/smartcard/read-card-only</div>
     <div id="agResult"></div>
     <form id="fAgClose" class="card" style="display:none"><header><span>ปิดสิทธิผ่าน Agent</span><span class="hint" id="agCorr"></span></header><div class="body">
       <div class="grid">
@@ -172,6 +194,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
         <button type="button" class="btn danger big" id="agClose">กดปิดสิทธิ</button>
         <button type="button" class="btn" id="agLatest">authen code ล่าสุดของคนนี้</button>
       </div>
+      <div class="hint mono" style="margin-top:4px">API: POST /api/nhso-service/save-endpoint · GET /api/nhso-service/latest-authen-code/{pid}</div>
       <div id="agCloseResult"></div>
     </div></form>
     <div class="note-quota">เครื่องนี้ต้องติดตั้ง <b>NHSO Secure SmartCard Agent</b> (Windows) และใส่ TOKEN ของหน่วยบริการใน <code>userconfig.properties</code> แล้ว ·
@@ -363,6 +386,9 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 .agphoto{width:132px;height:162px;border:2px solid var(--line);border-radius:4px;object-fit:cover;background:#dbe9f8;box-shadow:3px 3px 0 var(--line);flex:none}
 .agphoto.empty{display:flex;align-items:center;justify-content:center;font:12px var(--mono);color:var(--mute)}
 .agwrap .kv{flex:1;min-width:260px}
+.agsteps{margin:0;padding-left:22px}.agsteps li{margin:4px 0}
+#agGuide table{font-size:13px}#agGuide td,#agGuide th{white-space:normal}
+#agGuide[open]>summary{border-bottom:2px solid var(--line)}
 </style>
 
 <script>
@@ -473,8 +499,9 @@ async function agentPing(){
   try{const s=await api("agent_status");
     $("#ledAg").className="led "+(s.online?"on":"off");
     $("#agState").innerHTML=s.online?`<span class="led on"></span>Agent พร้อม — <span class="mono">${esc(s.url)}</span>`
-      :`<span class="led off"></span><b>ไม่พบ Agent</b> — ${esc(s.error||s.url)}`;
+      :`<span class="led off"></span>${esc(s.error||("ไม่พบ Agent ที่ "+s.url))}`;
     const u=$("#agentUrlState");if(u)u.textContent=(s.online?"✔ เชื่อมต่อได้ ":"✘ เชื่อมต่อไม่ได้ ")+(s.url||"");
+    if(!s.online)$("#agGuide").open=true;   // ยังไม่พบ Agent → เปิดวิธีติดตั้งให้ดูเลย
     return s;
   }catch(e){$("#ledAg").className="led off";return {online:false}}
 }
