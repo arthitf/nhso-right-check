@@ -44,7 +44,7 @@ copy .env.example .env      &  REM แล้วแก้ค่า HCODE, NHSO_EN
 run.bat --version           &  REM สร้าง .venv และติดตั้ง requests ให้อัตโนมัติ
 ```
 
-ต้องมี Python 3.9 ขึ้นไป
+ต้องมี Python 3.10 ขึ้นไป
 
 ## SRM token
 
@@ -130,7 +130,7 @@ pip install -e ".[dev]"
 pytest -q
 ```
 
-GitHub Actions รัน test บน Ubuntu และ Windows (Python 3.9 / 3.12) ทุกครั้งที่ push
+GitHub Actions รัน test บน Ubuntu และ Windows (Python 3.10 / 3.12) ทุกครั้งที่ push
 
 ## โครงสร้างโปรเจกต์
 
