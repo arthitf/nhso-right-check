@@ -142,7 +142,7 @@ def test_web_agent_close_logs_and_blocks_duplicate(tmp_path, monkeypatch):
     rd = app.agent_read({})
     assert rd["image"] and "image" not in rd["raw"]            # รูปส่งไปแสดงผลเท่านั้น
     body = {"pid": PID, "correlationId": "abc-def-123", "claimType": "PG0060001", "privilegeAmount": "150",
-            "invoiceDatetime": "2026-11-16 09:00:00", "send": True}
+            "invoiceDatetime": "2026-01-05 09:00:00", "send": True}   # วันที่ในอดีต (CI ใช้เวลา UTC)
     assert app.agent_close(body)["authenCode"] == "EP1"
     row = app.store.recent(1)[0]
     assert row["action"] == "AGENT_CLAIM" and row["authen_code"] == "EP1" and "image" not in row["request_json"]
