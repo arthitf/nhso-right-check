@@ -131,6 +131,12 @@ class SRMClient:
         return pair
 
     # ---------- API ----------
+    def _env_hint(self) -> str:
+        if self.s.env == "test":
+            return (" · ตอนนี้ตั้งเป็น Test Zone อยู่ token จาก SRM Portal ตัวจริงใช้กับ Test ไม่ได้ "
+                    "→ เปลี่ยนเป็น Production ที่แท็บ ตั้งค่า")
+        return ""
+
     def right_search(self, pid: str, force: bool = False) -> dict:
         """ตรวจสอบสิทธิปัจจุบันของผู้รับบริการ คืนค่า JSON ตาม spec
 
@@ -160,7 +166,10 @@ class SRMClient:
                         continue
                 except SRMError:
                     pass
-                self.refresh()
+                try:
+                    self.refresh()
+                except SRMError as e:
+                    raise SRMError(str(e) + self._env_hint(), e.status, e.body) from e
                 continue
             break
         log.info("SRM right-search %s -> HTTP %s", mask_pid(pid), r.status_code)
@@ -175,7 +184,7 @@ class SRMClient:
             return data
         messages = {
             400: "ข้อมูลไม่ถูกต้อง (เช่น pid ต้องเป็นตัวเลข 13 หลัก)",
-            401: "token ไม่ถูกต้องหรือหมดอายุ — Login SRM Portal ใหม่",
+            401: "token ไม่ถูกต้องหรือหมดอายุ — Login SRM Portal ใหม่" + self._env_hint(),
             404: "ไม่พบข้อมูลจากเลขประจำตัวประชาชนที่ส่งไป",
             500: "เกิดข้อผิดพลาดที่ Server สปสช.",
         }

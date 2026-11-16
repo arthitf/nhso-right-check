@@ -44,7 +44,7 @@ def default_srm_token_file() -> Path:
 
 @dataclass
 class Settings:
-    env: str = "test"                       # test | prod
+    env: str = "prod"                       # prod (ค่าเริ่มต้น ใช้งานจริง) | test
     # --- SRM ตรวจสอบสิทธิ ---
     srm_token_file: Path = field(default_factory=default_srm_token_file)
     srm_access_token: str = ""              # ถ้าระบุ จะใช้แทนการอ่านไฟล์
@@ -76,7 +76,7 @@ class Settings:
         if env_file:
             _load_dotenv(Path(env_file))
         g = os.environ.get
-        env = (g("NHSO_ENV", "test") or "test").lower()
+        env = (g("NHSO_ENV", "prod") or "prod").lower()
         if env not in ("test", "prod"):
             raise ValueError("NHSO_ENV ต้องเป็น test หรือ prod")
         s = cls(env=env)

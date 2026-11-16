@@ -111,8 +111,8 @@ run.bat rights ข้าราชการ
 
 - **โควตา API:** การตรวจสอบสิทธิผ่าน API ใช้โควตาของหน่วยบริการ การตรวจจำนวนมาก/ซ้ำซ้อนอาจทำให้โควตาหมด — ตรวจแบบกลุ่มแนะนำ **https://srmportal.nhso.go.th/ → ตรวจสอบสิทธิแบบกลุ่ม** (โปรแกรมมี cache ตรวจซ้ำ 10 นาที, ตัดเลขบัตรซ้ำ, จำกัดจำนวน batch) ดู [SECURITY.md](SECURITY.md)
 
-- **path ของ API ปิดสิทธิ**: เอกสาร v8.0 ระบุแค่ base URL ไม่ได้บอก path ค่าที่ตั้งไว้ (`api/nhso-claim-detail`, ยกเลิกใช้ `PUT`) ต้องเทียบกับ Swagger ก่อน ที่ https://test.nhso.go.th/nhsoendpoint/swagger-ui.html แล้วแก้ใน `.env` ได้ (`NHSO_CLAIM_PATH`, `NHSO_CANCEL_PATH`, `NHSO_CANCEL_METHOD`)
-- ทดสอบใน **Test Zone** ให้ผ่านก่อนเปลี่ยนเป็น `NHSO_ENV=prod`
+- **path ของ API ปิดสิทธิ**: เอกสาร v8.0 ระบุแค่ base URL ไม่ได้บอก path ค่าที่ตั้งไว้ (`api/nhso-claim-detail`, ยกเลิกใช้ `PUT`) ต้องเทียบกับ Swagger ก่อน ที่ https://nhsoapi.nhso.go.th/nhsoendpoint/swagger-ui.html (Production) แล้วแก้ใน `.env` ได้ (`NHSO_CLAIM_PATH`, `NHSO_CANCEL_PATH`, `NHSO_CANCEL_METHOD`)
+- ค่าเริ่มต้นคือ **Production** (`NHSO_ENV=prod`) — token จาก SRM Portal ตัวจริงใช้กับ Test Zone ไม่ได้ ถ้ามีสิทธิ Test Zone เปลี่ยนเป็น `test` ได้ที่แท็บตั้งค่า
 - TOKEN KEY ของ ENDPOINT ใช้ได้เฉพาะ HCODE ที่ยื่นขอเท่านั้น (ใช้แบบฟอร์มขอ TOKEN KEY ส่งไปที่ newauthen@nhso.go.th)
 - repo เป็น **Public** ได้ (โค้ดเรียกเฉพาะ API เปิดของ สปสช.) แต่ **ห้าม commit** `.env`, token, `*.sqlite3`, ไฟล์ผลลัพธ์ CSV ที่มีข้อมูลผู้ป่วย — กันไว้ใน `.gitignore` แล้ว และ CI ตรวจซ้ำทุกครั้งที่ push
 - เลขบัตรใน log และในหน้าจอจะถูกปิดบางส่วน (`1-xxxx-xxxxx-45-0`) แต่ในฐานข้อมูล SQLite จะเก็บเลขเต็ม เพราะต้องใช้ตอนยกเลิก

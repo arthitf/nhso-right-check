@@ -428,3 +428,16 @@ def test_parse_srm_sso_token_file_with_dashes():
     assert t.access_token == "eyJhbGciOi.AAA.BBB" and t.refresh_token == "eyJhbGciOi.CCC.DDD"
     assert parse_token_text("eyJx.y.z").access_token == "eyJx.y.z"
     assert parse_token_text("Bearer eyJx.y.z").access_token == "eyJx.y.z"
+
+
+def test_default_env_is_production(tmp_path, monkeypatch):
+    monkeypatch.delenv("NHSO_ENV", raising=False)
+    s = Settings.load(tmp_path / "none.env")
+    assert s.env == "prod" and s.srm_api_base == "https://srm.nhso.go.th"
+
+
+def test_401_hint_when_test_zone(settings):
+    settings.env = "test"
+    settings.srm_access_token = "AAA"
+    with pytest.raises(SRMError, match="Test Zone"):
+        SRMClient(settings, FakeSession([FakeResp(401, ""), FakeResp(401, "")])).right_search(VALID_PID)
