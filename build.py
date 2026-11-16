@@ -23,4 +23,4 @@ PyInstaller.__main__.run([
     "--add-data", f"{data}{os.pathsep}nhso_right_check/data",
     "--clean", "--noconfirm",
 ])
-print(f"build สำเร็จ: {platform.system()} {platform.machine()} -> dist/")
+print(f"build OK: {platform.system()} {platform.machine()} -> dist/")

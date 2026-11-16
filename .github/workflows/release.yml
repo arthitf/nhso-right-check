@@ -19,11 +19,14 @@ jobs:
         include:
           - os: windows-latest
             asset: nhso-right-check-windows-x64
-          - os: macos-14            # Apple Silicon (M1/M2/M3/M4)
+          - os: macos-latest        # Apple Silicon (M1 ขึ้นไป)
             asset: nhso-right-check-macos-arm64
           - os: ubuntu-22.04
             asset: nhso-right-check-linux-x64
     runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: utf-8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
