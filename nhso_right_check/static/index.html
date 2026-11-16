@@ -86,10 +86,13 @@ dialog .title{background:var(--blue);color:#fff}
 dialog .body{padding:16px}
 .spin{display:inline-block;width:14px;height:14px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:r .6s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes r{to{transform:rotate(360deg)}}
+.note-quota{margin-top:12px;font-size:13px;border:2px solid var(--line);border-left:8px solid var(--amber);border-radius:4px;padding:6px 10px;background:#fff8e6}
+.note-quota a{color:var(--blue);font-weight:700}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:4px;font-size:14px;display:none}
 @media (prefers-color-scheme:dark){
   :root{--paper:#0c1830;--panel:#12213d;--ink:#e6eef9;--mute:#9fb2cf;--line:#e6eef9;--blue:#2f6fd0}
   input,select,textarea,.card{background:#182a4a;color:var(--ink)}
+  .note-quota{background:#3a3016}
   pre{background:#0f1d36}.tabs button:hover,.btn:hover{background:#1d3358}
   th,.status{background:#16294a}.card.ok>header{background:#1b4a6b}.card.err>header{background:#5a2a20}.card.dry>header{background:#56441f}
 }
@@ -121,6 +124,8 @@ dialog .body{padding:16px}
       <button class="btn go">ตรวจสอบสิทธิ</button>
       <span class="hint">เสียบบัตร Login SRM Portal แล้ว โปรแกรมจะอ่าน token.txt ให้เอง</span>
     </form>
+    <div class="note-quota">⚠ การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำ อาจทำให้โควตาหมด
+      — ถ้าต้องตรวจเป็นกลุ่ม แนะนำใช้ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
     <div id="rCheck"></div>
   </section>
 
@@ -194,6 +199,7 @@ dialog .body{padding:16px}
     <span><span id="ledSrm" class="led"></span>SRM</span>
     <span><span id="ledEp" class="led"></span>ENDPOINT</span>
     <span>HCODE <b id="sHcode">—</b></span>
+    <span title="จำนวนครั้งที่เรียก API ตรวจสอบสิทธิจริงวันนี้ (จากเครื่องนี้)">ตรวจวันนี้ <b id="sUsage">0</b> ครั้ง</span>
     <span class="sp"></span>
     <span>พัฒนาโดย <b>arthit.f</b> · v{{VERSION}}</span>
   </div>
@@ -302,7 +308,7 @@ async function loadStatus(){
   try{
     const s=await api("status");ENV=s.env;
     const b=$("#envBadge");b.textContent=s.env.toUpperCase();b.classList.toggle("prod",s.env==="prod");
-    $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";
+    $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";$("#sUsage").textContent=(s.usageToday||{}).srm||0;
     const srmOk=s.srmToken.length>0||s.srmTokenOverride;
     $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
     $("#tokInfo").outerHTML=card(srmOk?"ok":"err","SRM TOKEN",
@@ -313,21 +319,25 @@ async function loadStatus(){
 }
 
 /* 01 check */
-$("#fCheck").onsubmit=async e=>{
-  e.preventDefault();const btn=e.submitter;busy(btn,1);
+async function doCheck(btn,force){
+  busy(btn,1);
   try{
-    const r=await api("check",{pid:$("#cPid").value.replace(/\D/g,"")});const s=r.summary;
+    const r=await api("check",{pid:$("#cPid").value.replace(/\D/g,""),force:!!force});const s=r.summary;
+    if(r.usageToday)$("#sUsage").textContent=r.usageToday.srm||0;
+    const cached=r.cachedAgeSec!=null?`<div class="note-quota" style="margin:0 0 10px">ผลนี้มาจากการตรวจเมื่อ ${Math.max(1,Math.round(r.cachedAgeSec/60))} นาทีที่แล้ว (ไม่ได้เรียก API ซ้ำ เพื่อประหยัดโควตา) <button class="btn" id="reCheck" style="padding:2px 10px;font-size:13px;margin-left:6px">ตรวจใหม่จาก สปสช.</button></div>`:"";
     $("#rCheck").innerHTML=card(s.deathDate?"err":"ok",s.deathDate?"เสียชีวิต":"พบสิทธิ",
-      `<div class="big-code">${esc(s.mainInscl||"—")} <span style="font-size:15px;font-family:var(--thai)">${esc(s.rightName||s.mainInsclName)}</span></div>`+
+      cached+`<div class="big-code">${esc(s.mainInscl||"—")} <span style="font-size:15px;font-family:var(--thai)">${esc(s.rightName||s.mainInsclName)}</span></div>`+
       (s.rightGroup?`<div style="margin:2px 0 10px"><span class="pill y">${esc(s.rightGroup)}</span> กลุ่ม${esc(s.rightGroupName)} <span class="hint">· ${esc(s.rightEn)}</span></div>`:"")+
       kv({"ชื่อ":s.name,"เลขบัตร":mask(s.pid),"วันเกิด":s.birthDate,"เสียชีวิต":s.deathDate,"สิทธิย่อย":[s.subInscl,s.subInsclName].filter(Boolean).join(" "),"สิทธิอื่นที่มี":s.otherFunds,
           "หน่วยบริการประจำ":[s.hospMainOp,s.hospMainOpName].filter(Boolean).join(" "),"หน่วยปฐมภูมิ":[s.hospSub,s.hospSubName].filter(Boolean).join(" "),
           "หน่วยรับส่งต่อ":[s.hospMain,s.hospMainName].filter(Boolean).join(" "),"จังหวัด":s.purchaseProvince,"paidModel":s.paidModel,
           "เริ่ม–หมดอายุ":[s.startDateTime,s.expireDateTime].filter(Boolean).map(thDate).join(" → "),"ตรวจเมื่อ":thDate(s.checkDate,1)})+
       (s.deathDate?"":`<div class="row"><button class="btn danger" id="toClose">ไปปิดสิทธิคนนี้ →</button></div>`),r.raw);
+    const rc=$("#reCheck");if(rc)rc.onclick=ev=>doCheck(ev.currentTarget,true);
     const t=$("#toClose");if(t)t.onclick=()=>{const f=$("#fClose");f.pid.value=s.pid;f.main_inscl.value=s.mainInscl||"";f.main_inscl.oninput({target:f.main_inscl});go("close");f.privilege_amount.focus()};
   }catch(err){$("#rCheck").innerHTML=errCard(err)}finally{busy(btn,0)}
-};
+}
+$("#fCheck").onsubmit=e=>{e.preventDefault();doCheck(e.submitter,false)};
 
 /* 02 close */
 const closeData=()=>{const d=Object.fromEntries(new FormData($("#fClose")));d.pid=d.pid.replace(/\D/g,"");d.main_inscl=(d.main_inscl||"").trim().toUpperCase();return d};
@@ -345,7 +355,15 @@ $("#bClose").onclick=async e=>{
   const ok=await confirmBox("ยืนยันกดปิดสิทธิ",`<p>ส่งข้อมูลปิดสิทธิไป สปสช. (<b>${ENV.toUpperCase()}</b>)</p>`+
     kv({"เลขบัตร":mask(d.pid),"รหัสบริการ":d.service_code,"เบิกได้":fmt(d.privilege_amount),"เบิกไม่ได้":fmt(d.paid_amount),"สิทธิ":d.main_inscl||"ตรวจจาก SRM"}),"กดปิดสิทธิ");
   if(!ok)return;busy(btn,1);
-  try{const r=await api("close",{...d,send:true,confirm:ok});
+  try{let r;
+    try{r=await api("close",{...d,send:true,confirm:ok})}
+    catch(err){
+      if(!/พบการปิดสิทธิสำเร็จแล้ว/.test(err.error||""))throw err;
+      busy(btn,0);
+      const again=await confirmBox("พบการปิดสิทธิซ้ำ",`<p style="color:var(--red);font-weight:700">${esc(err.error)}</p><p>ต้องการส่งซ้ำจริงหรือไม่?</p>`,"ยืนยันส่งซ้ำ");
+      if(!again){$("#rClose").innerHTML=errCard(err);return}
+      busy(btn,1);r=await api("close",{...d,send:true,confirm:again,allow_duplicate:"1"});
+    }
     $("#rClose").innerHTML=r.success?card("ok","ปิดสิทธิสำเร็จ",`<div class="hint">authenCode</div><div class="big-code">${esc(r.authenCode)}</div>`+
         kv({"seq":r.seq,"transactionId":r.transactionId,"สิทธิ":r.mainInsclCode})+`<div class="row"><button class="btn" id="cpy">คัดลอก authenCode</button></div>`,r)
       :card("err","ปิดสิทธิไม่สำเร็จ",`<b>${esc(r.dataError||"ไม่ทราบสาเหตุ")}</b>`+kv({"transactionId":r.transactionId}),r);

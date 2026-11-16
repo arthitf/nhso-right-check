@@ -8,7 +8,7 @@ version = "0.3.0"
 description = "ตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)"
 authors = [{ name = "arthit.f" }]
 requires-python = ">=3.10"
-dependencies = ["requests>=2.31"]
+dependencies = ["requests>=2.32.4"]
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]

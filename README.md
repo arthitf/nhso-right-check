@@ -108,6 +108,8 @@ run.bat rights ข้าราชการ
 
 ## ⚠ ก่อนใช้งานจริง
 
+- **โควตา API:** การตรวจสอบสิทธิผ่าน API ใช้โควตาของหน่วยบริการ การตรวจจำนวนมาก/ซ้ำซ้อนอาจทำให้โควตาหมด — ตรวจแบบกลุ่มแนะนำ **https://srmportal.nhso.go.th/ → ตรวจสอบสิทธิแบบกลุ่ม** (โปรแกรมมี cache ตรวจซ้ำ 10 นาที, ตัดเลขบัตรซ้ำ, จำกัดจำนวน batch) ดู [SECURITY.md](SECURITY.md)
+
 - **path ของ API ปิดสิทธิ**: เอกสาร v8.0 ระบุแค่ base URL ไม่ได้บอก path ค่าที่ตั้งไว้ (`api/nhso-claim-detail`, ยกเลิกใช้ `PUT`) ต้องเทียบกับ Swagger ก่อน ที่ https://test.nhso.go.th/nhsoendpoint/swagger-ui.html แล้วแก้ใน `.env` ได้ (`NHSO_CLAIM_PATH`, `NHSO_CANCEL_PATH`, `NHSO_CANCEL_METHOD`)
 - ทดสอบใน **Test Zone** ให้ผ่านก่อนเปลี่ยนเป็น `NHSO_ENV=prod`
 - TOKEN KEY ของ ENDPOINT ใช้ได้เฉพาะ HCODE ที่ยื่นขอเท่านั้น (ใช้แบบฟอร์มขอ TOKEN KEY ส่งไปที่ newauthen@nhso.go.th)

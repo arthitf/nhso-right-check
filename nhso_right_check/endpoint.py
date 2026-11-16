@@ -10,7 +10,7 @@ Authorization: Bearer <TOKEN KEY ที่ สปสช. ส่งให้ท�
 from __future__ import annotations
 
 import logging
-import random
+import secrets
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -61,7 +61,7 @@ def to_epoch_ms(dt: datetime | int | float | str | None) -> int:
 
 def new_transaction_id(hcode: str) -> str:
     """transactionId = HCODE + System Generated No (Unique)"""
-    return f"{hcode}{datetime.now():%y%m%d%H%M%S}{random.randint(0, 999):03d}"
+    return f"{hcode}{datetime.now():%y%m%d%H%M%S}{secrets.randbelow(1000):03d}"
 
 
 @dataclass

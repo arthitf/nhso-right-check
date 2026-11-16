@@ -162,7 +162,7 @@ def test_right_search_404(settings):
 # ---------- Endpoint ----------
 def _req(**kw):
     base = dict(pid=VALID_PID, claim_service_code="PG0060001", main_inscl_code="UCS",
-                privilege_amount="700", paid_amount="500", service_datetime="2026-11-16 08:30:00")
+                privilege_amount="700", paid_amount="500", service_datetime="2026-01-05 08:30:00")
     base.update(kw)
     return ClaimRequest(**base)
 
@@ -249,3 +249,51 @@ def test_payload_accepts_codes_from_rights_table(settings):
 def test_summary_explains_right():
     s = summarize(SRM_RESULT)
     assert s["rightGroup"] == "U" and s["rightGroupName"] and s["otherFunds"] == "SSS"
+
+
+# ---------- ความปลอดภัย / โควตา ----------
+def test_srm_cache_avoids_repeat_calls(settings):
+    settings.srm_access_token = "AAA"
+    calls = []
+    sess = FakeSession([FakeResp(200, SRM_RESULT), FakeResp(200, SRM_RESULT)])
+    c = SRMClient(settings, sess, on_call=calls.append)
+    c.right_search(VALID_PID)
+    c.right_search(VALID_PID)          # ภายในเวลา cache → ไม่เรียก API
+    assert len(sess.calls) == 1 and calls == ["srm"] and c.last_cached_age is not None
+    c.right_search(VALID_PID, force=True)
+    assert len(sess.calls) == 2
+
+
+def test_srm_429_message(settings):
+    settings.srm_access_token = "AAA"
+    with pytest.raises(SRMError, match="ตรวจสอบสิทธิแบบกลุ่ม"):
+        SRMClient(settings, FakeSession([FakeResp(429, "")])).right_search(VALID_PID)
+
+
+def test_csv_formula_injection_is_neutralised(tmp_path):
+    from nhso_right_check.cli import _write_csv
+    out = tmp_path / "o.csv"
+    _write_csv(str(out), [{"name": "=HYPERLINK(\"x\")", "n": "ok"}])
+    assert "'=HYPERLINK" in out.read_text(encoding="utf-8-sig")
+
+
+def test_duplicate_claim_guard(settings):
+    from nhso_right_check.cli import _close_one
+    st = ClaimStore(settings.db_path)
+    row = {"pid": VALID_PID, "service_code": "PG0060001", "privilege_amount": "700", "main_inscl": "UCS",
+           "service_datetime": "2026-01-05 08:30:00"}
+    p = build_claim_payload(_req(), settings)
+    st.log(env="test", action="CLAIM", request=p, response={"seq": 1, "authenCode": "PP1"}, success=True)
+    with pytest.raises(ValidationError, match="ปิดสิทธิสำเร็จแล้ว"):
+        _close_one(row, settings, None, None, st, send=False)
+    res = _close_one({**row, "allow_duplicate": "1"}, settings, None, None, st, send=False)
+    assert res["dryRun"]
+    st.log(env="test", action="CANCEL", request={"transactionId": p["transactionId"]}, response={"status": "Y"},
+           success=True)
+    assert _close_one(row, settings, None, None, st, send=False)["dryRun"]  # ยกเลิกแล้ว ส่งใหม่ได้
+
+
+def test_usage_counter(settings):
+    st = ClaimStore(settings.db_path)
+    st.count_call("srm"); st.count_call("srm")
+    assert st.usage_today()["srm"] == 2

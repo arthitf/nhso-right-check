@@ -149,11 +149,14 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
 
 <section id="use" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
   <h2><b>04</b>วิธีใช้งาน</h2>
+<div class="note warn"><b>ข้อควรระวังการใช้งาน API:</b> การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำซ้อน อาจทำให้โควตาหมดและกระทบงานบริการ หากต้องตรวจสอบสิทธิเป็นกลุ่ม แนะนำใช้ <a href="https://srmportal.nhso.go.th/">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
   <h3>01 ตรวจสอบสิทธิ</h3>
   <ol class="steps">
     <li>กรอกเลขบัตรประชาชน 13 หลัก โปรแกรมตรวจ check digit ให้ด้วย</li>
     <li>กด <b>ตรวจสอบสิทธิ</b> จะเห็นสิทธิหลัก (UCS / OFC / SSS / LGO …) สิทธิย่อย หน่วยบริการประจำ หน่วยปฐมภูมิ หน่วยรับส่งต่อ และสถานะเสียชีวิต</li>
     <li>กด <b>ไปปิดสิทธิคนนี้ →</b> เพื่อนำเลขบัตรและสิทธิไปกรอกในหน้าปิดสิทธิให้อัตโนมัติ</li>
+    <li>กด <b>▸ ดูข้อมูลทั้งหมดที่ สปสช. ส่งกลับ</b> เพื่อดูทุกค่าเป็นตารางภาษาไทย แยกการ์ดตามสิทธิแต่ละกองทุน</li>
+    <li>ถ้าตรวจคนเดิมซ้ำภายใน 10 นาที โปรแกรมจะใช้ผลเดิมเพื่อประหยัดโควตา (กด <b>ตรวจใหม่จาก สปสช.</b> ได้ถ้าจำเป็น) แถบล่างจะแสดงจำนวนครั้งที่ตรวจวันนี้</li>
   </ol>
   <h3>02 ปิดสิทธิ</h3>
   <ol class="steps">
@@ -163,6 +166,7 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
     <li>ถ้าสำเร็จจะได้ <b>authenCode</b> (กดคัดลอกได้) พร้อม <b>seq</b> และ <b>transactionId</b> ทุกรายการถูกบันทึกในแท็บประวัติ</li>
   </ol>
   <div class="note warn">ถ้าขึ้น <b>timeout</b> ตอนปิดสิทธิ อย่าเพิ่งกดซ้ำ เพราะฝั่ง สปสช. อาจบันทึกไปแล้ว ให้ตรวจสอบก่อน</div>
+  <div class="note tip">ถ้าเคยปิดสิทธิสำเร็จแล้ว (คนเดิม รหัสบริการเดิม วันเดียวกัน) โปรแกรมจะเตือนและให้ยืนยันก่อนส่งซ้ำ</div>
   <h3>03 ยกเลิกปิดสิทธิ</h3>
   <p>ใส่ <b>transactionId</b> แล้วกด <span class="btnlike">กดยกเลิกปิดสิทธิ</span> ถ้าไม่ใส่ seq โปรแกรมจะหาจากประวัติให้เอง (ระบบส่ง <code>paymentStatus = CANCEL</code>)</p>
   <h3>04 ประวัติ</h3>
@@ -173,7 +177,8 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
 
 <section id="batch" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
   <h2><b>05</b>ทำทีละหลายคน (Command line)</h2>
-  <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม</p>
+<div class="note warn"><b>ข้อควรระวังการใช้งาน API:</b> การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำซ้อน อาจทำให้โควตาหมดและกระทบงานบริการ หากต้องตรวจสอบสิทธิเป็นกลุ่ม แนะนำใช้ <a href="https://srmportal.nhso.go.th/">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
+  <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม โปรแกรมจะตัดเลขบัตรซ้ำออกให้ และถ้ารายชื่อมีจำนวนมาก จะให้ยืนยันก่อน (<code>--allow-large</code>)</p>
 <pre><span class="c"># ตรวจสอบสิทธิหลายคน (CSV มีคอลัมน์ pid)</span>
 nhso-right-check check-batch examples/check_input.csv -o check_result.csv
 
@@ -243,6 +248,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <tr><td>พบการบันทึก transactionId ซ้ำ</td><td>รายการนี้เคยส่งแล้ว ให้ดูในแท็บประวัติ</td></tr>
     <tr><td>serviceDateTime ไม่เกินวันเวลาปัจจุบัน</td><td>ตรวจวันที่ ต้องเป็นปี ค.ศ. และห้ามเป็นเวลาในอนาคต</td></tr>
     <tr><td>เชื่อมต่อไม่ได้ / ProxyError</td><td>ตรวจอินเทอร์เน็ต, proxy หรือ VPN ของหน่วยงาน</td></tr>
+    <tr><td>HTTP 429 / เรียกใช้งานมากเกินไป</td><td>หยุดสักพัก และใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่มสำหรับรายชื่อจำนวนมาก</td></tr>
     <tr><td>Port 8765 ไม่ว่าง</td><td>โปรแกรมจะหา port ถัดไปให้เอง (8766, 8767 …)</td></tr>
   </table>
 </div></section>
@@ -255,6 +261,12 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <li>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM Version 8.0 (07/12/2023)</li>
     <li>แบบฟอร์มขอ TOKEN KEY ระบบ NHSO ENDPOINT (Production Zone) — <a href="https://www.nhso.go.th/downloads">nhso.go.th/downloads</a></li>
     <li>คู่มือ NHSO Secure SmartCard Agent v2.0 (มี.ค. 2569)</li>
+  </ul>
+  <h3>ความปลอดภัย &amp; ข้อมูลส่วนบุคคล</h3>
+  <ul>
+    <li>โปรแกรมเปิดเฉพาะในเครื่องตัวเอง (127.0.0.1) เครื่องอื่นในเครือข่ายเข้าไม่ได้</li>
+    <li>ไฟล์ <code>.env</code>, token และไฟล์ประวัติ <code>.sqlite3</code> เป็นความลับ ห้ามส่งต่อหรืออัปขึ้น cloud</li>
+    <li>ไฟล์ CSV ผลลัพธ์มีข้อมูลส่วนบุคคล (PDPA) ลบเมื่อใช้งานเสร็จ</li>
   </ul>
   <p style="font-size:13px;color:var(--mute)">โปรแกรมนี้เป็นตัวอย่างพื้นฐานที่ทำตามคู่มือข้างต้น ก่อนใช้งานจริงควรทดสอบใน Test Zone และตรวจสอบกับเอกสารฉบับล่าสุดของ สปสช. ทุกครั้ง</p>
 </div></section>

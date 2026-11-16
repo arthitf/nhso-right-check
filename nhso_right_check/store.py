@@ -28,6 +28,12 @@ CREATE TABLE IF NOT EXISTS claim_log (
 );
 CREATE INDEX IF NOT EXISTS ix_claim_trans ON claim_log(transaction_id);
 CREATE INDEX IF NOT EXISTS ix_claim_pid ON claim_log(pid);
+CREATE TABLE IF NOT EXISTS api_usage (
+    day   TEXT NOT NULL,
+    kind  TEXT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (day, kind)
+);
 """
 
 
@@ -62,6 +68,35 @@ class ClaimStore:
             "SELECT * FROM claim_log WHERE action='CLAIM' AND success=1 AND transaction_id=? ORDER BY id DESC LIMIT 1",
             (transaction_id,),
         ).fetchone()
+
+    def count_call(self, kind: str) -> None:
+        """นับจำนวนการเรียก API จริงต่อวัน (ไว้ดูการใช้โควตา)"""
+        day = datetime.now().strftime("%Y-%m-%d")
+        self.conn.execute("INSERT INTO api_usage(day, kind, count) VALUES (?,?,1) "
+                          "ON CONFLICT(day, kind) DO UPDATE SET count = count + 1", (day, kind))
+        self.conn.commit()
+
+    def usage_today(self) -> dict:
+        day = datetime.now().strftime("%Y-%m-%d")
+        return {r["kind"]: r["count"] for r in
+                self.conn.execute("SELECT kind, count FROM api_usage WHERE day=?", (day,))}
+
+    def find_duplicate(self, pid: str, service_code: str, service_ms: int) -> sqlite3.Row | None:
+        """หาการปิดสิทธิสำเร็จที่ซ้ำ: คนเดิม + รหัสบริการเดิม + วันที่รับบริการเดียวกัน (ยังไม่ถูกยกเลิก)"""
+        day = datetime.fromtimestamp(service_ms / 1000).strftime("%Y-%m-%d")
+        for r in self.conn.execute(
+            "SELECT * FROM claim_log WHERE action='CLAIM' AND success=1 AND pid=? AND claim_service=? "
+            "ORDER BY id DESC", (pid, service_code)
+        ):
+            req = json.loads(r["request_json"] or "{}")
+            ms = req.get("serviceDateTime")
+            if ms and datetime.fromtimestamp(ms / 1000).strftime("%Y-%m-%d") == day:
+                cancelled = self.conn.execute(
+                    "SELECT 1 FROM claim_log WHERE action='CANCEL' AND success=1 AND transaction_id=?",
+                    (r["transaction_id"],)).fetchone()
+                if not cancelled:
+                    return r
+        return None
 
     def recent(self, limit: int = 20) -> list[sqlite3.Row]:
         return self.conn.execute("SELECT * FROM claim_log ORDER BY id DESC LIMIT ?", (limit,)).fetchall()

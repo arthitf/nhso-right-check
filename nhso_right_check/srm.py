@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -20,7 +22,7 @@ from .validation import mask_pid, require_pid
 log = logging.getLogger(__name__)
 
 # ไฟล์เก็บ token ที่ผู้ใช้วางเอง (ไม่ commit ขึ้น GitHub — อยู่ใน .gitignore)
-MANUAL_TOKEN_FILE = ".srm_token.txt"
+MANUAL_TOKEN_FILE = ".srm_token.txt"  # nosec B105 - ชื่อไฟล์ ไม่ใช่รหัสผ่าน
 
 
 class SRMError(RuntimeError):
@@ -67,10 +69,13 @@ def parse_token_text(text: str) -> TokenPair:
 
 
 class SRMClient:
-    def __init__(self, settings: Settings, session: requests.Session | None = None):
+    def __init__(self, settings: Settings, session: requests.Session | None = None, on_call=None):
         self.s = settings
         self.http = session or requests.Session()
         self._token: TokenPair | None = None
+        self._cache: dict[str, tuple[float, dict]] = {}
+        self.on_call = on_call          # callback นับจำนวนการเรียก API จริง (สำหรับเตือนโควตา)
+        self.last_cached_age: float | None = None
 
     # ---------- token ----------
     def _load_token(self) -> TokenPair:
@@ -123,9 +128,20 @@ class SRMClient:
         return pair
 
     # ---------- API ----------
-    def right_search(self, pid: str) -> dict:
-        """ตรวจสอบสิทธิปัจจุบันของผู้รับบริการ คืนค่า JSON ตาม spec"""
+    def right_search(self, pid: str, force: bool = False) -> dict:
+        """ตรวจสอบสิทธิปัจจุบันของผู้รับบริการ คืนค่า JSON ตาม spec
+
+        ถ้าเพิ่งตรวจคนเดิมภายใน srm_cache_seconds จะคืนผลเดิม ไม่เรียก API ซ้ำ (ลดการใช้โควตาหน่วยบริการ)
+        """
         pid = require_pid(pid)
+        self.last_cached_age = None
+        hit = self._cache.get(pid)
+        if hit and not force and self.s.srm_cache_seconds > 0:
+            age = time.time() - hit[0]
+            if age < self.s.srm_cache_seconds:
+                self.last_cached_age = age
+                log.info("SRM right-search %s -> cache (%.0fs)", mask_pid(pid), age)
+                return hit[1]
         url = self.s.srm_api_base.rstrip("/") + self.s.srm_rights_path
         for attempt in (1, 2):
             try:
@@ -145,8 +161,15 @@ class SRMClient:
                 continue
             break
         log.info("SRM right-search %s -> HTTP %s", mask_pid(pid), r.status_code)
+        if self.on_call:
+            self.on_call("srm")
+        if r.status_code == 429:
+            raise SRMError("ระบบ สปสช. แจ้งว่าเรียกใช้งานถี่/มากเกินไป (HTTP 429) — หยุดสักพัก "
+                           "และใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม สำหรับรายชื่อจำนวนมาก", 429, r.text)
         if r.status_code == 200:
-            return r.json()
+            data = r.json()
+            self._cache[pid] = (time.time(), data)
+            return data
         messages = {
             400: "ข้อมูลไม่ถูกต้อง (เช่น pid ต้องเป็นตัวเลข 13 หลัก)",
             401: "token ไม่ถูกต้องหรือหมดอายุ — Login SRM Portal ใหม่",
@@ -204,3 +227,13 @@ def summarize(result: dict) -> dict:
         "purchaseProvince": _name(f.get("purchaseProvince")),
         "fundCount": len(result.get("funds") or []),
     }
+
+
+def write_private(path: str | Path, text: str) -> None:
+    """เขียนไฟล์ความลับ (token) ให้อ่านได้เฉพาะเจ้าของไฟล์ (macOS/Linux: chmod 600)"""
+    p = Path(path)
+    p.write_text(text, encoding="utf-8")
+    try:
+        os.chmod(p, 0o600)
+    except OSError:
+        pass

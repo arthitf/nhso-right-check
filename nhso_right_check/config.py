@@ -65,6 +65,8 @@ class Settings:
     # --- ทั่วไป ---
     timeout: float = 30.0
     batch_delay: float = 0.5                # หน่วงระหว่าง request ในโหมด batch (วินาที)
+    srm_cache_seconds: int = 600            # ตรวจคนเดิมซ้ำภายในเวลานี้ ใช้ผลเดิม ไม่เรียก API ซ้ำ (ประหยัดโควตา)
+    batch_limit: int = 300                  # check-batch เกินจำนวนนี้ต้องยืนยัน (--allow-large)
     db_path: Path = Path("nhso_right_check_log.sqlite3")
 
     @classmethod
@@ -92,7 +94,9 @@ class Settings:
         s.source_id = g("SOURCE_ID", "") or s.hcode
         s.recorder_pid = g("RECORDER_PID", "")
         s.timeout = float(g("HTTP_TIMEOUT", s.timeout))
-        s.batch_delay = float(g("BATCH_DELAY", s.batch_delay))
+        s.batch_delay = max(0.2, float(g("BATCH_DELAY", s.batch_delay)))
+        s.srm_cache_seconds = int(g("SRM_CACHE_SECONDS", s.srm_cache_seconds))
+        s.batch_limit = int(g("BATCH_LIMIT", s.batch_limit))
         if g("DB_PATH"):
             s.db_path = Path(g("DB_PATH"))
         return s

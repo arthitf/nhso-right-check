@@ -40,6 +40,13 @@ def _read_csv(path: str) -> list[dict]:
         return [{(k or "").strip(): (v or "").strip() for k, v in row.items()} for row in csv.DictReader(f)]
 
 
+def _safe_cell(v):
+    """กัน CSV/Excel formula injection: ค่าที่ขึ้นต้นด้วย = + - @ ให้ใส่ ' นำหน้า"""
+    if isinstance(v, str) and v[:1] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + v
+    return v
+
+
 def _write_csv(path: str, rows: list[dict]) -> None:
     if not rows:
         return
@@ -49,7 +56,7 @@ def _write_csv(path: str, rows: list[dict]) -> None:
     with open(path, "w", newline="", encoding="utf-8-sig") as f:  # utf-8-sig ให้ Excel อ่านภาษาไทยได้
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
-        w.writerows(rows)
+        w.writerows({k: _safe_cell(v) for k, v in r.items()} for r in rows)
 
 
 # ---------------- token ----------------
@@ -59,7 +66,8 @@ def cmd_token(a, s: Settings) -> int:
         print("วาง access_token (หรือเนื้อหาทั้งไฟล์ token.txt) แล้วกด Enter:")
         text = getpass.getpass("token: ") if not a.visible else input("token: ")
         pair = parse_token_text(text)
-        manual.write_text(text.strip(), encoding="utf-8")
+        from .srm import write_private
+        write_private(manual, text.strip())
         print(f"บันทึกแล้วที่ {manual.resolve()} (ยาว {len(pair.access_token)} ตัวอักษร)")
         return 0
     if a.action == "clear":
@@ -79,15 +87,37 @@ def cmd_token(a, s: Settings) -> int:
 
 
 # ---------------- ตรวจสอบสิทธิ ----------------
+QUOTA_NOTE = ("⚠ การตรวจสอบสิทธิผ่าน API ใช้โควตาของหน่วยบริการ การตรวจจำนวนมากหรือซ้ำซ้อน อาจทำให้โควตาหมด\n"
+              "  ถ้าต้องตรวจเป็นกลุ่ม แนะนำใช้ https://srmportal.nhso.go.th/ → ตรวจสอบสิทธิแบบกลุ่ม")
+
+
+def _srm_with_usage(s: Settings) -> SRMClient:
+    store = ClaimStore(s.db_path)
+    return SRMClient(s, on_call=store.count_call)
+
+
 def cmd_check(a, s: Settings) -> int:
-    res = SRMClient(s).right_search(a.pid)
+    res = _srm_with_usage(s).right_search(a.pid)
     _print_json(res if a.raw else summarize(res))
     return 0
 
 
 def cmd_check_batch(a, s: Settings) -> int:
-    srm = SRMClient(s)
-    rows = _read_csv(a.input)
+    srm = _srm_with_usage(s)
+    raw_rows = _read_csv(a.input)
+    seen, rows = set(), []
+    for r in raw_rows:  # ตัดเลขบัตรซ้ำ ไม่เรียก API ซ้ำ
+        pid = (r.get("pid") or "").strip()
+        if pid and pid not in seen:
+            seen.add(pid)
+            rows.append(r)
+    print(QUOTA_NOTE)
+    if len(raw_rows) != len(rows):
+        print(f"ตัดเลขบัตรซ้ำ/ว่างออก {len(raw_rows) - len(rows)} แถว เหลือ {len(rows)} คน")
+    if len(rows) > s.batch_limit and not a.allow_large:
+        print(f"\nรายชื่อมี {len(rows)} คน มากกว่าที่ตั้งไว้ ({s.batch_limit}) — แนะนำตรวจผ่าน SRM Portal แบบกลุ่มแทน\n"
+              "ถ้ายืนยันจะตรวจผ่าน API ให้ใส่ --allow-large")
+        return 1
     out = []
     for i, r in enumerate(rows, 1):
         pid = r.get("pid", "")
@@ -131,6 +161,12 @@ def _close_one(r: dict, s: Settings, srm: SRMClient | None, ep: EndpointClient, 
         transaction_id=r.get("transaction_id", ""),
     )
     payload = build_claim_payload(req, s)
+    if store is not None and not str(r.get("allow_duplicate", "")).lower() in ("1", "true", "y", "yes"):
+        dup = store.find_duplicate(payload["pid"], payload["claimServiceCode"], payload["serviceDateTime"])
+        if dup:
+            raise ValidationError(
+                f"พบการปิดสิทธิสำเร็จแล้ว (คนเดิม รหัสบริการเดิม วันเดียวกัน) authenCode={dup['authen_code']} "
+                f"transactionId={dup['transaction_id']} — ถ้าตั้งใจส่งซ้ำจริง ให้ใช้ --allow-duplicate")
     if not send:
         return {"dryRun": True, "payload": payload}
     resp = ep.claim(payload)
@@ -151,12 +187,12 @@ def cmd_close(a, s: Settings) -> int:
     if not _confirm_prod(s, a.send, a.yes):
         print("ยกเลิก")
         return 1
-    store = ClaimStore(s.db_path) if a.send else None
-    row = {"pid": a.pid, "service_code": a.service, "privilege_amount": a.privilege, "paid_amount": a.paid,
+    store = ClaimStore(s.db_path)
+    row = {"allow_duplicate": "1" if a.allow_duplicate else "", "pid": a.pid, "service_code": a.service, "privilege_amount": a.privilege, "paid_amount": a.paid,
            "total_amount": a.total, "service_datetime": a.service_datetime, "invoice_datetime": a.invoice_datetime,
            "visit_number": a.vn or "", "main_inscl": a.main_inscl or "", "department_code": a.dept_code or "",
            "department_name": a.dept_name or ""}
-    srm = None if a.main_inscl else SRMClient(s)
+    srm = None if a.main_inscl else SRMClient(s, on_call=store.count_call)
     result = _close_one(row, s, srm, EndpointClient(s), store, a.send)
     _print_json(result)
     if result.get("dryRun"):
@@ -170,8 +206,9 @@ def cmd_close_batch(a, s: Settings) -> int:
         print("ยกเลิก")
         return 1
     rows = _read_csv(a.input)
-    srm, ep = SRMClient(s), EndpointClient(s)
-    store = ClaimStore(s.db_path) if a.send else None
+    store = ClaimStore(s.db_path)
+    srm, ep = SRMClient(s, on_call=store.count_call), EndpointClient(s)
+    print(QUOTA_NOTE)
     out = []
     for i, r in enumerate(rows, 1):
         try:
@@ -249,6 +286,7 @@ def build_parser() -> argparse.ArgumentParser:
     cb = sub.add_parser("check-batch", help="ตรวจสอบสิทธิจาก CSV (คอลัมน์ pid)")
     cb.add_argument("input")
     cb.add_argument("-o", "--output", default="check_result.csv")
+    cb.add_argument("--allow-large", action="store_true", help="ยืนยันตรวจรายชื่อจำนวนมากผ่าน API")
     cb.set_defaults(func=cmd_check_batch)
 
     cl = sub.add_parser("close", help="ปิดสิทธิรายคน")
@@ -264,6 +302,7 @@ def build_parser() -> argparse.ArgumentParser:
     cl.add_argument("--dept-code")
     cl.add_argument("--dept-name")
     cl.add_argument("--send", action="store_true", help="ส่งจริง (ไม่ใส่ = dry-run)")
+    cl.add_argument("--allow-duplicate", action="store_true", help="ยอมส่งซ้ำ (คนเดิม รหัสบริการเดิม วันเดียวกัน)")
     cl.add_argument("--yes", action="store_true", help="ไม่ต้องถามยืนยัน production")
     cl.set_defaults(func=cmd_close)
 

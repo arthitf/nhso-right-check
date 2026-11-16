@@ -18,7 +18,7 @@ from pathlib import Path
 from . import __author__, __version__
 from .config import Settings
 from .endpoint import EndpointClient, EndpointError, is_success
-from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, parse_token_text, summarize
+from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, parse_token_text, summarize, write_private
 from .rights import all_rights, groups
 from .store import ClaimStore
 from .validation import ValidationError, mask_pid
@@ -31,9 +31,9 @@ class App:
     def __init__(self, settings: Settings):
         self.s = settings
         self.session = secrets.token_urlsafe(24)
-        self.srm = SRMClient(settings)
-        self.ep = EndpointClient(settings)
         self.store = ClaimStore(settings.db_path)
+        self.srm = SRMClient(settings, on_call=self.store.count_call)
+        self.ep = EndpointClient(settings)
 
     # ---------- actions ----------
     def status(self, _body: dict) -> dict:
@@ -47,12 +47,15 @@ class App:
             "srmToken": info, "srmTokenOverride": bool(self.s.srm_access_token),
             "endpointToken": bool(self.s.endpoint_token), "recorder": bool(self.s.recorder_pid),
             "tokenFile": str(self.s.srm_token_file),
+            "usageToday": self.store.usage_today(), "cacheSeconds": self.s.srm_cache_seconds,
         }
 
     def check(self, b: dict) -> dict:
         self.srm.reload_token() if not self.s.srm_access_token else None
-        raw = self.srm.right_search(b.get("pid", ""))
-        return {"summary": summarize(raw), "raw": raw}
+        raw = self.srm.right_search(b.get("pid", ""), force=bool(b.get("force")))
+        age = self.srm.last_cached_age
+        return {"summary": summarize(raw), "raw": raw,
+                "cachedAgeSec": None if age is None else round(age), "usageToday": self.store.usage_today()}
 
     def close(self, b: dict) -> dict:
         from .cli import _close_one  # ใช้ logic เดียวกับ CLI
@@ -62,7 +65,8 @@ class App:
             raise ValidationError("Production ต้องพิมพ์ YES เพื่อยืนยัน")
         row = {k: str(b.get(k, "") or "") for k in (
             "pid", "service_code", "privilege_amount", "paid_amount", "total_amount", "service_datetime",
-            "invoice_datetime", "visit_number", "main_inscl", "department_code", "department_name", "transaction_id")}
+            "invoice_datetime", "visit_number", "main_inscl", "department_code", "department_name", "transaction_id",
+            "allow_duplicate")}
         row["service_datetime"] = row["service_datetime"].replace("T", " ")
         row["invoice_datetime"] = row["invoice_datetime"].replace("T", " ")
         srm = None if row["main_inscl"] else self.srm
@@ -103,7 +107,7 @@ class App:
             self.srm.reload_token() if Path(self.s.srm_token_file).is_file() else None
             return {"cleared": True}
         pair = parse_token_text(text)
-        Path(MANUAL_TOKEN_FILE).write_text(text, encoding="utf-8")
+        write_private(MANUAL_TOKEN_FILE, text)
         self.srm._token = pair
         return {"saved": True, "length": len(pair.access_token), "refresh": bool(pair.refresh_token)}
 
@@ -129,6 +133,8 @@ def make_handler(app: App, port: int):
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("Content-Security-Policy",
                              "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'")
             self.end_headers()
@@ -160,13 +166,19 @@ def make_handler(app: App, port: int):
                 return self._json(404, {"error": "ไม่พบคำสั่ง"})
             try:
                 n = int(self.headers.get("Content-Length") or 0)
+                if n > 1_000_000:  # กัน request ใหญ่ผิดปกติ
+                    return self._json(413, {"error": "ข้อมูลใหญ่เกินไป"})
+                if n and "application/json" not in (self.headers.get("Content-Type") or ""):
+                    return self._json(415, {"error": "ต้องเป็น JSON"})
                 body = json.loads(self.rfile.read(n) or b"{}") if n else {}
+                if not isinstance(body, dict):
+                    return self._json(400, {"error": "รูปแบบข้อมูลไม่ถูกต้อง"})
                 self._json(200, fn(app, body))
             except (SRMError, EndpointError, ValidationError) as e:
                 self._json(400, {"error": str(e), "detail": getattr(e, "body", None)})
             except Exception as e:  # noqa: BLE001
                 log.exception("UI error")
-                self._json(500, {"error": f"{type(e).__name__}: {e}"})
+                self._json(500, {"error": f"เกิดข้อผิดพลาดภายในโปรแกรม ({type(e).__name__})"})
 
     return Handler
 
