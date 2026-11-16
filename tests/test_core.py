@@ -330,3 +330,15 @@ def test_web_settings_roundtrip(tmp_path, monkeypatch):
     assert r2["endpointTokenSet"] and app.s.recorder_pid == RECORDER
     with pytest.raises(ValidationError):
         app.save_settings({"env": "prod", "hcode": "123"})
+
+
+def test_open_mode_setting(tmp_path, monkeypatch):
+    from nhso_right_check.web import App
+    monkeypatch.chdir(tmp_path)
+    for k in ("NHSO_ENV", "OPEN_MODE"):
+        monkeypatch.delenv(k, raising=False)
+    (tmp_path / ".env").write_text("NHSO_ENV=test\n", encoding="utf-8")
+    app = App(Settings.load(tmp_path / ".env"))
+    assert app.settings({})["openMode"] == "window"
+    app.save_settings({"openMode": "browser"})
+    assert app.s.open_mode == "browser" and "OPEN_MODE=browser" in (tmp_path / ".env").read_text()

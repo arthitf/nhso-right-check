@@ -31,6 +31,7 @@ class App:
     def __init__(self, settings: Settings):
         self.s = settings
         self.session = secrets.token_urlsafe(24)
+        self.httpd = None
         self.store = ClaimStore(settings.db_path)
         self.srm = SRMClient(settings, on_call=self.store.count_call)
         self.ep = EndpointClient(settings)
@@ -57,7 +58,7 @@ class App:
                 "recorderPid": mask_pid(self.s.recorder_pid) if self.s.recorder_pid else "",
                 "recorderSet": bool(self.s.recorder_pid),
                 "endpointTokenSet": bool(t), "endpointTokenTail": t[-4:] if len(t) >= 8 else "",
-                "envFile": str(Path(self.s.env_file).resolve())}
+                "envFile": str(Path(self.s.env_file).resolve()), "openMode": self.s.open_mode}
 
     def save_settings(self, b: dict) -> dict:
         updates: dict[str, str] = {}
@@ -65,6 +66,8 @@ class App:
         if env not in ("test", "prod"):
             raise ValidationError("ระบบต้องเป็น test หรือ prod")
         updates["NHSO_ENV"] = env
+        if b.get("openMode") in ("window", "browser"):
+            updates["OPEN_MODE"] = b["openMode"]
         if (b.get("hcode") or "").strip():
             updates["HCODE"] = require_hcode(b["hcode"])
         if "sourceId" in b:
@@ -92,6 +95,12 @@ class App:
         self.s.srm_access_token = override
         self.srm = SRMClient(self.s, on_call=self.store.count_call)
         self.ep = EndpointClient(self.s)
+
+    def quit(self, _b: dict) -> dict:
+        """ปิดโปรแกรม (ใช้ในโหมดเบราว์เซอร์ เพราะปิดแท็บแล้วโปรแกรมยังทำงานอยู่)"""
+        if self.httpd is not None:
+            threading.Timer(0.3, self.httpd.shutdown).start()
+        return {"bye": True}
 
     def check(self, b: dict) -> dict:
         self.srm.reload_token() if not self.s.srm_access_token else None
@@ -157,7 +166,7 @@ class App:
     def rights(self, _b: dict) -> dict:
         return {"rights": all_rights(), "groups": groups()}
 
-    ROUTES = {"settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
+    ROUTES = {"quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
               "history": history, "token": set_token}
 
 
@@ -275,6 +284,7 @@ def serve(settings: Settings, port: int = 8765, open_browser: bool = True, windo
             continue
     if httpd is None:
         raise SystemExit("ไม่มี port ว่าง")
+    app.httpd = httpd
     url = f"http://127.0.0.1:{port}/"
     print(f"ตรวจสอบสิทธิ สปสช. v{__version__} — พัฒนาโดย {__author__}")
     print(f"เปิดหน้าจอที่ {url}   (ปิดหน้าต่างนี้ = ปิดโปรแกรม / กด Ctrl+C)")

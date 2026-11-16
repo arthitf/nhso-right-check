@@ -69,6 +69,7 @@ class Settings:
     batch_limit: int = 300                  # check-batch เกินจำนวนนี้ต้องยืนยัน (--allow-large)
     db_path: Path = Path("nhso_right_check_log.sqlite3")
     env_file: Path = Path(".env")
+    open_mode: str = "window"               # window = หน้าต่างโปรแกรม, browser = เปิดในเบราว์เซอร์
 
     @classmethod
     def load(cls, env_file: str | os.PathLike | None = ".env") -> "Settings":
@@ -100,6 +101,7 @@ class Settings:
         s.batch_delay = max(0.2, float(g("BATCH_DELAY", s.batch_delay)))
         s.srm_cache_seconds = int(g("SRM_CACHE_SECONDS", s.srm_cache_seconds))
         s.batch_limit = int(g("BATCH_LIMIT", s.batch_limit))
+        s.open_mode = "browser" if (g("OPEN_MODE", "window") or "").lower() == "browser" else "window"
         if g("DB_PATH"):
             s.db_path = Path(g("DB_PATH"))
         return s

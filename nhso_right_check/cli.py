@@ -350,7 +350,7 @@ def cmd_rights(a, s: Settings) -> int:
 
 def cmd_ui(a, s: Settings) -> int:
     from .web import serve
-    serve(s, port=a.port, open_browser=not a.no_browser, window=not a.browser)
+    serve(s, port=a.port, open_browser=not a.no_browser, window=not a.browser and s.open_mode == "window")
     return 0
 
 

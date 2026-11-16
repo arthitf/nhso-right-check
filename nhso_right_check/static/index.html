@@ -212,6 +212,19 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
         <input name="endpointToken" type="password" class="mono" autocomplete="off" placeholder="วาง TOKEN KEY — เว้นว่าง = ใช้ค่าเดิม"></label>
       <div class="row"><button class="btn go">บันทึกการตั้งค่า</button><span class="hint" id="envPath"></span></div>
     </div></form>
+
+    <h3 class="sec" style="margin-top:26px"><span class="num">C</span>การเปิดโปรแกรม</h3>
+    <form id="fOpen" class="card"><div class="body">
+      <div class="row" style="margin-top:0">
+        <label style="flex:1;min-width:260px">เปิดแบบ
+          <select name="openMode">
+            <option value="window">หน้าต่างโปรแกรม — เหมือนโปรแกรมทั่วไป ปิดหน้าต่าง = ปิดโปรแกรม</option>
+            <option value="browser">เบราว์เซอร์ — เปิดเป็นแท็บ สลับกับ SRM Portal ได้ง่าย</option>
+          </select></label>
+        <button class="btn go" style="align-self:flex-end">บันทึก</button>
+      </div>
+      <div class="hint" style="margin-top:6px">มีผลเมื่อเปิดโปรแกรมครั้งถัดไป · โหมดเบราว์เซอร์ ปิดโปรแกรมด้วยปุ่ม “ปิดโปรแกรม” ที่แถบล่าง</div>
+    </div></form>
   </section>
 
   <div class="status">
@@ -221,6 +234,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <span title="จำนวนครั้งที่เรียก API ตรวจสอบสิทธิจริงวันนี้ (จากเครื่องนี้)">ตรวจวันนี้ <b id="sUsage">0</b> ครั้ง</span>
     <span class="sp"></span>
     <span>พัฒนาโดย <b>arthit.f</b> · v{{VERSION}}</span>
+    <button id="bQuit" class="btn" style="display:none;padding:0 10px;font:600 12px var(--thai);box-shadow:2px 2px 0 var(--line)">ปิดโปรแกรม</button>
   </div>
  </div>
 </div>
@@ -312,11 +326,11 @@ function card(kind,head,html,raw){
 }
 const errCard=e=>card("err","ERROR",`<b>${esc(e.error||e)}</b>${e.detail?`<pre style="margin-top:8px">${esc(typeof e.detail==="string"?e.detail:JSON.stringify(e.detail,null,2))}</pre>`:""}`);
 const kv=o=>`<dl class="kv">${Object.entries(o).filter(([,v])=>v!==""&&v!=null).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
-function confirmBox(title,html,okLabel="ยืนยัน"){
+function confirmBox(title,html,okLabel="ยืนยัน",needYes=ENV==="prod"){
   return new Promise(res=>{
     const d=$("#dlg");$("#dlgTitle").textContent=title;$("#dlgBody").innerHTML=html;
-    $("#dlgProd").style.display=ENV==="prod"?"block":"none";$("#dlgYes").value="";$("#dlgOk").textContent=okLabel;
-    $("#dlgOk").onclick=()=>{if(ENV==="prod"&&$("#dlgYes").value!=="YES"){$("#dlgYes").focus();return}d.close();res(ENV==="prod"?"YES":"ok")};
+    $("#dlgProd").style.display=needYes?"block":"none";$("#dlgYes").value="";$("#dlgOk").textContent=okLabel;
+    $("#dlgOk").onclick=()=>{if(needYes&&$("#dlgYes").value!=="YES"){$("#dlgYes").focus();return}d.close();res(needYes?"YES":"ok")};
     $("#dlgNo").onclick=()=>{d.close();res(null)};d.showModal();
   });
 }
@@ -453,16 +467,30 @@ async function loadSettings(){
     const ok=c.endpointTokenSet&&c.hcode&&c.recorderSet;
     $("#setState").innerHTML=ok?'<span class="pill y">พร้อมปิดสิทธิ</span>':'<span class="pill n">ยังตั้งค่าไม่ครบ</span>';
     $("#envPath").textContent="บันทึกที่ "+c.envFile;
+    $("#fOpen").openMode.value=c.openMode||"window";
   }catch(e){console.error(e)}
 }
 $("#fSet").recorderPid.onfocus=e=>{if(e.target.value.includes("x"))e.target.value=""};
 $("#fSet").onsubmit=async e=>{
   e.preventDefault();const btn=e.submitter,d=Object.fromEntries(new FormData(e.target));
   d.recorderPid=(d.recorderPid||"").replace(/[^\dx]/gi,"");
-  if(d.env==="prod"&&ENV!=="prod"){const ok=await confirmBox("เปลี่ยนเป็น Production",`<p>การปิดสิทธิจะส่งไประบบ<b>ใช้งานจริง</b>ของ สปสช.</p>`,"ยืนยันใช้ Production");if(!ok)return;d.confirm="YES"}
+  if(d.env==="prod"&&ENV!=="prod"){const ok=await confirmBox("เปลี่ยนเป็น Production",`<p>การปิดสิทธิจะส่งไประบบ<b>ใช้งานจริง</b>ของ สปสช.</p>`,"ยืนยันใช้ Production",false);if(!ok)return;d.confirm="YES"}
   busy(btn,1);
   try{await api("save_settings",d);toast("บันทึกการตั้งค่าแล้ว");loadStatus()}
   catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
+
+$("#fOpen").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter;busy(btn,1);
+  try{await api("save_settings",{openMode:e.target.openMode.value});toast("บันทึกแล้ว — มีผลเมื่อเปิดโปรแกรมครั้งถัดไป")}
+  catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
+/* โหมดเบราว์เซอร์: มีปุ่มปิดโปรแกรม (ในหน้าต่างโปรแกรมจะมี window.pywebview) */
+setTimeout(()=>{if(!window.pywebview)$("#bQuit").style.display="inline-block"},800);
+$("#bQuit").onclick=async()=>{
+  const ok=await confirmBox("ปิดโปรแกรม","<p>ปิดโปรแกรมตรวจสอบสิทธิ สปสช.?</p>","ปิดโปรแกรม",false);if(!ok)return;
+  try{await api("quit")}catch(e){}
+  document.body.innerHTML='<div style="font:16px var(--thai);text-align:center;margin-top:20vh">ปิดโปรแกรมแล้ว — ปิดแท็บนี้ได้เลย</div>';
 };
 
 /* default datetime = now (local) */
