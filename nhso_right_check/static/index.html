@@ -27,7 +27,7 @@ body{background-image:radial-gradient(rgba(11,42,85,.07) 1px,transparent 1px);ba
 .badge.prod{background:var(--red);color:#fff}
 /* tabs */
 .tabs{display:flex;gap:0;border-bottom:2px solid var(--line);overflow-x:auto}
-.tabs button{all:unset;cursor:pointer;padding:10px 16px;font-weight:600;border-right:2px solid var(--line);white-space:nowrap}
+.tabs button{all:unset;cursor:pointer;padding:10px 12px;font-weight:600;border-right:2px solid var(--line);white-space:nowrap}
 .tabs button:hover{background:#dbe9f8}
 .tabs button[aria-selected=true]{background:var(--blue);color:#fff}
 .tabs .num{font:700 11px var(--mono);opacity:.6;margin-right:6px}
@@ -122,12 +122,13 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 
   <nav class="tabs" role="tablist">
     <button role="tab" data-tab="check" aria-selected="true"><span class="num">01</span>ตรวจสอบสิทธิ</button>
-    <button role="tab" data-tab="batch"><span class="num">02</span>ตรวจแบบกลุ่ม</button>
-    <button role="tab" data-tab="close"><span class="num">03</span>ปิดสิทธิ</button>
-    <button role="tab" data-tab="cancel"><span class="num">04</span>ยกเลิกปิดสิทธิ</button>
-    <button role="tab" data-tab="history"><span class="num">05</span>ประวัติ</button>
-    <button role="tab" data-tab="rights"><span class="num">06</span>ตารางสิทธิ</button>
-    <button role="tab" data-tab="token"><span class="num">07</span>ตั้งค่า</button>
+    <button role="tab" data-tab="card"><span class="num">02</span>เสียบบัตร</button>
+    <button role="tab" data-tab="batch"><span class="num">03</span>ตรวจแบบกลุ่ม</button>
+    <button role="tab" data-tab="close"><span class="num">04</span>ปิดสิทธิ</button>
+    <button role="tab" data-tab="cancel"><span class="num">05</span>ยกเลิกปิดสิทธิ</button>
+    <button role="tab" data-tab="history"><span class="num">06</span>ประวัติ</button>
+    <button role="tab" data-tab="rights"><span class="num">07</span>ตารางสิทธิ</button>
+    <button role="tab" data-tab="token"><span class="num">08</span>ตั้งค่า</button>
   </nav>
 
   <!-- 01 ตรวจสอบสิทธิ -->
@@ -139,11 +140,46 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
       <span class="hint">เสียบบัตร Login SRM Portal แล้ว โปรแกรมจะอ่าน token.txt ให้เอง</span>
     </form>
     <div class="note-quota">⚠ การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำ อาจทำให้โควตาหมด
-      — ถ้าต้องตรวจหลายคน ใช้แท็บ <a href="#" id="toBatch">02 ตรวจแบบกลุ่ม</a> หรือ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a> (รายชื่อจำนวนมาก)</div>
+      — ถ้าต้องตรวจหลายคน ใช้แท็บ <a href="#" id="toBatch">03 ตรวจแบบกลุ่ม</a> หรือ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a> (รายชื่อจำนวนมาก)</div>
     <div id="rCheck"></div>
   </section>
 
-  <!-- 02 ตรวจแบบกลุ่ม -->
+  <!-- 02 เสียบบัตร (NHSO Secure SmartCard Agent) -->
+  <section class="pane" id="p-card">
+    <h2>เสียบบัตร <small>NHSO Secure SmartCard Agent · อ่านบัตร + ตรวจสิทธิ + ปิดสิทธิ</small></h2>
+    <div class="row" style="margin-top:0">
+      <span id="agState" class="hint"><span class="led"></span>กำลังตรวจ Agent…</span>
+    </div>
+    <div class="row">
+      <button class="btn go big" id="agRead">อ่านบัตร + ตรวจสิทธิ</button>
+      <button class="btn" id="agReadOnly" title="ใช้ตอนเชื่อมต่อ สปสช. ไม่ได้ — อ่านได้แต่ข้อมูลในบัตร ปิดสิทธิไม่ได้">อ่านบัตรอย่างเดียว</button>
+      <button class="btn" id="agClear">ล้างข้อมูลบนจอ</button>
+      <span class="hint">ให้ผู้ป่วยเสียบบัตรประชาชนที่เครื่องอ่านบัตรก่อนกด · ไม่ต้องใช้ SRM token (Agent ใช้ TOKEN ของหน่วยบริการเอง)</span>
+    </div>
+    <div id="agResult"></div>
+    <form id="fAgClose" class="card" style="display:none"><header><span>ปิดสิทธิผ่าน Agent</span><span class="hint" id="agCorr"></span></header><div class="body">
+      <div class="grid">
+        <label style="grid-column:span 2">ประเภทบริการ (claimType) <span class="req">*</span><select name="claimType" id="agClaim"></select>
+          <span class="hint">รายการนี้มาจาก สปสช. ตามสิทธิของผู้ป่วยคนนี้</span></label>
+        <label>ค่าบริการที่เบิกได้ <span class="req">*</span><input name="privilegeAmount" class="mono" inputmode="decimal" required></label>
+        <label>ค่าบริการที่เบิกไม่ได้<input name="paidAmount" class="mono" inputmode="decimal" value="0"></label>
+        <label>วันเวลาที่เบิก<input name="invoiceDatetime" type="datetime-local" step="1"></label>
+        <label>VN<input name="visitNumber" class="mono" maxlength="30"></label>
+        <label>เบอร์มือถือผู้ป่วย<input name="mobile" class="mono" inputmode="tel" maxlength="12"></label>
+      </div>
+      <div class="row">
+        <button type="button" class="btn" id="agPreview">ตรวจข้อมูลก่อนส่ง</button>
+        <button type="button" class="btn danger big" id="agClose">กดปิดสิทธิ</button>
+        <button type="button" class="btn" id="agLatest">authen code ล่าสุดของคนนี้</button>
+      </div>
+      <div id="agCloseResult"></div>
+    </div></form>
+    <div class="note-quota">เครื่องนี้ต้องติดตั้ง <b>NHSO Secure SmartCard Agent</b> (Windows) และใส่ TOKEN ของหน่วยบริการใน <code>userconfig.properties</code> แล้ว ·
+      ตรวจสถานะ Agent ได้ที่ <a href="http://localhost:8189" target="_blank" rel="noopener noreferrer">http://localhost:8189</a> ·
+      รูปหน้าบัตรแสดงบนจอเท่านั้น ไม่บันทึกลงเครื่อง</div>
+  </section>
+
+  <!-- 03 ตรวจแบบกลุ่ม -->
   <section class="pane" id="p-batch">
     <h2>ตรวจสอบสิทธิแบบกลุ่ม <small>SRM · right-search ทีละคน</small></h2>
     <div id="bInput">
@@ -278,11 +314,21 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
       </div>
       <div class="hint" style="margin-top:6px">มีผลเมื่อเปิดโปรแกรมครั้งถัดไป · โหมดเบราว์เซอร์ ปิดโปรแกรมด้วยปุ่ม “ปิดโปรแกรม” ที่แถบล่าง</div>
     </div></form>
+
+    <h3 class="sec" style="margin-top:26px"><span class="num">D</span>เสียบบัตร — NHSO Secure SmartCard Agent <small>TOKEN ตั้งในตัว Agent (userconfig.properties)</small></h3>
+    <form id="fAgent" class="card"><div class="body">
+      <div class="row" style="margin-top:0">
+        <label style="flex:1;min-width:260px">ที่อยู่ Agent<input name="url" class="mono" placeholder="http://localhost:8189"></label>
+        <button class="btn go" style="align-self:flex-end">บันทึก + ทดสอบ</button>
+      </div>
+      <div class="hint" id="agentUrlState" style="margin-top:6px"></div>
+    </div></form>
   </section>
 
   <div class="status">
     <span><span id="ledSrm" class="led"></span>SRM</span>
     <span><span id="ledEp" class="led"></span>ENDPOINT</span>
+    <span title="NHSO Secure SmartCard Agent (เสียบบัตร)"><span id="ledAg" class="led"></span>AGENT</span>
     <span>HCODE <b id="sHcode">—</b></span>
     <span title="จำนวนครั้งที่เรียก API ตรวจสอบสิทธิจริงวันนี้ (จากเครื่องนี้)">ตรวจวันนี้ <b id="sUsage">0</b> ครั้ง</span>
     <span class="sp"></span>
@@ -312,6 +358,12 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
   <option value="PG0110001">Self Isolation</option>
 </datalist>
 <div class="toast" id="toast"></div>
+<style>
+.agwrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.agphoto{width:132px;height:162px;border:2px solid var(--line);border-radius:4px;object-fit:cover;background:#dbe9f8;box-shadow:3px 3px 0 var(--line);flex:none}
+.agphoto.empty{display:flex;align-items:center;justify-content:center;font:12px var(--mono);color:var(--mute)}
+.agwrap .kv{flex:1;min-width:260px}
+</style>
 
 <script>
 const SESSION="{{SESSION}}";
@@ -346,7 +398,10 @@ const LABEL={checkDate:"วันที่ตรวจสอบ",pid:"เลข�
  serviceDateTime:"วันเวลารับบริการ",invoiceDateTime:"วันเวลาเบิก",totalAmount:"ค่าบริการทั้งหมด",paidAmount:"ค่าบริการที่เบิกไม่ได้",
  privilegeAmount:"ค่าบริการที่เบิกได้",claimServiceCode:"รหัสบริการ",sourceId:"รหัสแหล่งที่มา",recorderPid:"เลขบัตรผู้บันทึก",
  visitNumber:"VN",paymentStatus:"สถานะรายการ",success:"ผลการทำรายการ",_httpStatus:"HTTP status",dryRun:"ทดลอง (ยังไม่ส่ง)",
- code:"รหัส",name:"ชื่อ",payload:"ข้อมูลที่ส่ง"};
+ code:"รหัส",name:"ชื่อ",payload:"ข้อมูลที่ส่ง",
+ titleName:"คำนำหน้า",age:"อายุ",claimTypes:"ประเภทบริการที่ใช้สิทธิได้",claimType:"รหัสบริการ",claimTypeName:"ชื่อบริการ",
+ correlationId:"correlationId (รหัสอ้างอิงการตรวจสิทธิ)",claimCode:"authen code",claimDateTime:"วันเวลาที่ขอ",
+ invoiceDate:"วันที่เบิก",invoiceTime:"เวลาที่เบิก",mobile:"เบอร์มือถือ",visitNumber:"VN"};
 const MASK=new Set(["pid","recorderPid"]);
 let SHOW_FULL=false;  // หน้าตรวจสอบสิทธิ แสดงเลขบัตรเต็ม
 const fmtPid=p=>p&&/^\d{13}$/.test(p)?`${p[0]}-${p.slice(1,5)}-${p.slice(5,10)}-${p.slice(10,12)}-${p[12]}`:esc(p||"");
@@ -405,9 +460,100 @@ $$(".tabs button").forEach(b=>b.onclick=()=>{
   $$(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
   $$(".pane").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.tab));
   if(b.dataset.tab==="history")loadHist(); if(b.dataset.tab==="token")loadStatus(); if(b.dataset.tab==="rights")renderRights();
+  if(b.dataset.tab==="card")agentPing();
 });
 const go=t=>$(`.tabs button[data-tab=${t}]`).click();
 $("#toBatch").onclick=e=>{e.preventDefault();go("batch")};
+
+/* 02 เสียบบัตร (NHSO Secure SmartCard Agent) */
+let AG=null;  // ผลอ่านบัตรล่าสุด (summary) — ล้างเมื่อกด "ล้างข้อมูลบนจอ"
+const nowLocal=()=>{const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());return n.toISOString().slice(0,19)};
+const hosp=h=>h&&(h.hcode||h.hname)?[h.hcode,h.hname].filter(Boolean).join(" "):"";
+async function agentPing(){
+  try{const s=await api("agent_status");
+    $("#ledAg").className="led "+(s.online?"on":"off");
+    $("#agState").innerHTML=s.online?`<span class="led on"></span>Agent พร้อม — <span class="mono">${esc(s.url)}</span>`
+      :`<span class="led off"></span><b>ไม่พบ Agent</b> — ${esc(s.error||s.url)}`;
+    const u=$("#agentUrlState");if(u)u.textContent=(s.online?"✔ เชื่อมต่อได้ ":"✘ เชื่อมต่อไม่ได้ ")+(s.url||"");
+    return s;
+  }catch(e){$("#ledAg").className="led off";return {online:false}}
+}
+async function agentRead(cardOnly,btn){
+  busy(btn,1);$("#agCloseResult").innerHTML="";
+  try{
+    const r=await api("agent_read",{cardOnly});const s=r.summary;AG=s;
+    const rt=s.mainInscl&&RMAP[s.mainInscl];
+    const photo=r.image?`<img class="agphoto" alt="รูปหน้าบัตร" src="data:image/jpeg;base64,${esc(r.image)}">`:`<div class="agphoto empty">ไม่มีรูป</div>`;
+    const info=(s.mainInscl?`<div class="big-code">${esc(s.mainInscl)} <span style="font-size:15px;font-family:var(--thai)">${esc(rt?rt.name:"")}</span></div>`+
+       (rt?`<div style="margin:2px 0 10px"><span class="pill y">${esc(rt.groupId)}</span> กลุ่ม${esc(rt.groupName)}</div>`:""):"")+
+      kv({"ชื่อ":s.name,"เลขบัตร":fmtPid(s.pid).replace(/&[^;]+;/g,""),"เพศ":s.sex,"วันเกิด":s.birthDate,"อายุ":s.age,"เสียชีวิต":s.deathDate,
+          "สิทธิย่อย":s.subInscl,"หน่วยบริการประจำ":hosp(s.hospMainOp),"หน่วยปฐมภูมิ":hosp(s.hospSub),"หน่วยรับส่งต่อ":hosp(s.hospMain),
+          "paidModel":s.paidModel,"เริ่ม–หมดอายุ":[s.startDateTime,s.expireDateTime].filter(Boolean).map(x=>thDate(x)).join(" → "),
+          "เปลี่ยนแปลงสิทธิล่าสุด":thDate(s.transDate),"ตรวจเมื่อ":thDate(s.checkDate,1)});
+    const head=r.cardOnly?"อ่านบัตรอย่างเดียว (ไม่ได้ตรวจสิทธิ)":(s.deathDate?"เสียชีวิต":"พบสิทธิ");
+    $("#agResult").innerHTML=card(r.cardOnly?"dry":(s.deathDate?"err":"ok"),head,`<div class="agwrap">${photo}<div style="flex:1;min-width:260px">${info}</div></div>`,r.raw,true);
+    const f=$("#fAgClose");
+    if(!r.cardOnly&&s.correlationId&&!s.deathDate){
+      const opts=(s.claimTypes||[]).map(c=>`<option value="${esc(c.code)}">${esc(c.code)} · ${esc(c.name)}</option>`).join("");
+      $("#agClaim").innerHTML=opts||'<option value="">— สปสช. ไม่ส่งประเภทบริการที่ใช้ได้มา —</option>';
+      f.privilegeAmount.value="";f.paidAmount.value="0";f.visitNumber.value="";f.mobile.value="";f.invoiceDatetime.value=nowLocal();
+      $("#agCorr").textContent="correlationId …"+String(s.correlationId).slice(-6);
+      f.style.display="block";f.privilegeAmount.focus();
+    }else f.style.display="none";
+    $("#ledAg").className="led on";
+  }catch(err){AG=null;$("#fAgClose").style.display="none";$("#agResult").innerHTML=errCard(err);agentPing()}
+  finally{busy(btn,0)}
+}
+$("#agRead").onclick=e=>agentRead(false,e.currentTarget);
+$("#agReadOnly").onclick=e=>agentRead(true,e.currentTarget);
+$("#agClear").onclick=()=>{AG=null;$("#agResult").innerHTML="";$("#agCloseResult").innerHTML="";$("#fAgClose").style.display="none";toast("ล้างข้อมูลบนจอแล้ว")};
+const agData=()=>{const d=Object.fromEntries(new FormData($("#fAgClose")));
+  return {...d,invoiceDatetime:(d.invoiceDatetime||"").replace("T"," "),pid:AG&&AG.pid,correlationId:AG&&AG.correlationId,mainInscl:AG&&AG.mainInscl}};
+$("#agPreview").onclick=async e=>{
+  const btn=e.currentTarget;busy(btn,1);
+  try{const r=await api("agent_close",{...agData(),send:false});const p=r.payload;
+    $("#agCloseResult").innerHTML=card("dry","ตรวจข้อมูลผ่าน — ยังไม่ได้ส่ง",kv({"เลขบัตร":fmtPid(p.pid).replace(/&[^;]+;/g,""),"ประเภทบริการ":p.claimType,
+      "เบิกได้":fmt(p.privilegeAmount),"เบิกไม่ได้":fmt(p.paidAmount),"วันที่เบิก":`${p.invoiceDate} ${p.invoiceTime}`,"VN":p.visitNumber,"มือถือ":p.mobile}),p,true);
+  }catch(err){$("#agCloseResult").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+$("#agClose").onclick=async e=>{
+  const btn=e.currentTarget,d=agData();
+  if(!d.pid||!d.correlationId){toast("อ่านบัตร + ตรวจสิทธิก่อน");return}
+  if(!d.privilegeAmount){toast("กรอกค่าบริการที่เบิกได้ก่อน");return}
+  const svc=$("#agClaim").selectedOptions[0];
+  const ok=await confirmBox("ยืนยันกดปิดสิทธิ (เสียบบัตร)",`<p>ส่งข้อมูลปิดสิทธิผ่าน Agent ไป สปสช.</p>`+
+    kv({"ชื่อ":AG.name,"เลขบัตร":fmtPid(d.pid).replace(/&[^;]+;/g,""),"บริการ":svc?svc.textContent:d.claimType,"เบิกได้":fmt(d.privilegeAmount),"เบิกไม่ได้":fmt(d.paidAmount)}),"กดปิดสิทธิ");
+  if(!ok)return;busy(btn,1);
+  try{let r;
+    try{r=await api("agent_close",{...d,send:true,confirm:ok})}
+    catch(err){
+      if(!/พบการปิดสิทธิสำเร็จแล้ว/.test(err.error||""))throw err;
+      busy(btn,0);
+      const again=await confirmBox("พบการปิดสิทธิซ้ำ",`<p style="color:var(--red);font-weight:700">${esc(err.error)}</p><p>ต้องการส่งซ้ำจริงหรือไม่?</p>`,"ยืนยันส่งซ้ำ");
+      if(!again){$("#agCloseResult").innerHTML=errCard(err);return}
+      busy(btn,1);r=await api("agent_close",{...d,send:true,confirm:again,allow_duplicate:"1"});
+    }
+    $("#agCloseResult").innerHTML=r.success?card("ok","ปิดสิทธิสำเร็จ",`<div class="hint">authenCode</div><div class="big-code">${esc(r.authenCode)}</div>`+
+        kv({"seq":r.seq})+`<div class="row"><button class="btn" id="agCpy">คัดลอก authenCode</button></div>`,r)
+      :card("err","ปิดสิทธิไม่สำเร็จ",`<b>${esc(r.dataError||r.message||"ไม่ได้รับ authenCode")}</b>`,r);
+    const c=$("#agCpy");if(c)c.onclick=()=>copyText(r.authenCode);
+  }catch(err){$("#agCloseResult").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+$("#agLatest").onclick=async e=>{
+  if(!AG||!AG.pid){toast("อ่านบัตรก่อน");return}
+  const btn=e.currentTarget;busy(btn,1);
+  try{const r=await api("agent_latest",{pid:AG.pid});const l=r.latest||{};
+    $("#agCloseResult").innerHTML=l.claimCode?card("ok","authen code ล่าสุด",`<div class="big-code">${esc(l.claimCode)}</div>`+
+      kv({"ประเภทบริการ":l.claimType,"หน่วยบริการ":l.hcode,"วันเวลาที่ขอ":thDate(l.claimDateTime,1),"ตรวจเมื่อ":thDate(l.checkDate,1)}),l)
+      :card("dry","ไม่พบ authen code ล่าสุด","<p>คนนี้ยังไม่มีการขอ authen code กับหน่วยบริการนี้</p>",l);
+  }catch(err){$("#agCloseResult").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+$("#fAgent").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter;busy(btn,1);
+  try{const r=await api("agent_save_url",{url:e.target.url.value});e.target.url.value=r.url;
+    $("#agentUrlState").textContent=(r.online?"✔ เชื่อมต่อได้ ":"✘ เชื่อมต่อไม่ได้ ")+r.url;toast("บันทึกแล้ว")}
+  catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
 
 /* status */
 async function loadStatus(){
@@ -621,6 +767,7 @@ async function loadSettings(){
     $("#setState").innerHTML=ok?'<span class="pill y">พร้อมปิดสิทธิ</span>':'<span class="pill n">ยังตั้งค่าไม่ครบ</span>';
     $("#envPath").textContent="บันทึกที่ "+c.envFile;
     $("#fOpen").openMode.value=c.openMode||"window";
+    $("#fAgent").url.value=c.agentUrl||"";
   }catch(e){console.error(e)}
 }
 $("#fSet").recorderPid.onfocus=e=>{if(e.target.value.includes("x"))e.target.value=""};
@@ -655,7 +802,7 @@ $("#svcSel").onchange({target:$("#svcSel")});
 
 /* default datetime = now (local) */
 (()=>{const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());$("#fClose").service_datetime.value=n.toISOString().slice(0,19)})();
-loadStatus();loadRights();
+loadStatus();loadRights();agentPing();
 </script>
 </body>
 </html>

@@ -15,11 +15,13 @@ import secrets
 import threading
 import time
 import webbrowser
+from datetime import datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from . import __author__, __version__
+from .agent import AgentClient, AgentError, build_endpoint_payload, normalize_agent_url, summarize_card
 from .batch import BatchJob, export_folder, export_name, parse_input, write_xlsx
 from .config import Settings, save_env
 from .endpoint import EndpointClient, EndpointError, is_success
@@ -66,7 +68,8 @@ class App:
                 "recorderPid": mask_pid(self.s.recorder_pid) if self.s.recorder_pid else "",
                 "recorderSet": bool(self.s.recorder_pid),
                 "endpointTokenSet": bool(t), "endpointTokenTail": t[-4:] if len(t) >= 8 else "",
-                "envFile": str(Path(self.s.env_file).resolve()), "openMode": self.s.open_mode}
+                "envFile": str(Path(self.s.env_file).resolve()), "openMode": self.s.open_mode,
+                "agentUrl": self.s.agent_url}
 
     def save_settings(self, b: dict) -> dict:
         updates: dict[str, str] = {}
@@ -260,7 +263,63 @@ class App:
     def rights(self, _b: dict) -> dict:
         return {"rights": all_rights(), "groups": groups()}
 
-    ROUTES = {"quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
+    # ---------- เสียบบัตร (NHSO Secure SmartCard Agent) ----------
+    def _agent(self) -> AgentClient:
+        return AgentClient(self.s.agent_url, timeout=self.s.timeout)
+
+    def agent_status(self, _b: dict) -> dict:
+        try:
+            return self._agent().ping()
+        except AgentError as e:
+            return {"online": False, "url": self.s.agent_url, "error": str(e)}
+
+    def agent_read(self, b: dict) -> dict:
+        """อ่านบัตร (รูปหน้าบัตรส่งไปแสดงบนจอเท่านั้น ไม่บันทึกลงเครื่อง)"""
+        a = self._agent()
+        raw = a.read_card_only(True) if b.get("cardOnly") else a.read(True)
+        image = raw.get("image") or ""
+        summary = summarize_card(raw)
+        no_img = {k: v for k, v in raw.items() if k != "image"}
+        return {"summary": summary, "raw": no_img, "image": image, "cardOnly": bool(b.get("cardOnly"))}
+
+    def agent_latest(self, b: dict) -> dict:
+        return {"latest": self._agent().latest_authen(b.get("pid", ""))}
+
+    def agent_close(self, b: dict) -> dict:
+        payload = build_endpoint_payload(
+            pid=b.get("pid", ""), correlation_id=b.get("correlationId", ""), claim_type=b.get("claimType", ""),
+            privilege_amount=b.get("privilegeAmount", ""), paid_amount=b.get("paidAmount", 0),
+            invoice_datetime=(b.get("invoiceDatetime") or "") or None, mobile=b.get("mobile", ""),
+            visit_number=b.get("visitNumber", ""))
+        inv = datetime.strptime(f"{payload['invoiceDate']} {payload['invoiceTime']}", "%Y-%m-%d %H:%M:%S")
+        inv_ms = int(inv.timestamp() * 1000)
+        if str(b.get("allow_duplicate", "")).lower() not in ("1", "true", "yes"):
+            dup = self.store.find_duplicate(payload["pid"], payload["claimType"], inv_ms)
+            if dup:
+                raise ValidationError(
+                    f"พบการปิดสิทธิสำเร็จแล้ว (คนเดิม บริการเดิม วันเดียวกัน) authenCode={dup['authen_code']} "
+                    f"seq={dup['seq']}")
+        if not b.get("send"):
+            return {"dryRun": True, "payload": payload}
+        if self.s.env == "prod" and b.get("confirm") != "YES":
+            raise ValidationError("Production ต้องพิมพ์ YES เพื่อยืนยัน")
+        resp = self._agent().save_endpoint(payload)
+        ok = bool(resp.get("authenCode"))
+        # ข้อมูลที่เก็บในประวัติ (ไม่มีรูป) — ใช้ correlationId เป็นเลขอ้างอิงรายการ
+        rec = {**payload, "transactionId": payload["correlationId"], "claimServiceCode": payload["claimType"],
+               "serviceDateTime": inv_ms, "mainInsclCode": (b.get("mainInscl") or "").upper(), "via": "agent"}
+        self.store.log(env=self.s.env, action="AGENT_CLAIM", request=rec, response=resp, success=ok)
+        return {"success": ok, **resp}
+
+    def agent_save_url(self, b: dict) -> dict:
+        url = normalize_agent_url(b.get("url") or "")
+        save_env(self.s.env_file, {"AGENT_URL": url})
+        self._reload()
+        return {"url": self.s.agent_url, **self.agent_status({})}
+
+    ROUTES = {"agent_status": agent_status, "agent_read": agent_read, "agent_latest": agent_latest,
+              "agent_close": agent_close, "agent_save_url": agent_save_url,
+              "quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
               "history": history, "token": set_token,
               "batch_parse": batch_parse, "batch_start": batch_start, "batch_status": batch_status,
               "batch_stop": batch_stop, "batch_resume": batch_resume, "batch_export": batch_export,
@@ -285,7 +344,8 @@ def make_handler(app: App, port: int):
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("Content-Security-Policy",
-                             "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'")
+                             "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; "
+                             "img-src 'self' data:")  # data: = รูปหน้าบัตรจาก Agent
             self.end_headers()
             self.wfile.write(body)
 
@@ -323,7 +383,7 @@ def make_handler(app: App, port: int):
                 if not isinstance(body, dict):
                     return self._json(400, {"error": "รูปแบบข้อมูลไม่ถูกต้อง"})
                 self._json(200, fn(app, body))
-            except (SRMError, EndpointError, ValidationError) as e:
+            except (SRMError, EndpointError, ValidationError, AgentError) as e:
                 self._json(400, {"error": str(e), "detail": getattr(e, "body", None)})
             except Exception as e:  # noqa: BLE001
                 log.exception("UI error")

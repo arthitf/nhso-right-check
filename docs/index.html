@@ -124,12 +124,12 @@ footer b{color:var(--ink)}
   <ol class="steps">
     <li>ดับเบิลคลิก <code>nhso-right-check-windows-setup.exe</code> แล้วกด Next ไปจนจบ (ไม่ต้องใช้สิทธิ Admin)</li>
     <li>เปิดโปรแกรมจากไอคอน <b>ตรวจสอบสิทธิ สปสช.</b> บน Desktop หรือ Start Menu</li>
-    <li>ไปที่แท็บ <b>07 ตั้งค่า</b> ส่วน B กรอก ระบบ (ค่าเริ่มต้น <b>Production</b>), HCODE, เลขบัตรผู้บันทึก และ TOKEN KEY จากอีเมล สปสช. แล้วกด <b>บันทึกการตั้งค่า</b> (ทำครั้งเดียว อัปเดตเวอร์ชันใหม่ค่าไม่หาย)</li>
+    <li>ไปที่แท็บ <b>08 ตั้งค่า</b> ส่วน B กรอก ระบบ (ค่าเริ่มต้น <b>Production</b>), HCODE, เลขบัตรผู้บันทึก และ TOKEN KEY จากอีเมล สปสช. แล้วกด <b>บันทึกการตั้งค่า</b> (ทำครั้งเดียว อัปเดตเวอร์ชันใหม่ค่าไม่หาย)</li>
   </ol>
   <h3>แบบแตกไฟล์ใช้ได้เลย (Windows / macOS / Linux)</h3>
   <ol class="steps">
     <li>แตกไฟล์ zip ไว้ในโฟลเดอร์ เช่น <code>Desktop\nhso-right-check</code></li>
-    <li>เปิดโปรแกรมแล้วตั้งค่าที่แท็บ <b>07 ตั้งค่า</b> ได้เลย หรือจะเปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วแก้ด้วย Notepad ก็ได้
+    <li>เปิดโปรแกรมแล้วตั้งค่าที่แท็บ <b>08 ตั้งค่า</b> ได้เลย หรือจะเปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วแก้ด้วย Notepad ก็ได้
 <pre>NHSO_ENV=prod                 <span class="c"># prod = ใช้จริง (ค่าเริ่มต้น), test = ทดสอบ</span>
 HCODE=xxxxx                   <span class="c"># รหัสหน่วยบริการ 5 หลัก</span>
 NHSO_ENDPOINT_TOKEN=xxxxxxxx  <span class="c"># TOKEN KEY ที่ สปสช. ส่งทางอีเมล</span>
@@ -141,14 +141,14 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
         <tr><th>Linux</th><td><code>chmod +x nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
       </table>
     </li>
-    <li>โปรแกรมจะเปิดเป็นหน้าต่างของตัวเอง (Windows ใช้ Edge WebView2 ที่มากับ Windows 10/11, macOS ใช้ WebKit) ปิดหน้าต่าง = ปิดโปรแกรม (ถ้าชอบใช้ในเบราว์เซอร์ เปลี่ยนได้ที่แท็บ <b>07 ตั้งค่า → C การเปิดโปรแกรม</b> โหมดเบราว์เซอร์ปิดโปรแกรมด้วยปุ่ม “ปิดโปรแกรม” ที่แถบล่าง) ถ้าเครื่องไม่มี WebView (เช่น Linux บางรุ่น) จะเปิดในเบราว์เซอร์ที่ <code>http://127.0.0.1:8765</code> แทน ทำงานในเครื่องตัวเองเท่านั้น</li>
+    <li>โปรแกรมจะเปิดเป็นหน้าต่างของตัวเอง (Windows ใช้ Edge WebView2 ที่มากับ Windows 10/11, macOS ใช้ WebKit) ปิดหน้าต่าง = ปิดโปรแกรม (ถ้าชอบใช้ในเบราว์เซอร์ เปลี่ยนได้ที่แท็บ <b>08 ตั้งค่า → C การเปิดโปรแกรม</b> โหมดเบราว์เซอร์ปิดโปรแกรมด้วยปุ่ม “ปิดโปรแกรม” ที่แถบล่าง) ถ้าเครื่องไม่มี WebView (เช่น Linux บางรุ่น) จะเปิดในเบราว์เซอร์ที่ <code>http://127.0.0.1:8765</code> แทน ทำงานในเครื่องตัวเองเท่านั้น</li>
   </ol>
   <h3>Token ตรวจสอบสิทธิ (SRM)</h3>
   <div class="flow"><span>เสียบบัตร</span><i>→</i><span>Login SRM Portal + PIN</span><i>→</i><span>กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal”</span><i>→</i><span>token.txt</span><i>→</i><span>โปรแกรมอ่านให้เอง</span></div>
-  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>07 ตั้งค่า</b> ส่วน A แล้ว<b>วางเนื้อหาทั้งไฟล์ token.txt ตามที่เห็น</b> (มีทั้งบรรทัด <code>access-token=…</code> และ <code>refresh-token=…</code>) โปรแกรมแยกให้เอง</p>
+  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>08 ตั้งค่า</b> ส่วน A แล้ว<b>วางเนื้อหาทั้งไฟล์ token.txt ตามที่เห็น</b> (มีทั้งบรรทัด <code>access-token=…</code> และ <code>refresh-token=…</code>) โปรแกรมแยกให้เอง</p>
   <ul>
     <li><b>อายุ token:</b> access token ใช้ได้ประมาณ 30 นาที โปรแกรมต่ออายุให้เองด้วย refresh token ซึ่งใช้ได้ประมาณ 24 ชั่วโมง ในทางปฏิบัติคือ<b>เสียบบัตร Login SRM Portal วันละครั้ง</b> ถ้า token เก่าเกิน 24 ชั่วโมง โปรแกรมจะเตือน</li>
-    <li><b>Production เท่านั้น:</b> token จาก SRM Portal ตัวจริงใช้กับ Test Zone ไม่ได้ ถ้าขึ้น “token ไม่ถูกต้อง” ให้ดูว่าแท็บ 07 ตั้งค่าเป็น Production หรือไม่</li>
+    <li><b>Production เท่านั้น:</b> token จาก SRM Portal ตัวจริงใช้กับ Test Zone ไม่ได้ ถ้าขึ้น “token ไม่ถูกต้อง” ให้ดูว่าแท็บ 08 ตั้งค่าเป็น Production หรือไม่</li>
   </ul>
   <div class="note warn"><b>ห้ามส่ง token ให้ผู้อื่น</b> (ทั้งทางแชท อีเมล หรือภาพหน้าจอ) token ใช้แทนตัวตนของเจ้าของบัตรได้ ถ้าเผลอส่งไปแล้ว ให้ Logout SRM Portal เพื่อยกเลิก</div>
   <div class="note tip">ไฟ <b>SRM</b> / <b>ENDPOINT</b> ที่แถบล่างของโปรแกรม ถ้าเป็นสีเขียว แปลว่าตั้งค่า token ครบแล้ว</div>
@@ -166,7 +166,19 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
     <li class="nohist">API ตรวจสอบสิทธิของ สปสช. ส่งกลับเฉพาะ<b>สิทธิ ณ วันที่ตรวจสอบ</b> ไม่มีประวัติสิทธิย้อนหลัง (มีแค่ “วันที่เปลี่ยนแปลงสิทธิ” ล่าสุดของแต่ละกองทุน)</li>
     <li>ถ้าตรวจคนเดิมซ้ำภายใน 10 นาที โปรแกรมจะใช้ผลเดิมเพื่อประหยัดโควตา (กด <b>ตรวจใหม่จาก สปสช.</b> ได้ถ้าจำเป็น) แถบล่างจะแสดงจำนวนครั้งที่ตรวจวันนี้</li>
   </ol>
-  <h3>02 ตรวจแบบกลุ่ม</h3>
+  <h3>02 เสียบบัตร (NHSO Secure SmartCard Agent)</h3>
+  <p>ผู้ป่วยเสียบบัตรประชาชน → อ่านบัตร + ตรวจสิทธิ → ปิดสิทธิ ในหน้าเดียว ใช้ <b>NHSO Secure SmartCard Agent</b> ของ สปสช. ที่ติดตั้งในเครื่อง (Windows) — <b>ไม่ต้องใช้ SRM token</b> เพราะ Agent ใช้ TOKEN ของหน่วยบริการเอง</p>
+  <ol class="steps">
+    <li><b>ติดตั้ง Agent ครั้งแรก:</b> แตกไฟล์ <code>secureagent-1.2.4</code> (Production) → ใส่ TOKEN ของหน่วยบริการในไฟล์ <code>userconfig.properties</code> (<code>nhso.service.token=…</code>) → คลิกขวา <code>install.bat</code> → Run as Administrator → เปิด <code>http://localhost:8189</code> ต้องเห็นหน้าสถานะ Agent</li>
+    <li>ในโปรแกรมเรา ไฟ <b>AGENT</b> ที่แถบล่างต้องเป็นสีเขียว (ถ้า Agent อยู่เครื่องอื่น ตั้งที่อยู่ได้ที่แท็บ <b>08 ตั้งค่า → D</b>)</li>
+    <li>ให้ผู้ป่วยเสียบบัตร แล้วกด <span class="btnlike">อ่านบัตร + ตรวจสิทธิ</span> จะเห็น<b>รูปหน้าบัตร</b> ชื่อ เลขบัตร สิทธิ (พร้อมชื่อและกลุ่มจากตาราง vr_l_right) และหน่วยบริการ</li>
+    <li>เลือก <b>ประเภทบริการ</b> — รายการนี้ สปสช. ส่งมาตามสิทธิของผู้ป่วยคนนั้น (มีทั้งรหัสและชื่อบริการ) กรอกค่าบริการ วันเวลาที่เบิก VN และเบอร์มือถือ (ถ้ามี)</li>
+    <li>กด <b>ตรวจข้อมูลก่อนส่ง</b> แล้ว <span class="btnlike">กดปิดสิทธิ</span> → ได้ <b>authenCode</b> + seq บันทึกในแท็บประวัติ (รายการ AGENT_CLAIM)</li>
+    <li>ปุ่ม <b>authen code ล่าสุดของคนนี้</b> ใช้ตรวจว่าเคยขอ authen code กับหน่วยบริการแล้วหรือยัง (เช่นหลัง timeout) · ปุ่ม <b>อ่านบัตรอย่างเดียว</b> ใช้ตอนเชื่อมต่อ สปสช. ไม่ได้ (ปิดสิทธิไม่ได้)</li>
+  </ol>
+  <div class="note tip"><b>ความเป็นส่วนตัว:</b> รูปหน้าบัตรแสดงบนจอเท่านั้น ไม่บันทึกลงเครื่องหรือประวัติ กด <b>ล้างข้อมูลบนจอ</b> เมื่อเสร็จผู้ป่วยแต่ละราย</div>
+  <div class="note warn">การยกเลิกรายการที่ปิดสิทธิผ่าน Agent: คู่มือ Agent v2.0 ยังไม่มี API ยกเลิก — ให้ติดต่อ สปสช. ตามช่องทางปกติ</div>
+  <h3>03 ตรวจแบบกลุ่ม</h3>
   <p>API ของ สปสช. ตรวจได้ครั้งละ 1 คน แท็บนี้จึงวนตรวจให้ทีละคนพร้อมตัวป้องกันโควตา — ทุกคนในรายชื่อนับเป็น 1 ครั้งของโควตาหน่วยบริการ รายชื่อจำนวนมากยังแนะนำใช้ SRM Portal</p>
   <ol class="steps">
     <li>ลากไฟล์ <b>Excel (.xlsx) / CSV / TXT</b> มาวาง หรือวางเลขบัตรในช่องข้อความ (คัดลอกทั้งคอลัมน์จาก Excel ได้) โปรแกรมหาเลข 13 หลักทุกช่องให้เอง ไม่ต้องจัดคอลัมน์</li>
@@ -176,7 +188,7 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
     <li>กด <b>บันทึกเป็น Excel</b> ไฟล์จะอยู่ในโฟลเดอร์ Downloads ชื่อ <code>ผลตรวจสิทธิกลุ่ม_วันที่_เวลา.xlsx</code> เลขบัตรเป็นข้อความเต็ม 13 หลัก (ไม่กลายเป็น 1.1E+12) มีตัวกรองที่หัวตาราง กดเปิดไฟล์หรือเปิดโฟลเดอร์จากโปรแกรมได้เลย</li>
   </ol>
   <div class="note warn">เกิน 300 คน (ค่า <code>BATCH_LIMIT</code>) โปรแกรมจะเตือนให้ใช้ SRM Portal ก่อน ถ้าจำเป็นต้องใช้ API ต้องกดยืนยันอีกครั้ง · ไฟล์ผลตรวจมีข้อมูลส่วนบุคคล ลบเมื่อใช้งานเสร็จ</div>
-  <h3>03 ปิดสิทธิ</h3>
+  <h3>04 ปิดสิทธิ (กรอกเลขบัตร · NHSO ENDPOINT)</h3>
   <ol class="steps">
     <li>เลือก <b>รหัสบริการ</b> จากรายการ (มีชื่อบริการกำกับ หรือเลือก “อื่นๆ” แล้วพิมพ์รหัสเอง), <b>ค่าบริการที่เบิกได้</b>, ค่าบริการที่เบิกไม่ได้, วันเวลาที่รับบริการ และ VN</li>
     <li>กด <b>ตรวจข้อมูลก่อนส่ง</b> เพื่อดูข้อมูลที่จะส่ง (ยังไม่ส่งไป สปสช.)</li>
@@ -194,11 +206,11 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
     <tr><td><code>PG0110001</code></td><td>Self Isolation</td></tr>
   </table>
   <p style="font-size:13px;color:var(--mute)">เอกสารระบุว่ามีรหัสอื่นตามแฟ้มมาตรฐานบริการ (Service Authen) ของ สปสช. ด้วย — พิมพ์รหัสเองได้ ตรวจรหัสให้ถูกก่อนส่ง</p>
-  <h3>04 ยกเลิกปิดสิทธิ</h3>
+  <h3>05 ยกเลิกปิดสิทธิ</h3>
   <p>ใส่ <b>transactionId</b> แล้วกด <span class="btnlike">กดยกเลิกปิดสิทธิ</span> ถ้าไม่ใส่ seq โปรแกรมจะหาจากประวัติให้เอง (ระบบส่ง <code>paymentStatus = CANCEL</code>)</p>
-  <h3>05 ประวัติ</h3>
+  <h3>06 ประวัติ</h3>
   <p>แสดง 100 รายการล่าสุด ข้อมูลเก็บในไฟล์ <code>nhso_right_check_log.sqlite3</code> ในเครื่อง เลขบัตรในแท็บประวัติจะถูกปิดบางส่วนไว้ (หน้าตรวจสอบสิทธิแสดงเลขเต็ม)</p>
-  <h3>06 ตารางสิทธิ</h3>
+  <h3>07 ตารางสิทธิ</h3>
   <p>ตารางรหัสสิทธิ (vr_l_right) 277 รหัส ใช้ค้นหาว่ารหัสแต่ละตัวคือสิทธิอะไร (เช่น UCS, WEL, OFC, SSS, BKK, E45) และอยู่ในกลุ่มสิทธิหลักกลุ่มไหน (U, C, S, L, B, E …) หน้าตรวจสอบสิทธิจะแสดงชื่อสิทธิกับกลุ่มให้อัตโนมัติ และช่อง “สิทธิ” ในหน้าปิดสิทธิจะมีรายการให้เลือก</p>
 </div></section>
 
@@ -235,7 +247,12 @@ nhso-right-check-cli close-batch examples/close_input.csv --send
     <tr><td>ต่ออายุ token</td><td><code>POST {SRM Portal}/api/scard/access-token</code><br>form: <code>refresh_token</code></td><td>—</td></tr>
     <tr><td>ปิดสิทธิ (แฟม 6→7)</td><td><code>POST {ENDPOINT}/api/nhso-claim-detail</code>*</td><td>Bearer TOKEN KEY</td></tr>
     <tr><td>ยกเลิก (แฟม 8→9)</td><td><code>PUT {ENDPOINT}/api/nhso-claim-detail</code>*<br><code>{seq, transactionId, paymentStatus:"CANCEL"}</code></td><td>Bearer TOKEN KEY</td></tr>
+    <tr><td>เสียบบัตร: อ่านบัตร + ตรวจสิทธิ</td><td><code>GET {AGENT}/api/smartcard/read?readImageFlag=true</code><br>→ ข้อมูลบุคคล, สิทธิ, <code>claimTypes[{claimType, claimTypeName}]</code>, <code>correlationId</code>, <code>image</code></td><td rowspan="4">TOKEN อยู่ในตัว Agent<br>(<code>userconfig.properties</code>)</td></tr>
+    <tr><td>เสียบบัตร: อ่านบัตรอย่างเดียว</td><td><code>GET {AGENT}/api/smartcard/read-card-only</code></td></tr>
+    <tr><td>เสียบบัตร: ปิดสิทธิ</td><td><code>POST {AGENT}/api/nhso-service/save-endpoint</code><br><code>{pid, invoiceDate, invoiceTime, paidAmount, privilegeAmount, claimType, correlationId, mobile, visitNumber}</code> → <code>{seq, authenCode}</code></td></tr>
+    <tr><td>เสียบบัตร: authen code ล่าสุด</td><td><code>GET {AGENT}/api/nhso-service/latest-authen-code/{pid}</code></td></tr>
   </table>
+  <p class="c" style="font-size:13px;color:var(--mute)">{AGENT} = <code>http://localhost:8189</code> (NHSO Secure SmartCard Agent 1.2.4 Production) — เปิด <code>http://localhost:8189/swagger</code> บนเครื่องที่ติดตั้ง Agent เพื่อดูสเปก API จริงทั้งหมด</p>
   <p class="c" style="font-size:13px;color:var(--mute)">* เอกสาร DataSet v8.0 ระบุแค่ base URL จึงต้องตรวจ path กับ Swagger ก่อน (<code>test.nhso.go.th/nhsoendpoint/swagger-ui.html</code>) ถ้าไม่ตรงแก้ได้ใน <code>.env</code> ที่ <code>NHSO_CLAIM_PATH</code> / <code>NHSO_CANCEL_PATH</code> / <code>NHSO_CANCEL_METHOD</code></p>
   <table>
     <tr><th>Zone</th><th>SRM</th><th>NHSO ENDPOINT</th></tr>
@@ -261,19 +278,19 @@ python build.py                      <span class="c"># build ไฟล์โป�
   validation.py  เลขบัตร, จำนวนเงิน (≤8 หลัก ทศนิยม 2), hcode
   store.py       ประวัติ SQLite
   batch.py       ตรวจแบบกลุ่ม (อ่าน xlsx/csv, งานเบื้องหลัง, เขียน xlsx ด้วย stdlib)
+  agent.py       เสียบบัตร: NHSO Secure SmartCard Agent (อ่านบัตร / ปิดสิทธิ save-endpoint)
   web.py         หน้าจอ (local server ใช้ standard library)
   static/index.html
   cli.py         คำสั่ง command line</pre>
-  <p>แผนต่อไป: เชื่อม <b>NHSO Secure SmartCard Agent v2.0</b> (<code>localhost:8189</code>, <code>/api/nhso-service/save-endpoint</code>) เพื่อปิดสิทธิด้วยการเสียบบัตรผู้ป่วย</p>
 </div></section>
 
 <section id="faq" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
   <h2><b>07</b>ปัญหาที่พบบ่อย</h2>
   <table>
     <tr><th>อาการ</th><th>วิธีแก้</th></tr>
-    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 07 ตั้งค่า</td></tr>
+    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 08 ตั้งค่า</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
-    <tr><td>token ไม่ถูกต้อง ทั้งที่เพิ่ง Login</td><td>ดูว่าแท็บ 07 ตั้งค่า ตั้งระบบเป็น <b>Production</b> (token ตัวจริงใช้กับ Test Zone ไม่ได้)</td></tr>
+    <tr><td>token ไม่ถูกต้อง ทั้งที่เพิ่ง Login</td><td>ดูว่าแท็บ 08 ตั้งค่า ตั้งระบบเป็น <b>Production</b> (token ตัวจริงใช้กับ Test Zone ไม่ได้)</td></tr>
     <tr><td>อยากดูประวัติสิทธิย้อนหลัง</td><td>API ส่งกลับเฉพาะสิทธิ ณ วันที่ตรวจ ดูประวัติย้อนหลังได้ที่ SRM Portal</td></tr>
     <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
     <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>
@@ -281,7 +298,10 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <tr><td>serviceDateTime ไม่เกินวันเวลาปัจจุบัน</td><td>ตรวจวันที่ ต้องเป็นปี ค.ศ. และห้ามเป็นเวลาในอนาคต</td></tr>
     <tr><td>เชื่อมต่อไม่ได้ / ProxyError</td><td>ตรวจอินเทอร์เน็ต, proxy หรือ VPN ของหน่วยงาน</td></tr>
     <tr><td>HTTP 429 / เรียกใช้งานมากเกินไป</td><td>หยุดสักพัก และใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่มสำหรับรายชื่อจำนวนมาก</td></tr>
-    <tr><td>Port 8765 ไม่ว่าง</td><td>โปรแกรมจะหา port ถัดไปให้เอง (8766, 8767 …)</td></tr>
+    <tr><td>ไม่พบ Agent ที่ localhost:8189</td><td>ตรวจ Windows Services ว่ามี <code>NHSOSecureSmartCardAgent</code> และกำลังทำงาน หรือรัน <code>start-no-service.bat</code> (เลือก prod) · port 8189 / 50204 ต้องว่าง</td></tr>
+    <tr><td>Agent ขึ้นหน้า Sign in / ยังไม่ได้ตั้ง TOKEN</td><td>ใส่ TOKEN ใน <code>userconfig.properties</code> ของ Agent แล้วรัน <code>restart.bat</code> (Run as Administrator)</td></tr>
+    <tr><td>ยังไม่ได้เสียบบัตร / ไม่พบเครื่องอ่านบัตร</td><td>เสียบบัตรให้สนิท ตรวจสาย USB และไดรเวอร์เครื่องอ่านบัตร</td></tr>
+    <tr><td>Port 8765 ไม่ว่าง</td><td>โปรแกรมจะหา port ถัดไปให้เอง (8766, 8767 …) — คนละ port กับ Agent (8189)</td></tr>
   </table>
 </div></section>
 

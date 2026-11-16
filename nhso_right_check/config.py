@@ -70,6 +70,7 @@ class Settings:
     db_path: Path = Path("nhso_right_check_log.sqlite3")
     env_file: Path = Path(".env")
     open_mode: str = "window"               # window = หน้าต่างโปรแกรม, browser = เปิดในเบราว์เซอร์
+    agent_url: str = "http://localhost:8189"  # NHSO Secure SmartCard Agent (เสียบบัตร)
 
     @classmethod
     def load(cls, env_file: str | os.PathLike | None = ".env") -> "Settings":
@@ -102,6 +103,7 @@ class Settings:
         s.srm_cache_seconds = int(g("SRM_CACHE_SECONDS", s.srm_cache_seconds))
         s.batch_limit = int(g("BATCH_LIMIT", s.batch_limit))
         s.open_mode = "browser" if (g("OPEN_MODE", "window") or "").lower() == "browser" else "window"
+        s.agent_url = (g("AGENT_URL", s.agent_url) or s.agent_url).strip()
         if g("DB_PATH"):
             s.db_path = Path(g("DB_PATH"))
         return s

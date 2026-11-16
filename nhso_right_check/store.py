@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS claim_log (
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at       TEXT NOT NULL,
     env              TEXT NOT NULL,
-    action           TEXT NOT NULL,          -- CLAIM | CANCEL
+    action           TEXT NOT NULL,          -- CLAIM | CANCEL | AGENT_CLAIM (ปิดสิทธิผ่านเสียบบัตร)
     transaction_id   TEXT NOT NULL,
     pid              TEXT,
     hcode            TEXT,
@@ -94,7 +94,8 @@ class ClaimStore:
         with self.lock:
             day = datetime.fromtimestamp(service_ms / 1000).strftime("%Y-%m-%d")
             for r in self.conn.execute(
-                "SELECT * FROM claim_log WHERE action='CLAIM' AND success=1 AND pid=? AND claim_service=? "
+                "SELECT * FROM claim_log WHERE action IN ('CLAIM','AGENT_CLAIM') AND success=1 AND pid=? "
+                "AND claim_service=? "
                 "ORDER BY id DESC", (pid, service_code)
             ):
                 req = json.loads(r["request_json"] or "{}")

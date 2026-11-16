@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nhso-right-check"
-version = "0.5.4"
+version = "0.6.0"
 description = "ตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)"
 authors = [{ name = "arthit.f" }]
 requires-python = ">=3.10"
