@@ -5,8 +5,12 @@
 """
 from __future__ import annotations
 
+import base64
 import json
 import logging
+import os
+import subprocess
+import sys
 import secrets
 import threading
 import time
@@ -16,6 +20,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from . import __author__, __version__
+from .batch import BatchJob, export_folder, export_name, parse_input, write_xlsx
 from .config import Settings, save_env
 from .endpoint import EndpointClient, EndpointError, is_success
 from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, parse_token_text, summarize, write_private
@@ -35,6 +40,9 @@ class App:
         self.store = ClaimStore(settings.db_path)
         self.srm = SRMClient(settings, on_call=self.store.count_call)
         self.ep = EndpointClient(settings)
+        self.batch_pending: dict | None = None
+        self.job: BatchJob | None = None
+        self.last_export: Path | None = None
 
     # ---------- actions ----------
     def status(self, _body: dict) -> dict:
@@ -163,11 +171,100 @@ class App:
         self.srm._token = pair
         return {"saved": True, "length": len(pair.access_token), "refresh": bool(pair.refresh_token)}
 
+    # ---------- ตรวจแบบกลุ่ม ----------
+    def batch_parse(self, b: dict) -> dict:
+        """อ่านรายชื่อจากข้อความที่วาง และ/หรือไฟล์ (CSV / TXT / XLSX) — ยังไม่เรียก API"""
+        if self.job and self.job.state == "running":
+            raise ValidationError("กำลังตรวจกลุ่มเดิมอยู่ — กดหยุดก่อน")
+        data = None
+        if b.get("file"):
+            try:
+                data = base64.b64decode(b["file"], validate=True)
+            except ValueError as e:
+                raise ValidationError("อ่านไฟล์ไม่ได้") from e
+        r = parse_input(b.get("text") or "", data, b.get("name") or "")
+        if not r["pids"] and not r["invalid"]:
+            raise ValidationError("ไม่พบเลขบัตรประชาชน 13 หลักในข้อมูลที่ให้มา")
+        now = time.time()
+        cache = self.srm._cache
+        cached = sum(1 for p in r["pids"] if p in cache and now - cache[p][0] < self.s.srm_cache_seconds)
+        self.batch_pending = r
+        return {"found": r["found"], "unique": len(r["pids"]), "invalid": len(r["invalid"]),
+                "invalidList": [mask_pid(p) for p in r["invalid"][:20]], "duplicates": r["duplicates"],
+                "cached": cached, "apiNeeded": len(r["pids"]) - cached, "limit": self.s.batch_limit,
+                "delay": self.s.batch_delay, "usageToday": self.store.usage_today()}
+
+    def batch_start(self, b: dict) -> dict:
+        if self.job and self.job.state == "running":
+            raise ValidationError("กำลังตรวจอยู่แล้ว")
+        r = self.batch_pending
+        if not r:
+            raise ValidationError("ยังไม่ได้อ่านรายชื่อ")
+        if len(r["pids"]) > self.s.batch_limit and not b.get("allowLarge"):
+            raise ValidationError(f"รายชื่อมี {len(r['pids'])} คน เกินที่ตั้งไว้ ({self.s.batch_limit}) "
+                                  "— แนะนำใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม หรือยืนยันเพื่อตรวจผ่าน API")
+        srm = SRMClient(self.s, on_call=self.store.count_call)
+        srm._cache = self.srm._cache           # ใช้ cache ร่วมกับการตรวจทีละคน
+        srm._token = self.srm._token
+        self.job = BatchJob(srm, r["pids"], r["invalid"], self.s.batch_delay)
+        self.batch_pending = None
+        self.job.start()
+        return self.batch_status({})
+
+    def batch_status(self, b: dict) -> dict:
+        if not self.job:
+            return {"state": "none"}
+        return {**self.job.snapshot(int(b.get("since") or 0)), "usageToday": self.store.usage_today()}
+
+    def batch_stop(self, _b: dict) -> dict:
+        if self.job:
+            self.job.stop()
+        return {"ok": True}
+
+    def batch_resume(self, b: dict) -> dict:
+        if not self.job:
+            raise ValidationError("ไม่มีงานตรวจค้างอยู่")
+        if self.job.state in ("paused", "stopped"):
+            if not self.s.srm_access_token:
+                self.job.srm._token = None      # อ่าน token.txt ใหม่ (เผื่อเพิ่ง Login SRM ใหม่)
+            self.job.start()
+        return self.batch_status(b)
+
+    def batch_export(self, _b: dict) -> dict:
+        if not self.job:
+            raise ValidationError("ยังไม่มีผลตรวจ")
+        rows = self.job.all_rows()
+        if not rows:
+            raise ValidationError("ยังไม่มีผลตรวจ")
+        path = write_xlsx(export_folder() / export_name(), rows)
+        self.last_export = path
+        return {"path": str(path), "folder": str(path.parent), "rows": len(rows)}
+
+    def batch_open(self, b: dict) -> dict:
+        """เปิดไฟล์ Excel ที่เพิ่งบันทึก หรือโฟลเดอร์ที่เก็บ (เปิดได้เฉพาะไฟล์ที่โปรแกรมสร้างเอง)"""
+        if not self.last_export or not self.last_export.exists():
+            raise ValidationError("ยังไม่ได้บันทึกไฟล์")
+        target = self.last_export.parent if b.get("what") == "folder" else self.last_export
+        if sys.platform == "win32":
+            os.startfile(str(target))  # noqa: S606  (ไฟล์ที่โปรแกรมสร้างเอง)
+        else:
+            subprocess.Popen(["open" if sys.platform == "darwin" else "xdg-open", str(target)])  # noqa: S603
+        return {"opened": str(target)}
+
+    def batch_clear(self, _b: dict) -> dict:
+        if self.job and self.job.state == "running":
+            raise ValidationError("กำลังตรวจอยู่ — กดหยุดก่อน")
+        self.job, self.batch_pending = None, None
+        return {"cleared": True}
+
     def rights(self, _b: dict) -> dict:
         return {"rights": all_rights(), "groups": groups()}
 
     ROUTES = {"quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
-              "history": history, "token": set_token}
+              "history": history, "token": set_token,
+              "batch_parse": batch_parse, "batch_start": batch_start, "batch_status": batch_status,
+              "batch_stop": batch_stop, "batch_resume": batch_resume, "batch_export": batch_export,
+              "batch_open": batch_open, "batch_clear": batch_clear}
 
 
 def make_handler(app: App, port: int):
@@ -218,7 +315,7 @@ def make_handler(app: App, port: int):
                 return self._json(404, {"error": "ไม่พบคำสั่ง"})
             try:
                 n = int(self.headers.get("Content-Length") or 0)
-                if n > 1_000_000:  # กัน request ใหญ่ผิดปกติ
+                if n > (12_000_000 if name == "batch_parse" else 1_000_000):  # กัน request ใหญ่ผิดปกติ
                     return self._json(413, {"error": "ข้อมูลใหญ่เกินไป"})
                 if n and "application/json" not in (self.headers.get("Content-Type") or ""):
                     return self._json(415, {"error": "ต้องเป็น JSON"})

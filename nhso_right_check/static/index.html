@@ -92,10 +92,19 @@ h3.sec .num{font:700 12px var(--mono);background:var(--blue);color:#fff;border:2
 h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 .note-quota{margin-top:12px;font-size:13px;border:2px solid var(--line);border-left:8px solid var(--amber);border-radius:4px;padding:6px 10px;background:#fff8e6}
 .note-quota a{color:var(--blue);font-weight:700}
+.drop{display:block;border:2px dashed var(--line);border-radius:6px;padding:18px;text-align:center;cursor:pointer;background:#fff;font-size:15px;color:var(--ink)}
+.drop:hover,.drop.over{background:#e3effc;border-style:solid}
+.drop .hint{display:block;margin-top:4px}
+.bar{height:16px;border:2px solid var(--line);border-radius:4px;background:#fff;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,var(--blue) 0 8px,#2f6fd0 8px 16px);transition:width .3s}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.stats span{font:600 13px var(--thai);border:2px solid var(--line);border-radius:4px;padding:2px 10px;background:#fff}
+.stats b{font-family:var(--mono)}
+.pill.d{background:#d9d9d9}.pill.w{background:#f6e3b8}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:4px;font-size:14px;display:none}
 @media (prefers-color-scheme:dark){
   :root{--paper:#0c1830;--panel:#12213d;--ink:#e6eef9;--mute:#9fb2cf;--line:#e6eef9;--blue:#2f6fd0}
-  input,select,textarea,.card{background:#182a4a;color:var(--ink)}
+  input,select,textarea,.card,.drop,.bar,.stats span{background:#182a4a;color:var(--ink)}
   .note-quota{background:#3a3016}
   pre{background:#0f1d36}.tabs button:hover,.btn:hover{background:#1d3358}
   th,.status{background:#16294a}.card.ok>header{background:#1b4a6b}.card.err>header{background:#5a2a20}.card.dry>header{background:#56441f}
@@ -113,11 +122,12 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 
   <nav class="tabs" role="tablist">
     <button role="tab" data-tab="check" aria-selected="true"><span class="num">01</span>ตรวจสอบสิทธิ</button>
-    <button role="tab" data-tab="close"><span class="num">02</span>ปิดสิทธิ</button>
-    <button role="tab" data-tab="cancel"><span class="num">03</span>ยกเลิกปิดสิทธิ</button>
-    <button role="tab" data-tab="history"><span class="num">04</span>ประวัติ</button>
-    <button role="tab" data-tab="rights"><span class="num">05</span>ตารางสิทธิ</button>
-    <button role="tab" data-tab="token"><span class="num">06</span>ตั้งค่า</button>
+    <button role="tab" data-tab="batch"><span class="num">02</span>ตรวจแบบกลุ่ม</button>
+    <button role="tab" data-tab="close"><span class="num">03</span>ปิดสิทธิ</button>
+    <button role="tab" data-tab="cancel"><span class="num">04</span>ยกเลิกปิดสิทธิ</button>
+    <button role="tab" data-tab="history"><span class="num">05</span>ประวัติ</button>
+    <button role="tab" data-tab="rights"><span class="num">06</span>ตารางสิทธิ</button>
+    <button role="tab" data-tab="token"><span class="num">07</span>ตั้งค่า</button>
   </nav>
 
   <!-- 01 ตรวจสอบสิทธิ -->
@@ -129,11 +139,45 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
       <span class="hint">เสียบบัตร Login SRM Portal แล้ว โปรแกรมจะอ่าน token.txt ให้เอง</span>
     </form>
     <div class="note-quota">⚠ การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำ อาจทำให้โควตาหมด
-      — ถ้าต้องตรวจเป็นกลุ่ม แนะนำใช้ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
+      — ถ้าต้องตรวจหลายคน ใช้แท็บ <a href="#" id="toBatch">02 ตรวจแบบกลุ่ม</a> หรือ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a> (รายชื่อจำนวนมาก)</div>
     <div id="rCheck"></div>
   </section>
 
-  <!-- 02 ปิดสิทธิ -->
+  <!-- 02 ตรวจแบบกลุ่ม -->
+  <section class="pane" id="p-batch">
+    <h2>ตรวจสอบสิทธิแบบกลุ่ม <small>SRM · right-search ทีละคน</small></h2>
+    <div id="bInput">
+      <label class="drop" id="bDrop">
+        <input type="file" id="bFile" accept=".xlsx,.csv,.txt" hidden>
+        <b>ลากไฟล์ Excel (.xlsx) / CSV / TXT มาวางที่นี่</b> หรือ <u>คลิกเพื่อเลือกไฟล์</u>
+        <span class="hint" id="bFileName">โปรแกรมจะหาเลขบัตร 13 หลักทุกช่องในไฟล์ให้เอง ไม่ต้องจัดคอลัมน์</span>
+      </label>
+      <textarea id="bText" rows="4" class="mono" style="margin-top:10px" placeholder="หรือวางเลขบัตรตรงนี้ (คัดลอกทั้งคอลัมน์จาก Excel ได้เลย) บรรทัดละคน"></textarea>
+      <div class="row"><button class="btn go" id="bParse">อ่านรายชื่อ</button>
+        <span class="hint">ขั้นนี้ยังไม่เรียก API — จะสรุปจำนวนและโควตาที่ต้องใช้ให้ดูก่อน</span></div>
+    </div>
+    <div id="bPlan"></div>
+    <div id="bRun" style="display:none">
+      <div class="card"><header><span id="bState">กำลังตรวจ</span><span id="bCount">0 / 0</span></header><div class="body">
+        <div class="bar"><i id="bBar"></i></div>
+        <div class="stats" id="bStats"></div>
+        <div id="bMsg"></div>
+        <div class="row">
+          <button class="btn" id="bStop">หยุด</button>
+          <button class="btn go" id="bResume" style="display:none">ตรวจต่อ</button>
+          <button class="btn go" id="bExport">บันทึกเป็น Excel</button>
+          <button class="btn" id="bNew" style="display:none">ตรวจกลุ่มใหม่</button>
+        </div>
+        <div id="bSaved"></div>
+      </div></div>
+      <div class="tbl" style="margin-top:12px"><table><thead><tr><th>#</th><th>เลขบัตร</th><th>ผล</th><th>ชื่อ-สกุล</th><th>สิทธิ</th><th>ชื่อสิทธิ</th><th>หน่วยบริการประจำ</th><th>หมายเหตุ</th></tr></thead><tbody id="tBatch"></tbody></table></div>
+    </div>
+    <div class="note-quota">⚠ API ของ สปสช. ตรวจได้<b>ครั้งละ 1 คน</b> — ทุกคนในรายชื่อนับเป็น 1 ครั้งของ<b>โควตาหน่วยบริการ</b>
+      (โปรแกรมตัดเลขซ้ำ ไม่ตรวจเลขที่ผิด และใช้ผลเดิมถ้าเพิ่งตรวจไม่เกิน 10 นาที) — รายชื่อจำนวนมาก แนะนำใช้
+      <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
+  </section>
+
+  <!-- 03 ปิดสิทธิ -->
   <section class="pane" id="p-close">
     <h2>ปิดสิทธิ <small>NHSO ENDPOINT · single claim</small></h2>
     <form id="fClose">
@@ -158,7 +202,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <div id="rClose"></div>
   </section>
 
-  <!-- 03 ยกเลิก -->
+  <!-- 04 ยกเลิก -->
   <section class="pane" id="p-cancel">
     <h2>ยกเลิกการปิดสิทธิ <small>paymentStatus = CANCEL</small></h2>
     <form id="fCancel">
@@ -171,14 +215,14 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <div id="rCancel"></div>
   </section>
 
-  <!-- 04 ประวัติ -->
+  <!-- 05 ประวัติ -->
   <section class="pane" id="p-history">
     <h2>ประวัติการส่ง <small>100 รายการล่าสุด</small></h2>
     <div class="row" style="margin:0 0 12px"><button class="btn" id="bHist">โหลดใหม่</button></div>
     <div class="tbl"><table><thead><tr><th>เวลา</th><th>ENV</th><th>รายการ</th><th>ผล</th><th>PID</th><th>authenCode</th><th>seq</th><th>transactionId</th><th>เบิกได้</th><th>error</th></tr></thead><tbody id="tHist"></tbody></table></div>
   </section>
 
-  <!-- 05 ตารางสิทธิ -->
+  <!-- 06 ตารางสิทธิ -->
   <section class="pane" id="p-rights">
     <h2>ตารางรหัสสิทธิ <small>vr_l_right · <span id="rCount">0</span> รหัส</small></h2>
     <div class="row" style="margin:0 0 12px">
@@ -188,7 +232,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <div class="tbl"><table><thead><tr><th>รหัส</th><th>กลุ่ม</th><th>ชื่อสิทธิ</th><th>English</th></tr></thead><tbody id="tRights"></tbody></table></div>
   </section>
 
-  <!-- 06 token -->
+  <!-- 07 ตั้งค่า -->
   <section class="pane" id="p-token">
     <h2>ตั้งค่า</h2>
 
@@ -342,6 +386,7 @@ $$(".tabs button").forEach(b=>b.onclick=()=>{
   if(b.dataset.tab==="history")loadHist(); if(b.dataset.tab==="token")loadStatus(); if(b.dataset.tab==="rights")renderRights();
 });
 const go=t=>$(`.tabs button[data-tab=${t}]`).click();
+$("#toBatch").onclick=e=>{e.preventDefault();go("batch")};
 
 /* status */
 async function loadStatus(){
@@ -381,7 +426,94 @@ async function doCheck(btn,force){
 }
 $("#fCheck").onsubmit=e=>{e.preventDefault();doCheck(e.submitter,false)};
 
-/* 02 close */
+/* 02 ตรวจแบบกลุ่ม */
+const B={file:null,name:"",since:0,timer:null};
+const STATUS={OK:["y","พบสิทธิ"],DEAD:["d","เสียชีวิต"],NOTFOUND:["w","ไม่พบข้อมูล"],ERROR:["n","ผิดพลาด"],INVALID:["n","เลขผิด"]};
+function pickFile(f){
+  if(!f)return;if(f.size>8e6){toast("ไฟล์ใหญ่เกิน 8 MB");return}
+  const r=new FileReader();r.onload=()=>{B.file=String(r.result).split(",")[1];B.name=f.name;
+    $("#bFileName").innerHTML=`📄 <b>${esc(f.name)}</b> (${Math.ceil(f.size/1024)} KB) — กด “อ่านรายชื่อ”`};r.readAsDataURL(f);
+}
+$("#bFile").onchange=e=>pickFile(e.target.files[0]);
+["dragenter","dragover"].forEach(t=>$("#bDrop").addEventListener(t,e=>{e.preventDefault();$("#bDrop").classList.add("over")}));
+["dragleave","drop"].forEach(t=>$("#bDrop").addEventListener(t,e=>{e.preventDefault();$("#bDrop").classList.remove("over")}));
+$("#bDrop").addEventListener("drop",e=>pickFile(e.dataTransfer.files[0]));
+const mmss=s=>s<60?`${Math.ceil(s)} วินาที`:`${Math.floor(s/60)} นาที ${Math.round(s%60)} วินาที`;
+$("#bParse").onclick=async e=>{
+  const btn=e.currentTarget;busy(btn,1);
+  try{
+    const r=await api("batch_parse",{text:$("#bText").value,file:B.file,name:B.name});
+    const over=r.unique>r.limit;
+    $("#bPlan").innerHTML=card(over?"err":"dry","สรุปรายชื่อ — ยังไม่ได้เรียก API",
+      kv({"พบเลข 13 หลัก":`${r.found} เลข`,"จะตรวจ (ไม่ซ้ำ)":`${r.unique} คน`,"เลขซ้ำ (ตัดออก)":r.duplicates||"",
+          "เลขผิด check digit (ไม่ตรวจ)":r.invalid?`${r.invalid} เลข — ${r.invalidList.join(", ")}${r.invalid>20?" …":""}`:"",
+          "ใช้ผลเดิมได้ (ไม่เสียโควตา)":r.cached||"","ใช้โควตา API ประมาณ":`${r.apiNeeded} ครั้ง`,
+          "เวลาโดยประมาณ":mmss(r.apiNeeded*(r.delay+0.6)),"ตรวจไปแล้ววันนี้":`${(r.usageToday||{}).srm||0} ครั้ง`})+
+      (over?`<div class="note-quota">รายชื่อเกิน ${r.limit} คน (ค่า BATCH_LIMIT) — <b>แนะนำใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</b> ถ้าจำเป็นต้องตรวจผ่าน API จริง กดปุ่มด้านล่างแล้วยืนยัน</div>`:"")+
+      (r.unique?`<div class="row"><button class="btn ${over?"danger":"go"} big" id="bStart">เริ่มตรวจ ${r.unique} คน</button>
+        <button class="btn" id="bCancelPlan">ยกเลิก</button></div>`:""));
+    const st=$("#bStart");if(st)st.onclick=()=>startBatch(r,over);
+    const cp=$("#bCancelPlan");if(cp)cp.onclick=()=>{$("#bPlan").innerHTML=""};
+  }catch(err){$("#bPlan").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+async function startBatch(r,over){
+  const ok=await confirmBox("ยืนยันตรวจสอบสิทธิแบบกลุ่ม",`<p>ตรวจ <b>${r.unique} คน</b> ผ่าน API (${ENV.toUpperCase()})</p>
+    <p>จะใช้โควตาหน่วยบริการประมาณ <b>${r.apiNeeded} ครั้ง</b> ใช้เวลาประมาณ ${mmss(r.apiNeeded*(r.delay+0.6))}</p>`+
+    (over?`<p style="color:var(--red);font-weight:700">เกินจำนวนที่ตั้งไว้ (${r.limit}) — แนะนำใช้ SRM Portal แทน</p>`:""),"เริ่มตรวจ",false);
+  if(!ok)return;
+  try{B.since=0;$("#tBatch").innerHTML="";$("#bSaved").innerHTML="";
+    const s=await api("batch_start",{allowLarge:over});$("#bPlan").innerHTML="";$("#bInput").style.display="none";
+    $("#bRun").style.display="block";showBatch(s);poll();
+  }catch(err){$("#bPlan").insertAdjacentHTML("beforeend",errCard(err))}
+}
+function showBatch(s){
+  if(!s||s.state==="none")return;
+  const pct=s.total?Math.round(s.done*100/s.total):100;
+  $("#bBar").style.width=pct+"%";$("#bCount").textContent=`${s.done} / ${s.total} คน · ${pct}%`;
+  const label={running:"⏳ กำลังตรวจ",paused:"⏸ หยุดพัก",stopped:"⏹ หยุดแล้ว",done:"✔ ตรวจเสร็จ",ready:"เตรียมตรวจ"}[s.state]||s.state;
+  $("#bState").textContent=label;
+  const c=s.counts||{};
+  $("#bStats").innerHTML=Object.entries(STATUS).filter(([k])=>c[k]).map(([k,[cls,t]])=>`<span><span class="pill ${cls}">${t}</span> <b>${c[k]}</b></span>`).join("")+
+    `<span>เรียก API <b>${s.apiCalls}</b> ครั้ง</span>`+(s.cacheHits?`<span>ใช้ผลเดิม <b>${s.cacheHits}</b></span>`:"");
+  $("#bMsg").innerHTML=s.message?`<div class="note-quota">${esc(s.message)}</div>`:"";
+  const run=s.state==="running";
+  $("#bStop").style.display=run?"":"none";$("#bResume").style.display=(s.state==="paused"||s.state==="stopped")?"":"none";
+  $("#bNew").style.display=run?"none":"";
+  if(s.rows&&s.rows.length){
+    $("#tBatch").insertAdjacentHTML("beforeend",s.rows.map(r=>{const [cls,t]=STATUS[r.status]||["n",r.status];
+      return `<tr><td>${r.no||""}</td><td>${esc(r.pid)}</td><td><span class="pill ${cls}">${t}</span></td><td>${esc(r.name)}</td><td><b>${esc(r.mainInscl)}</b></td>
+      <td style="white-space:normal">${esc(r.rightName||r.mainInsclName)}</td><td>${esc([r.hospMainOp,r.hospMainOpName].filter(Boolean).join(" "))}</td><td class="hint" style="white-space:normal">${esc(r.note)}</td></tr>`}).join(""));
+    B.since=s.next;
+  }
+  if(s.usageToday)$("#sUsage").textContent=s.usageToday.srm||0;
+}
+async function poll(){
+  clearTimeout(B.timer);
+  try{const s=await api("batch_status",{since:B.since});showBatch(s);if(s.state==="running")B.timer=setTimeout(poll,700)}
+  catch(e){B.timer=setTimeout(poll,2000)}
+}
+$("#bStop").onclick=async()=>{await api("batch_stop").catch(()=>{});setTimeout(poll,300)};
+$("#bResume").onclick=async()=>{try{showBatch(await api("batch_resume",{since:B.since}));poll()}catch(err){toast(err.error||"ทำต่อไม่ได้")}};
+$("#bExport").onclick=async e=>{
+  const btn=e.currentTarget;busy(btn,1);
+  try{const r=await api("batch_export");
+    $("#bSaved").innerHTML=`<div class="card ok"><header><span>บันทึกแล้ว ${r.rows} แถว</span></header><div class="body">
+      <div class="mono" style="word-break:break-all">${esc(r.path)}</div>
+      <div class="row"><button class="btn go" id="bOpenFile">เปิดไฟล์ Excel</button><button class="btn" id="bOpenDir">เปิดโฟลเดอร์</button></div></div></div>`;
+    $("#bOpenFile").onclick=()=>api("batch_open",{what:"file"}).catch(err=>toast(err.error||"เปิดไม่ได้"));
+    $("#bOpenDir").onclick=()=>api("batch_open",{what:"folder"}).catch(err=>toast(err.error||"เปิดไม่ได้"));
+  }catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
+$("#bNew").onclick=async()=>{
+  try{await api("batch_clear")}catch(err){toast(err.error);return}
+  B.file=null;B.name="";B.since=0;$("#bFile").value="";$("#bText").value="";
+  $("#bFileName").textContent="โปรแกรมจะหาเลขบัตร 13 หลักทุกช่องในไฟล์ให้เอง ไม่ต้องจัดคอลัมน์";
+  $("#bRun").style.display="none";$("#bInput").style.display="";$("#tBatch").innerHTML="";$("#bSaved").innerHTML="";
+};
+/* เปิดโปรแกรมใหม่ระหว่างงานค้าง → แสดงงานเดิม */
+api("batch_status",{since:0}).then(s=>{if(s.state&&s.state!=="none"){$("#bInput").style.display="none";$("#bRun").style.display="block";showBatch(s);if(s.state==="running")poll()}}).catch(()=>{});
+
+/* 03 close */
 const closeData=()=>{const d=Object.fromEntries(new FormData($("#fClose")));d.pid=d.pid.replace(/\D/g,"");d.main_inscl=(d.main_inscl||"").trim().toUpperCase();return d};
 $("#bPreview").onclick=async e=>{
   const btn=e.currentTarget;busy(btn,1);
@@ -413,7 +545,7 @@ $("#bClose").onclick=async e=>{
   }catch(err){$("#rClose").innerHTML=errCard(err)}finally{busy(btn,0)}
 };
 
-/* 03 cancel */
+/* 04 cancel */
 $("#fCancel").onsubmit=async e=>{
   e.preventDefault();const btn=e.submitter,d=Object.fromEntries(new FormData(e.target));
   const ok=await confirmBox("ยืนยันยกเลิกปิดสิทธิ",kv({"transactionId":d.trans,"seq":d.seq||"(หาจากประวัติ)","ENV":ENV.toUpperCase()}),"กดยกเลิกปิดสิทธิ");
@@ -423,7 +555,7 @@ $("#fCancel").onsubmit=async e=>{
   }catch(err){$("#rCancel").innerHTML=errCard(err)}finally{busy(btn,0)}
 };
 
-/* 04 history */
+/* 05 history */
 async function loadHist(){
   try{const {rows}=await api("history");
     $("#tHist").innerHTML=rows.length?rows.map(r=>`<tr><td>${esc(r.created_at.replace("T"," "))}</td><td>${esc(r.env)}</td><td>${esc(r.action)}</td>
@@ -434,7 +566,7 @@ async function loadHist(){
 }
 $("#bHist").onclick=loadHist;
 
-/* 05 ตารางสิทธิ */
+/* 06 ตารางสิทธิ */
 let RIGHTS=[],RMAP={};
 async function loadRights(){
   try{const r=await api("rights");RIGHTS=r.rights;RMAP=Object.fromEntries(RIGHTS.map(x=>[x.id,x]));
@@ -451,14 +583,14 @@ function renderRights(){
 $("#rQ").oninput=renderRights;$("#rG").onchange=renderRights;
 $("#fClose").main_inscl.oninput=e=>{const v=e.target.value.toUpperCase();const x=RMAP[v];$("#inscName").textContent=v?(x?x.name:"⚠ ไม่พบรหัสนี้ในตารางสิทธิ"):""};
 
-/* 06 token */
+/* 07 token */
 $("#fToken").onsubmit=async e=>{
   e.preventDefault();const btn=e.submitter;busy(btn,1);
   try{const r=await api("token",{text:e.target.text.value});e.target.text.value="";toast(r.cleared?"ลบ token ที่วางไว้แล้ว":"บันทึก token แล้ว");loadStatus()}
   catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
 };
 
-/* 06 B ตั้งค่าปิดสิทธิ */
+/* 07 B ตั้งค่าปิดสิทธิ */
 async function loadSettings(){
   try{const c=await api("settings");const f=$("#fSet");
     f.env.value=c.env;f.hcode.value=c.hcode||"";f.sourceId.value=c.sourceId&&c.sourceId!==c.hcode?c.sourceId:"";

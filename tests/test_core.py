@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -342,3 +343,88 @@ def test_open_mode_setting(tmp_path, monkeypatch):
     assert app.settings({})["openMode"] == "window"
     app.save_settings({"openMode": "browser"})
     assert app.s.open_mode == "browser" and "OPEN_MODE=browser" in (tmp_path / ".env").read_text()
+
+
+# ---------- ตรวจแบบกลุ่ม ----------
+PID2 = "3101112223332"
+
+
+def test_batch_parse_text_and_dedupe():
+    from nhso_right_check.batch import parse_input
+    r = parse_input(f"{VALID_PID}\n1-1017-00203-45-0\n{PID2}, 1101700203451\nโทร 0812345678 HN 12345678901234")
+    assert r["pids"] == [VALID_PID, PID2] and r["invalid"] == ["1101700203451"] and r["duplicates"] == 1
+
+
+def test_xlsx_roundtrip(tmp_path):
+    from nhso_right_check.batch import _row, parse_input, write_xlsx
+    p = write_xlsx(tmp_path / "o.xlsx", [_row(1, VALID_PID, "OK", {"name": "นาย ทดสอบ", "mainInscl": "UCS"}),
+                                          _row(0, "=1+1", "INVALID")])
+    r = parse_input(data=p.read_bytes(), filename="o.xlsx")
+    assert r["pids"] == [VALID_PID]
+    import zipfile
+    sheet = zipfile.ZipFile(p).read("xl/worksheets/sheet1.xml").decode()
+    assert "นาย ทดสอบ" in sheet and "'=1+1" in sheet and 't="inlineStr"' in sheet
+
+
+def test_batch_job_runs_and_pauses_on_429(settings):
+    from nhso_right_check.batch import BatchJob
+    settings.srm_access_token = "AAA"
+    sess = FakeSession([FakeResp(200, SRM_RESULT), FakeResp(404, ""), FakeResp(429, ""), FakeResp(200, SRM_RESULT),
+                        FakeResp(200, SRM_RESULT)])
+    calls = []
+    srm = SRMClient(settings, sess, on_call=calls.append)
+    job = BatchJob(srm, [VALID_PID, PID2, "1101700203468", "1234567890121"], ["1101700203451"], delay=0)
+    job.start(); job.wait(5)
+    s = job.snapshot(masked=False)
+    assert s["state"] == "paused" and "429" in s["message"] and s["done"] == 2
+    assert s["counts"] == {"INVALID": 1, "OK": 1, "NOTFOUND": 1}
+    job.start(); job.wait(5)                     # ตรวจต่อ: คนที่โดน 429 ถูกตรวจใหม่
+    s = job.snapshot(masked=False)
+    assert s["state"] == "done" and s["done"] == 4 and len(sess.calls) == 5
+    assert [r["pid"] for r in job.all_rows()][-1] == "1101700203451"
+
+
+def test_store_usable_from_other_thread(settings):
+    import threading
+    st = ClaimStore(settings.db_path)
+    err = []
+    t = threading.Thread(target=lambda: (st.count_call("srm"), st.usage_today()) or None)
+    try:
+        t.start(); t.join()
+    except Exception as e:  # noqa: BLE001
+        err.append(e)
+    assert not err and st.usage_today()["srm"] == 1
+
+
+def test_web_batch_flow(tmp_path, monkeypatch):
+    from nhso_right_check import batch as bmod
+    from nhso_right_check.web import App
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(bmod, "export_folder", lambda: tmp_path)
+    (tmp_path / ".env").write_text("NHSO_ENV=test\nSRM_ACCESS_TOKEN=AAA\nBATCH_LIMIT=1\nBATCH_DELAY=0.2\n", encoding="utf-8")
+    for k in ("NHSO_ENV", "SRM_ACCESS_TOKEN", "BATCH_LIMIT", "BATCH_DELAY"):
+        monkeypatch.delenv(k, raising=False)
+    app = App(Settings.load(tmp_path / ".env"))
+    import base64
+    r = app.batch_parse({"file": base64.b64encode(f"pid\n{VALID_PID}\n{PID2}\n".encode()).decode(), "name": "a.csv"})
+    assert r["unique"] == 2 and r["apiNeeded"] == 2
+    with pytest.raises(ValidationError, match="เกินที่ตั้งไว้"):
+        app.batch_start({})
+    import nhso_right_check.web as web
+    sess = FakeSession([FakeResp(200, SRM_RESULT), FakeResp(200, {**SRM_RESULT, "pid": PID2})])
+    real = web.SRMClient
+    monkeypatch.setattr(web, "SRMClient", lambda s, on_call=None: real(s, sess, on_call=on_call))
+    app.batch_start({"allowLarge": True})
+    app.job.wait(5)
+    st = app.batch_status({})
+    assert st["state"] == "done" and st["done"] == 2 and "xxxx" in st["rows"][0]["pid"]
+    out = app.batch_export({})
+    assert out["rows"] == 2 and Path(out["path"]).exists()
+
+
+def test_parse_srm_sso_token_file_with_dashes():
+    # รูปแบบจริงของ %USERPROFILE%\SRM Smart Card Single Sign-On\token.txt (ค่า JWT ปลอม)
+    t = parse_token_text("access-token=eyJhbGciOi.AAA.BBB\n\nrefresh-token=eyJhbGciOi.CCC.DDD\n")
+    assert t.access_token == "eyJhbGciOi.AAA.BBB" and t.refresh_token == "eyJhbGciOi.CCC.DDD"
+    assert parse_token_text("eyJx.y.z").access_token == "eyJx.y.z"
+    assert parse_token_text("Bearer eyJx.y.z").access_token == "eyJx.y.z"

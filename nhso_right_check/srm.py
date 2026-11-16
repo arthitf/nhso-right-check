@@ -57,12 +57,15 @@ def parse_token_text(text: str) -> TokenPair:
         for sep in ("=", ":"):
             if sep in line:
                 k, _, v = line.partition(sep)
-                kv[k.strip().lower()] = v.strip().strip('"')
+                # token.txt ของ SRM SSO ใช้ access-token= / refresh-token= (ขีดกลาง) → ทำให้เป็นรูปเดียวกัน
+                kv[k.strip().strip('"').lower().replace("-", "_")] = v.strip().strip('",')
                 break
     access = kv.get("access_token") or kv.get("accesstoken") or kv.get("token")
     if access:
         return TokenPair(access, kv.get("refresh_token") or kv.get("refreshtoken") or "")
     first = text.splitlines()[0].strip()
+    if "=" in first and first.split("=", 1)[1].startswith("eyJ"):   # key=JWT ที่ไม่รู้จักชื่อ key
+        first = first.split("=", 1)[1].strip()
     if first.lower().startswith("bearer "):
         first = first[7:].strip()
     return TokenPair(first)
