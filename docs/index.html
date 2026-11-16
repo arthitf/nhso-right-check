@@ -6,32 +6,32 @@
 <title>คู่มือ ตรวจสอบสิทธิ สปสช. — ตรวจสอบสิทธิ / ปิดสิทธิ</title>
 <meta name="description" content="คู่มือดาวน์โหลด ติดตั้ง และใช้งานโปรแกรมตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT) พัฒนาโดย arthit.f">
 <style>
-:root{--paper:#f3ecdc;--panel:#fffaf0;--ink:#1d1b16;--mute:#6b6457;--line:#1d1b16;--red:#d9472b;--green:#2f8f5b;--amber:#e8a33d;--blue:#2d5d8a;
+:root{--paper:#e6eff9;--panel:#fbfdff;--ink:#0b2a55;--mute:#56688a;--line:#0b2a55;--red:#d9472b;--green:#14866d;--amber:#f2b632;--blue:#0d4da1;
 --mono:ui-monospace,"Cascadia Mono",Consolas,Menlo,"DejaVu Sans Mono",monospace;
 --thai:"Leelawadee UI","Thonburi","Noto Sans Thai","Sarabun","TH Sarabun New",Tahoma,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--thai);
-  background-image:radial-gradient(rgba(29,27,22,.07) 1px,transparent 1px);background-size:14px 14px}
+  background-image:radial-gradient(rgba(11,42,85,.07) 1px,transparent 1px);background-size:14px 14px}
 a{color:var(--blue)}
 .wrap{max-width:1000px;margin:0 auto;padding:22px 16px 60px;display:grid;grid-template-columns:220px 1fr;gap:22px}
 @media(max-width:820px){.wrap{grid-template-columns:1fr}nav.toc{position:static!important}}
 .win{background:var(--panel);border:2px solid var(--line);box-shadow:5px 5px 0 var(--line);border-radius:6px}
 .titlebar{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:2px solid var(--line);
-  background:repeating-linear-gradient(0deg,var(--panel) 0 3px,#e9e0cc 3px 4px);border-radius:4px 4px 0 0}
-.dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border:2px solid var(--line);border-radius:3px;display:block}
+  background:repeating-linear-gradient(0deg,var(--blue) 0 3px,#0a4290 3px 4px);border-radius:4px 4px 0 0}
+.dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border:2px solid #fff;border-radius:3px;display:block}
 .dots i:nth-child(1){background:var(--red)}.dots i:nth-child(2){background:var(--amber)}.dots i:nth-child(3){background:var(--green)}
-.tt{font:700 13px var(--mono);letter-spacing:.06em;background:var(--panel);padding:0 8px;margin:0 auto}
+.tt{font:700 13px var(--mono);letter-spacing:.06em;background:var(--blue);color:#fff;padding:0 8px;margin:0 auto}
 header.hero{grid-column:1/-1}
 .hero .in{padding:26px 26px 22px}
 .hero h1{margin:0;font-size:30px;line-height:1.25}
 .hero h1 span{font:700 14px var(--mono);display:block;color:var(--mute);letter-spacing:.1em;margin-bottom:6px}
 .hero p{margin:10px 0 0;color:var(--mute)}
-.by{display:inline-block;margin-top:12px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:999px;padding:2px 12px;background:var(--amber)}
+.by{display:inline-block;margin-top:12px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:999px;padding:2px 12px;background:var(--blue);color:#fff}
 nav.toc{position:sticky;top:16px;align-self:start}
 nav.toc .in{padding:10px 0}
 nav.toc a{display:block;padding:5px 14px;color:var(--ink);text-decoration:none;font-size:14px}
-nav.toc a:hover{background:#efe6d2}
+nav.toc a:hover{background:#dbe9f8}
 nav.toc a b{font:700 11px var(--mono);color:var(--mute);margin-right:6px}
 main{display:flex;flex-direction:column;gap:22px;min-width:0}
 section .in{padding:18px 22px}
@@ -41,21 +41,21 @@ h3{font-size:16px;margin:18px 0 6px}
 .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}
 .dl a{display:block;text-decoration:none;color:var(--ink);border:2px solid var(--line);border-radius:6px;padding:14px;background:#fff;box-shadow:3px 3px 0 var(--line);transition:transform .05s}
 .dl a:active{transform:translate(3px,3px);box-shadow:none}
-.dl a:hover{background:#f6edd9}
+.dl a:hover{background:#e3effc}
 .dl .os{font-weight:700;font-size:17px}.dl .f{font:12px var(--mono);color:var(--mute);word-break:break-all}
-.dl .go{display:inline-block;margin-top:8px;font:700 13px var(--mono);background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;border:2px solid var(--line)}
-code,kbd{font:14px var(--mono);background:#efe6d2;padding:1px 5px;border-radius:3px}
+.dl .go{display:inline-block;margin-top:8px;font:700 13px var(--mono);background:var(--blue);color:#fff;padding:3px 10px;border-radius:4px;border:2px solid var(--line)}
+code,kbd{font:14px var(--mono);background:#dbe9f8;padding:1px 5px;border-radius:3px}
 kbd{border:1.5px solid var(--line);background:#fff}
-pre{font:13.5px/1.55 var(--mono);background:#1d1b16;color:#efe8d8;padding:12px 14px;border-radius:5px;overflow:auto;margin:8px 0}
-pre .c{color:#a59d8d}
+pre{font:13.5px/1.55 var(--mono);background:#0b2a55;color:#e6eff9;padding:12px 14px;border-radius:5px;overflow:auto;margin:8px 0}
+pre .c{color:#8fb0dc}
 ol.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
 ol.steps>li{counter-increment:s;position:relative;padding:4px 0 10px 44px}
-ol.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:4px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:4px;padding:1px 5px;background:var(--amber)}
+ol.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:4px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:4px;padding:1px 5px;background:var(--blue);color:#fff}
 table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
 th,td{border:1.5px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
-th{background:#efe6d2;font:700 13px var(--mono)}
+th{background:#dbe9f8;font:700 13px var(--mono)}
 .note{border:2px solid var(--line);border-left-width:8px;border-radius:4px;padding:8px 12px;margin:10px 0;background:#fff}
-.note.warn{border-left-color:var(--red)}.note.tip{border-left-color:var(--green)}
+.note.warn{border-left-color:var(--red)}.note.tip{border-left-color:var(--blue)}
 .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:13px var(--mono);margin:10px 0}
 .flow span{border:2px solid var(--line);border-radius:4px;padding:5px 10px;background:#fff}
 .flow i{font-style:normal;font-weight:700}
@@ -84,10 +84,9 @@ footer b{color:var(--ink)}
     <a href="#install"><b>03</b>ติดตั้ง &amp; ตั้งค่า</a>
     <a href="#use"><b>04</b>วิธีใช้งาน</a>
     <a href="#batch"><b>05</b>ทำทีละหลายคน</a>
-    <a href="#github"><b>06</b>อัปขึ้น GitHub</a>
-    <a href="#dev"><b>07</b>สำหรับนักพัฒนา</a>
-    <a href="#faq"><b>08</b>ปัญหาที่พบบ่อย</a>
-    <a href="#ref"><b>09</b>เอกสารอ้างอิง</a>
+    <a href="#dev"><b>06</b>สำหรับนักพัฒนา</a>
+    <a href="#faq"><b>07</b>ปัญหาที่พบบ่อย</a>
+    <a href="#ref"><b>08</b>เอกสารอ้างอิง</a>
   </div>
 </nav>
 
@@ -193,37 +192,8 @@ nhso-right-check close-batch examples/close_input.csv --send</pre>
   <p>ไฟล์ผลลัพธ์เปิดใน Excel ได้ ภาษาไทยไม่เพี้ยน</p>
 </div></section>
 
-<section id="github" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
-  <h2><b>06</b>อัปโค้ดขึ้น GitHub + สร้างไฟล์ดาวน์โหลด</h2>
-  <h3>ก. สร้าง repo</h3>
-  <ol class="steps">
-    <li>เข้า <a href="https://github.com/new">github.com/new</a> ตั้งชื่อ <code>nhso-right-check</code> เลือก <b>Public</b> โดยไม่ต้องติ๊ก README แล้วกด Create repository</li>
-  </ol>
-  <h3>ข. อัปโหลดโค้ด (เลือกทางใดทางหนึ่ง)</h3>
-  <p><b>วิธีที่ 1 — ผ่านหน้าเว็บ</b> (ไม่ต้องลงโปรแกรม)</p>
-  <ol class="steps">
-    <li>ในหน้า repo ใหม่ กด <b>uploading an existing file</b></li>
-    <li>ลากไฟล์และโฟลเดอร์ทั้งหมดในโฟลเดอร์ <code>nhso-right-check</code> ลงไป <b>ยกเว้น</b> <code>.env</code>, token และไฟล์ <code>.sqlite3</code></li>
-    <li>โฟลเดอร์ <code>.github</code> เป็นโฟลเดอร์ซ่อน: บน Windows ให้เปิด View → Hidden items ก่อน ถ้าลากไม่ขึ้น ให้กด Add file → Create new file แล้วพิมพ์ชื่อ <code>.github/workflows/ci.yml</code> จากนั้นวางเนื้อหาไฟล์ลงไป (ทำแบบเดียวกันกับ <code>release.yml</code>)</li>
-    <li>กด <b>Commit changes</b></li>
-  </ol>
-  <p><b>วิธีที่ 2 — ใช้ git</b> (แนะนำ ใช้ไฟล์ zip ที่มีประวัติ git มาให้แล้ว)</p>
-<pre>cd nhso-right-check
-git remote add origin https://github.com/&lt;ชื่อผู้ใช้&gt;/nhso-right-check.git
-git push -u origin main</pre>
-  <h3>ค. สร้างไฟล์โปรแกรม Windows / Mac / Linux อัตโนมัติ</h3>
-  <ol class="steps">
-    <li>ในหน้า repo ไปที่ <b>Releases → Draft a new release</b></li>
-    <li>ตั้ง Tag เป็น <code>v0.3.0</code> แล้วกด <b>Publish release</b></li>
-    <li>รอประมาณ 5–10 นาที ดูความคืบหน้าได้ที่แท็บ <b>Actions</b> เสร็จแล้วไฟล์ zip ของทั้ง 3 OS จะถูกแนบไว้ใน Release และปุ่มดาวน์โหลดในหน้านี้จะใช้งานได้ทันที</li>
-  </ol>
-  <h3>ง. เปิดหน้าคู่มือนี้เป็นเว็บ (เลือกได้)</h3>
-  <p>Settings → Pages → Branch <code>main</code> / folder <code>/docs</code> → Save หรือจะนำไฟล์ <code>docs/index.html</code> ไปวางบนเว็บของตัวเองก็ได้ ให้แก้ค่า <code>GITHUB_REPO</code> ในไฟล์ให้เป็นชื่อ repo ของคุณ</p>
-  <div class="note warn">repo เป็น Public ได้ แต่ <b>ห้ามอัป</b> <code>.env</code>, token, ไฟล์ประวัติ <code>.sqlite3</code> หรือ CSV ที่มีข้อมูลผู้ป่วย (ไฟล์ <code>.gitignore</code> กันไว้ให้แล้ว และ CI จะตรวจซ้ำ)</div>
-</div></section>
-
 <section id="dev" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
-  <h2><b>07</b>สำหรับนักพัฒนา</h2>
+  <h2><b>06</b>สำหรับนักพัฒนา</h2>
   <h3>API ที่ใช้ (ตามคู่มือ สปสช.)</h3>
   <table>
     <tr><th>งาน</th><th>Method / Path</th><th>Auth</th></tr>
@@ -263,7 +233,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
 </div></section>
 
 <section id="faq" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
-  <h2><b>08</b>ปัญหาที่พบบ่อย</h2>
+  <h2><b>07</b>ปัญหาที่พบบ่อย</h2>
   <table>
     <tr><th>อาการ</th><th>วิธีแก้</th></tr>
     <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 06</td></tr>
@@ -278,7 +248,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
 </div></section>
 
 <section id="ref" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
-  <h2><b>09</b>เอกสารอ้างอิง สปสช.</h2>
+  <h2><b>08</b>เอกสารอ้างอิง สปสช.</h2>
   <ul>
     <li>API Specification Document – API การตรวจสอบสิทธิ เวอร์ชัน 1.5 (5 ส.ค. 2568)</li>
     <li>หนังสือ สปสช 6.70/ว๓๕๗ (3 พ.ย. 2569) แจ้งยุติการให้บริการระบบ API ตรวจสอบสิทธิเดิม</li>

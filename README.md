@@ -2,7 +2,7 @@
 
 โปรแกรมตรวจสอบสิทธิและปิดสิทธิ สปสช. — **พัฒนาโดย arthit.f**
 
-📖 คู่มือหน้าเว็บ: [`docs/index.html`](docs/index.html) (เปิด GitHub Pages ได้)
+📖 คู่มือผู้ใช้ (หน้าเว็บ): [`docs/index.html`](docs/index.html) · 🛠 คู่มือผู้ดูแล (อัป GitHub / ออก Release): [`docs/DEPLOY.md`](docs/DEPLOY.md)
 
 ## หน้าจอ
 
