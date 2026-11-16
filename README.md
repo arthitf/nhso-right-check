@@ -1,4 +1,4 @@
-# nhso-claim-tool
+# ตรวจสอบสิทธิ สปสช. (nhso-right-check)
 
 โปรแกรมตรวจสอบสิทธิและปิดสิทธิ สปสช. — **พัฒนาโดย arthit.f**
 
@@ -14,7 +14,7 @@ run.bat            ← ดับเบิลคลิก/รันเปล่�
 
 ## ดาวน์โหลดโปรแกรม (ไม่ต้องลง Python)
 
-หน้า **Releases** ของ repo: `nhso-claim-windows-setup.exe` (ตัวติดตั้ง) · `nhso-claim-windows-x64.zip` (แตกไฟล์ใช้ได้เลย) · `nhso-claim-macos-arm64.zip` (Mac M1 ขึ้นไป) · `nhso-claim-linux-x64.zip`
+หน้า **Releases** ของ repo: `nhso-right-check-windows-setup.exe` (ตัวติดตั้ง) · `nhso-right-check-windows-x64.zip` (แตกไฟล์ใช้ได้เลย) · `nhso-right-check-macos-arm64.zip` (Mac M1 ขึ้นไป) · `nhso-right-check-linux-x64.zip`
 
 | ส่วน | API ที่ใช้ | เอกสารอ้างอิง |
 |---|---|---|
@@ -38,8 +38,8 @@ run.bat            ← ดับเบิลคลิก/รันเปล่�
 ## ติดตั้ง (Windows)
 
 ```bat
-git clone https://github.com/<user>/nhso-claim-tool.git
-cd nhso-claim-tool
+git clone https://github.com/<user>/nhso-right-check.git
+cd nhso-right-check
 copy .env.example .env      &  REM แล้วแก้ค่า HCODE, NHSO_ENDPOINT_TOKEN, RECORDER_PID
 run.bat --version           &  REM สร้าง .venv และติดตั้ง requests ให้อัตโนมัติ
 ```
@@ -114,7 +114,7 @@ run.bat history -n 50
 
 ```bash
 pip install -r requirements.txt pyinstaller
-python build.py        # ได้ dist/nhso-claim(.exe) ของ OS ที่รัน
+python build.py        # ได้ dist/nhso-right-check(.exe) ของ OS ที่รัน
 ```
 
 หรือสร้าง tag `v*` บน GitHub แล้ว Actions (`release.yml`) จะ build ครบ 3 OS แล้วแนบเข้า Release ให้
@@ -131,7 +131,7 @@ GitHub Actions รัน test บน Ubuntu และ Windows (Python 3.9 / 3.12
 ## โครงสร้างโปรเจกต์
 
 ```
-nhso_claim/
+nhso_right_check/
   config.py      ตั้งค่า / .env / base URL test-prod
   srm.py         ตรวจสอบสิทธิ SRM + จัดการ token
   endpoint.py    ปิดสิทธิ / ยกเลิก NHSO ENDPOINT

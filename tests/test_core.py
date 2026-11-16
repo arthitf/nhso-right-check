@@ -4,11 +4,11 @@ from decimal import Decimal
 
 import pytest
 
-from nhso_claim.config import Settings
-from nhso_claim.endpoint import ClaimRequest, EndpointClient, build_claim_payload, is_success, to_epoch_ms
-from nhso_claim.srm import SRMClient, SRMError, main_fund, parse_token_text, summarize
-from nhso_claim.store import ClaimStore
-from nhso_claim.validation import ValidationError, is_valid_pid, mask_pid, to_amount
+from nhso_right_check.config import Settings
+from nhso_right_check.endpoint import ClaimRequest, EndpointClient, build_claim_payload, is_success, to_epoch_ms
+from nhso_right_check.srm import SRMClient, SRMError, main_fund, parse_token_text, summarize
+from nhso_right_check.store import ClaimStore
+from nhso_right_check.validation import ValidationError, is_valid_pid, mask_pid, to_amount
 
 VALID_PID = "1101700203450"      # check digit ถูกต้อง (เลขทดสอบ)
 RECORDER = "3101112223332"

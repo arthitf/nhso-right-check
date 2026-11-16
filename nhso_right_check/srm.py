@@ -87,7 +87,7 @@ class SRMClient:
         raise SRMError(
             f"ไม่พบไฟล์ token: {self.s.srm_token_file}\n"
             "วิธีแก้: (ก) เสียบบัตร → Login SRM Portal → กด 'คลิกเพื่อเข้าใช้งานระบบ SRM Portal' แล้วรันใหม่\n"
-            "        (ข) หรือใส่ token เอง: python -m nhso_claim token set  /  --token <access_token>"
+            "        (ข) หรือใส่ token เอง: python -m nhso_right_check token set  /  --token <access_token>"
         )
 
     def reload_token(self) -> TokenPair:

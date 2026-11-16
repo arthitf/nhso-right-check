@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>คู่มือ NHSO Claim Tool — ตรวจสอบสิทธิ / ปิดสิทธิ</title>
+<title>คู่มือ ตรวจสอบสิทธิ สปสช. — ตรวจสอบสิทธิ / ปิดสิทธิ</title>
 <meta name="description" content="คู่มือดาวน์โหลด ติดตั้ง และใช้งานโปรแกรมตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT) พัฒนาโดย arthit.f">
 <style>
 :root{--paper:#f3ecdc;--panel:#fffaf0;--ink:#1d1b16;--mute:#6b6457;--line:#1d1b16;--red:#d9472b;--green:#2f8f5b;--amber:#e8a33d;--blue:#2d5d8a;
@@ -70,7 +70,7 @@ footer b{color:var(--ink)}
 <header class="hero win">
   <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><div class="tt">MANUAL.HTML</div></div>
   <div class="in">
-    <h1><span>NHSO CLAIM TOOL · คู่มือการใช้งาน</span>โปรแกรมตรวจสอบสิทธิ &amp; ปิดสิทธิ สปสช.</h1>
+    <h1><span>NHSO RIGHT CHECK · คู่มือการใช้งาน</span>โปรแกรมตรวจสอบสิทธิ &amp; ปิดสิทธิ สปสช.</h1>
     <p>โปรแกรมพื้นฐานที่ทำตามคู่มือ API ของ สปสช. ใช้ตรวจสอบสิทธิผ่าน <b>SRM</b> และปิดสิทธิผ่าน <b>NHSO ENDPOINT FOR SINGLE CLAIM</b> ใช้ได้บน Windows, macOS (Apple Silicon M1 ขึ้นไป) และ Linux หน้านี้ใช้เป็นตัวอย่างสำหรับคนที่อยากพัฒนาต่อได้ด้วย</p>
     <span class="by">พัฒนาโดย arthit.f</span>
   </div>
@@ -97,10 +97,10 @@ footer b{color:var(--ink)}
   <h2><b>01</b>ดาวน์โหลด</h2>
   <p>เลือกไฟล์ให้ตรงกับเครื่อง ไม่ต้องติดตั้ง Python เพิ่ม</p>
   <div class="dl">
-    <a data-asset="nhso-claim-windows-setup.exe" href="#"><div class="os">Windows — ตัวติดตั้ง</div><div class="f">nhso-claim-windows-setup.exe</div><span class="go">↓ แนะนำ</span></a>
-    <a data-asset="nhso-claim-windows-x64.zip" href="#"><div class="os">Windows — แตกไฟล์ใช้ได้เลย</div><div class="f">nhso-claim-windows-x64.zip (portable)</div><span class="go">↓ ดาวน์โหลด</span></a>
-    <a data-asset="nhso-claim-macos-arm64.zip" href="#"><div class="os">macOS (M1 ขึ้นไป)</div><div class="f">nhso-claim-macos-arm64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
-    <a data-asset="nhso-claim-linux-x64.zip" href="#"><div class="os">Linux</div><div class="f">nhso-claim-linux-x64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
+    <a data-asset="nhso-right-check-windows-setup.exe" href="#"><div class="os">Windows — ตัวติดตั้ง</div><div class="f">nhso-right-check-windows-setup.exe</div><span class="go">↓ แนะนำ</span></a>
+    <a data-asset="nhso-right-check-windows-x64.zip" href="#"><div class="os">Windows — แตกไฟล์ใช้ได้เลย</div><div class="f">nhso-right-check-windows-x64.zip (portable)</div><span class="go">↓ ดาวน์โหลด</span></a>
+    <a data-asset="nhso-right-check-macos-arm64.zip" href="#"><div class="os">macOS (M1 ขึ้นไป)</div><div class="f">nhso-right-check-macos-arm64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
+    <a data-asset="nhso-right-check-linux-x64.zip" href="#"><div class="os">Linux</div><div class="f">nhso-right-check-linux-x64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
   </div>
   <p style="margin-top:12px">ซอร์สโค้ด: <a id="repoLink" href="#">GitHub</a> · <a id="relLink" href="#">ดูทุกเวอร์ชัน (Releases)</a></p>
 </div></section>
@@ -121,13 +121,13 @@ footer b{color:var(--ink)}
   <h2><b>03</b>ติดตั้ง &amp; ตั้งค่า</h2>
   <h3>แบบตัวติดตั้ง (Windows)</h3>
   <ol class="steps">
-    <li>ดับเบิลคลิก <code>nhso-claim-windows-setup.exe</code> แล้วกด Next ไปจนจบ (ไม่ต้องใช้สิทธิ Admin)</li>
+    <li>ดับเบิลคลิก <code>nhso-right-check-windows-setup.exe</code> แล้วกด Next ไปจนจบ (ไม่ต้องใช้สิทธิ Admin)</li>
     <li>เมื่อติดตั้งเสร็จ โปรแกรมจะเปิดไฟล์ <code>.env</code> ให้กรอกค่า (ดูข้อ 2 ด้านล่าง) จากนั้นบันทึกไฟล์</li>
-    <li>เปิดโปรแกรมจากไอคอน <b>NHSO Claim Tool</b> บน Desktop หรือ Start Menu (ใน Start Menu มีเมนู “ตั้งค่า (.env)” และ “คู่มือ” ด้วย) เวลาอัปเดตเป็นเวอร์ชันใหม่ ค่าใน .env จะไม่ถูกทับ</li>
+    <li>เปิดโปรแกรมจากไอคอน <b>ตรวจสอบสิทธิ สปสช.</b> บน Desktop หรือ Start Menu (ใน Start Menu มีเมนู “ตั้งค่า (.env)” และ “คู่มือ” ด้วย) เวลาอัปเดตเป็นเวอร์ชันใหม่ ค่าใน .env จะไม่ถูกทับ</li>
   </ol>
   <h3>แบบแตกไฟล์ใช้ได้เลย (Windows / macOS / Linux)</h3>
   <ol class="steps">
-    <li>แตกไฟล์ zip ไว้ในโฟลเดอร์ เช่น <code>Desktop\nhso-claim</code></li>
+    <li>แตกไฟล์ zip ไว้ในโฟลเดอร์ เช่น <code>Desktop\nhso-right-check</code></li>
     <li>เปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วเปิดด้วย Notepad กรอกค่าตามนี้
 <pre>NHSO_ENV=test                 <span class="c"># test = ทดสอบ, prod = ใช้จริง</span>
 HCODE=xxxxx                   <span class="c"># รหัสหน่วยบริการ 5 หลัก</span>
@@ -135,9 +135,9 @@ NHSO_ENDPOINT_TOKEN=xxxxxxxx  <span class="c"># TOKEN KEY ที่ สปสช
 RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้าหน้าที่ผู้บันทึก</span></pre></li>
     <li>เปิดโปรแกรม
       <table>
-        <tr><th>Windows</th><td>ดับเบิลคลิก <code>nhso-claim.exe</code> ถ้า SmartScreen เตือน ให้กด “More info” แล้วกด “Run anyway”</td></tr>
-        <tr><th>macOS</th><td>คลิกขวาที่ <code>nhso-claim</code> แล้วเลือก Open (ครั้งแรกครั้งเดียว) หรือเปิด Terminal พิมพ์<br><code>xattr -d com.apple.quarantine nhso-claim &amp;&amp; ./nhso-claim</code></td></tr>
-        <tr><th>Linux</th><td><code>chmod +x nhso-claim &amp;&amp; ./nhso-claim</code></td></tr>
+        <tr><th>Windows</th><td>ดับเบิลคลิก <code>nhso-right-check.exe</code> ถ้า SmartScreen เตือน ให้กด “More info” แล้วกด “Run anyway”</td></tr>
+        <tr><th>macOS</th><td>คลิกขวาที่ <code>nhso-right-check</code> แล้วเลือก Open (ครั้งแรกครั้งเดียว) หรือเปิด Terminal พิมพ์<br><code>xattr -d com.apple.quarantine nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
+        <tr><th>Linux</th><td><code>chmod +x nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
       </table>
     </li>
     <li>เบราว์เซอร์จะเปิดหน้า <code>http://127.0.0.1:8765</code> ขึ้นมาเอง (ทำงานในเครื่องตัวเองเท่านั้น) ถ้าปิดหน้าต่างดำ โปรแกรมจะปิดตาม</li>
@@ -167,18 +167,18 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
   <h3>03 ยกเลิกปิดสิทธิ</h3>
   <p>ใส่ <b>transactionId</b> แล้วกด <span class="btnlike">กดยกเลิกปิดสิทธิ</span> ถ้าไม่ใส่ seq โปรแกรมจะหาจากประวัติให้เอง (ระบบส่ง <code>paymentStatus = CANCEL</code>)</p>
   <h3>04 ประวัติ</h3>
-  <p>แสดง 100 รายการล่าสุด ข้อมูลเก็บในไฟล์ <code>nhso_claim_log.sqlite3</code> ในเครื่อง เลขบัตรบนหน้าจอจะถูกปิดบางส่วนไว้</p>
+  <p>แสดง 100 รายการล่าสุด ข้อมูลเก็บในไฟล์ <code>nhso_right_check_log.sqlite3</code> ในเครื่อง เลขบัตรบนหน้าจอจะถูกปิดบางส่วนไว้</p>
 </div></section>
 
 <section id="batch" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
   <h2><b>05</b>ทำทีละหลายคน (Command line)</h2>
   <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม</p>
 <pre><span class="c"># ตรวจสอบสิทธิหลายคน (CSV มีคอลัมน์ pid)</span>
-nhso-claim check-batch examples/check_input.csv -o check_result.csv
+nhso-right-check check-batch examples/check_input.csv -o check_result.csv
 
 <span class="c"># ปิดสิทธิหลายคน: ไม่ใส่ --send = ทดลอง (ยังไม่ส่ง)</span>
-nhso-claim close-batch examples/close_input.csv
-nhso-claim close-batch examples/close_input.csv --send</pre>
+nhso-right-check close-batch examples/close_input.csv
+nhso-right-check close-batch examples/close_input.csv --send</pre>
   <table>
     <tr><th>คอลัมน์</th><th>บังคับ</th><th>หมายเหตุ</th></tr>
     <tr><td>pid</td><td>✔</td><td>13 หลัก</td></tr>
@@ -195,19 +195,19 @@ nhso-claim close-batch examples/close_input.csv --send</pre>
   <h2><b>06</b>อัปโค้ดขึ้น GitHub + สร้างไฟล์ดาวน์โหลด</h2>
   <h3>ก. สร้าง repo</h3>
   <ol class="steps">
-    <li>เข้า <a href="https://github.com/new">github.com/new</a> ตั้งชื่อ <code>nhso-claim-tool</code> เลือก <b>Public</b> โดยไม่ต้องติ๊ก README แล้วกด Create repository</li>
+    <li>เข้า <a href="https://github.com/new">github.com/new</a> ตั้งชื่อ <code>nhso-right-check</code> เลือก <b>Public</b> โดยไม่ต้องติ๊ก README แล้วกด Create repository</li>
   </ol>
   <h3>ข. อัปโหลดโค้ด (เลือกทางใดทางหนึ่ง)</h3>
   <p><b>วิธีที่ 1 — ผ่านหน้าเว็บ</b> (ไม่ต้องลงโปรแกรม)</p>
   <ol class="steps">
     <li>ในหน้า repo ใหม่ กด <b>uploading an existing file</b></li>
-    <li>ลากไฟล์และโฟลเดอร์ทั้งหมดในโฟลเดอร์ <code>nhso-claim-tool</code> ลงไป <b>ยกเว้น</b> <code>.env</code>, token และไฟล์ <code>.sqlite3</code></li>
+    <li>ลากไฟล์และโฟลเดอร์ทั้งหมดในโฟลเดอร์ <code>nhso-right-check</code> ลงไป <b>ยกเว้น</b> <code>.env</code>, token และไฟล์ <code>.sqlite3</code></li>
     <li>โฟลเดอร์ <code>.github</code> เป็นโฟลเดอร์ซ่อน: บน Windows ให้เปิด View → Hidden items ก่อน ถ้าลากไม่ขึ้น ให้กด Add file → Create new file แล้วพิมพ์ชื่อ <code>.github/workflows/ci.yml</code> จากนั้นวางเนื้อหาไฟล์ลงไป (ทำแบบเดียวกันกับ <code>release.yml</code>)</li>
     <li>กด <b>Commit changes</b></li>
   </ol>
   <p><b>วิธีที่ 2 — ใช้ git</b> (แนะนำ ใช้ไฟล์ zip ที่มีประวัติ git มาให้แล้ว)</p>
-<pre>cd nhso-claim-tool
-git remote add origin https://github.com/&lt;ชื่อผู้ใช้&gt;/nhso-claim-tool.git
+<pre>cd nhso-right-check
+git remote add origin https://github.com/&lt;ชื่อผู้ใช้&gt;/nhso-right-check.git
 git push -u origin main</pre>
   <h3>ค. สร้างไฟล์โปรแกรม Windows / Mac / Linux อัตโนมัติ</h3>
   <ol class="steps">
@@ -239,15 +239,15 @@ git push -u origin main</pre>
   <h3>ขั้นตอนภายในโปรแกรม</h3>
   <div class="flow"><span>pid</span><i>→</i><span>ตรวจ check digit</span><i>→</i><span>SRM right-search</span><i>→</i><span>เลือกกองทุน fundType=Y<br>เช็คเสียชีวิต</span><i>→</i><span>สร้าง payload แฟม 6<br>transactionId = HCODE+เวลา+สุ่ม</span><i>→</i><span>POST ENDPOINT</span><i>→</i><span>seq + authenCode → SQLite</span></div>
   <h3>รันจากซอร์สโค้ด</h3>
-<pre>git clone https://github.com/&lt;user&gt;/nhso-claim-tool.git
-cd nhso-claim-tool
+<pre>git clone https://github.com/&lt;user&gt;/nhso-right-check.git
+cd nhso-right-check
 pip install -r requirements.txt      <span class="c"># ใช้แค่ requests</span>
-python -m nhso_claim                 <span class="c"># เปิดหน้าจอ</span>
-python -m nhso_claim check 1234567890123
+python -m nhso_right_check                 <span class="c"># เปิดหน้าจอ</span>
+python -m nhso_right_check check 1234567890123
 pip install pytest &amp;&amp; pytest -q      <span class="c"># test ใช้ mock ไม่ได้ยิง API จริง</span>
 python build.py                      <span class="c"># build ไฟล์โปรแกรมของ OS ที่ใช้อยู่</span></pre>
   <h3>โครงสร้างโค้ด</h3>
-<pre>nhso_claim/
+<pre>nhso_right_check/
   config.py      ตั้งค่า, base URL test/prod
   srm.py         ตรวจสอบสิทธิ + จัดการ token
   endpoint.py    ปิดสิทธิ / ยกเลิก + ตรวจข้อมูลตาม spec
@@ -288,11 +288,11 @@ python build.py                      <span class="c"># build ไฟล์โป�
 
 </main>
 
-<footer>NHSO Claim Tool · พัฒนาโดย <b>arthit.f</b></footer>
+<footer>ตรวจสอบสิทธิ สปสช. · พัฒนาโดย <b>arthit.f</b></footer>
 </div>
 <script>
-/* แก้เป็น repo ของคุณ เช่น "arthit-f/nhso-claim-tool" */
-const GITHUB_REPO = "arthit-f/nhso-claim-tool";
+/* แก้เป็น repo ของคุณ เช่น "arthit-f/nhso-right-check" */
+const GITHUB_REPO = "arthit-f/nhso-right-check";
 const base = "https://github.com/" + GITHUB_REPO;
 document.getElementById("repoLink").href = base;
 document.getElementById("relLink").href = base + "/releases";

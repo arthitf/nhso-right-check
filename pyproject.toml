@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nhso-claim-tool"
+name = "nhso-right-check"
 version = "0.2.0"
 description = "ตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)"
 authors = [{ name = "arthit.f" }]
@@ -14,13 +14,13 @@ dependencies = ["requests>=2.31"]
 dev = ["pytest>=7"]
 
 [project.scripts]
-nhso-claim = "nhso_claim.cli:main"
+nhso-right-check = "nhso_right_check.cli:main"
 
 [tool.setuptools]
-packages = ["nhso_claim"]
+packages = ["nhso_right_check"]
 
 [tool.setuptools.package-data]
-nhso_claim = ["static/*.html"]
+nhso_right_check = ["static/*.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

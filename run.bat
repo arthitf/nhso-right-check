@@ -6,4 +6,4 @@ if not exist .venv (
   python -m venv .venv
   .venv\Scripts\pip install -q -r requirements.txt
 )
-.venv\Scripts\python -m nhso_claim %*
+.venv\Scripts\python -m nhso_right_check %*

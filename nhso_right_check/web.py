@@ -1,6 +1,6 @@
 """หน้าจอโปรแกรม (Web UI ในเครื่อง) — ใช้แค่ Python standard library ไม่ต้องติดตั้งอะไรเพิ่ม
 
-เปิดด้วย:  python -m nhso_claim ui   (หรือดับเบิลคลิกไฟล์โปรแกรมที่ build แล้ว)
+เปิดด้วย:  python -m nhso_right_check ui   (หรือดับเบิลคลิกไฟล์โปรแกรมที่ build แล้ว)
 เปิดเฉพาะ 127.0.0.1 (เครื่องตัวเอง) และทุก request ต้องมี session key ที่ฝังในหน้าเว็บ
 """
 from __future__ import annotations
@@ -114,7 +114,7 @@ def make_handler(app: App, port: int):
     allowed_hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
 
     class Handler(BaseHTTPRequestHandler):
-        server_version = "nhso-claim"
+        server_version = "nhso-right-check"
 
         def log_message(self, fmt, *args):  # ไม่พิมพ์ log ทุก request (อาจมีเลขบัตรใน URL)
             log.debug(fmt, *args)
@@ -180,7 +180,7 @@ def serve(settings: Settings, port: int = 8765, open_browser: bool = True) -> No
     if httpd is None:
         raise SystemExit("ไม่มี port ว่าง")
     url = f"http://127.0.0.1:{port}/"
-    print(f"NHSO Claim Tool v{__version__} — พัฒนาโดย {__author__}")
+    print(f"ตรวจสอบสิทธิ สปสช. v{__version__} — พัฒนาโดย {__author__}")
     print(f"เปิดหน้าจอที่ {url}   (ปิดหน้าต่างนี้ = ปิดโปรแกรม / กด Ctrl+C)")
     if open_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()

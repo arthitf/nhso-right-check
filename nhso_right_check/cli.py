@@ -1,12 +1,12 @@
 """คำสั่งใช้งาน:
 
-  python -m nhso_claim token show|set|clear     จัดการ SRM token (อ่านอัตโนมัติจาก token.txt หรือวางเอง)
-  python -m nhso_claim check <PID>              ตรวจสอบสิทธิรายคน
-  python -m nhso_claim check-batch in.csv       ตรวจสอบสิทธิหลายคน -> CSV
-  python -m nhso_claim close --pid ... --service PG0060001 --privilege 700 [--send]
-  python -m nhso_claim close-batch in.csv [--send]
-  python -m nhso_claim cancel --trans <transactionId> [--seq N] [--send]
-  python -m nhso_claim history
+  python -m nhso_right_check token show|set|clear     จัดการ SRM token (อ่านอัตโนมัติจาก token.txt หรือวางเอง)
+  python -m nhso_right_check check <PID>              ตรวจสอบสิทธิรายคน
+  python -m nhso_right_check check-batch in.csv       ตรวจสอบสิทธิหลายคน -> CSV
+  python -m nhso_right_check close --pid ... --service PG0060001 --privilege 700 [--send]
+  python -m nhso_right_check close-batch in.csv [--send]
+  python -m nhso_right_check cancel --trans <transactionId> [--seq N] [--send]
+  python -m nhso_right_check history
 
 ค่าเริ่มต้นเป็น DRY-RUN (แสดง JSON ที่จะส่ง แต่ยังไม่ส่ง) ต้องใส่ --send ถึงจะส่งจริง
 """
@@ -28,7 +28,7 @@ from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, main_fund, parse_token_
 from .store import ClaimStore
 from .validation import ValidationError, mask_pid
 
-log = logging.getLogger("nhso_claim")
+log = logging.getLogger("nhso_right_check")
 
 
 def _print_json(obj) -> None:
@@ -228,7 +228,7 @@ def cmd_history(a, s: Settings) -> int:
 
 # ---------------- main ----------------
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="nhso_claim", description="ตรวจสอบสิทธิ (SRM) + ปิดสิทธิ (NHSO ENDPOINT)")
+    p = argparse.ArgumentParser(prog="nhso_right_check", description="ตรวจสอบสิทธิ (SRM) + ปิดสิทธิ (NHSO ENDPOINT)")
     p.add_argument("--version", action="version", version=f"%(prog)s {__version__} — พัฒนาโดย {__author__}")
     p.add_argument("--env-file", default=".env")
     p.add_argument("--env", choices=["test", "prod"], help="ทับค่า NHSO_ENV")

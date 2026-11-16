@@ -18,11 +18,11 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            asset: nhso-claim-windows-x64
+            asset: nhso-right-check-windows-x64
           - os: macos-14            # Apple Silicon (M1/M2/M3/M4)
-            asset: nhso-claim-macos-arm64
+            asset: nhso-right-check-macos-arm64
           - os: ubuntu-22.04
-            asset: nhso-claim-linux-x64
+            asset: nhso-right-check-linux-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
           if [ "${{ runner.os }}" = "Windows" ]; then
             7z a ../${{ matrix.asset }}.zip ${{ matrix.asset }}
           else
-            chmod +x ${{ matrix.asset }}/nhso-claim
+            chmod +x ${{ matrix.asset }}/nhso-right-check
             zip -r ../${{ matrix.asset }}.zip ${{ matrix.asset }}
           fi
       # Windows: สร้างตัวติดตั้ง Setup.exe ด้วย Inno Setup เพิ่มจาก zip
@@ -54,14 +54,14 @@ jobs:
           choco install innosetup -y --no-progress
           $v = "${{ github.ref_name }}" -replace '^v',''
           if ($v -notmatch '^\d') { $v = "0.0.0-dev" }
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DAppVersion=$v" installer\nhso-claim.iss
-          Copy-Item "dist\nhso-claim-setup-$v.exe" "nhso-claim-windows-setup.exe"
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DAppVersion=$v" installer\nhso-right-check.iss
+          Copy-Item "dist\nhso-right-check-setup-$v.exe" "nhso-right-check-windows-setup.exe"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset }}
           path: |
             ${{ matrix.asset }}.zip
-            nhso-claim-windows-setup.exe
+            nhso-right-check-windows-setup.exe
           if-no-files-found: ignore
       - name: Attach to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -70,4 +70,4 @@ jobs:
           fail_on_unmatched_files: false
           files: |
             ${{ matrix.asset }}.zip
-            nhso-claim-windows-setup.exe
+            nhso-right-check-windows-setup.exe

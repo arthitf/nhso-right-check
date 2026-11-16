@@ -65,7 +65,7 @@ class Settings:
     # --- ทั่วไป ---
     timeout: float = 30.0
     batch_delay: float = 0.5                # หน่วงระหว่าง request ในโหมด batch (วินาที)
-    db_path: Path = Path("nhso_claim_log.sqlite3")
+    db_path: Path = Path("nhso_right_check_log.sqlite3")
 
     @classmethod
     def load(cls, env_file: str | os.PathLike | None = ".env") -> "Settings":
