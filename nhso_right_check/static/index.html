@@ -396,9 +396,9 @@ async function loadStatus(){
     $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";$("#sUsage").textContent=(s.usageToday||{}).srm||0;
     const srmOk=s.srmToken.length>0||s.srmTokenOverride;
     $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
-    const old=s.srmToken.length&&s.srmToken[0].ageMin>12*60;
+    const old=s.srmToken.length&&s.srmToken[0].ageMin>24*60;
     $("#tokInfo").outerHTML=card(srmOk&&!old?"ok":"err","SRM TOKEN",
-      (s.srmToken.length?s.srmToken.map(t=>`<div>${t.ageMin>12*60?"⚠":"✔"} ${esc(t.source)} — อัปเดต<b> ${ago(t.ageMin)}</b><br><span class="hint">${esc(t.path)}</span></div>`).join("")+
+      (s.srmToken.length?s.srmToken.map(t=>`<div>${t.ageMin>24*60?"⚠":"✔"} ${esc(t.source)} — อัปเดต<b> ${ago(t.ageMin)}</b><br><span class="hint">${esc(t.path)}</span></div>`).join("")+
         (old?`<div class="note-quota" style="margin-top:8px">token นี้เก่าแล้ว อาจหมดอายุ — <b>เสียบบัตร → Login SRM Portal</b> → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” แล้วโปรแกรมจะอ่าน token ใหม่ให้เอง</div>`:""):
        `<div>✘ ไม่พบ token<br><span class="hint">รอไฟล์ที่ ${esc(s.tokenFile)} — เสียบบัตรแล้ว Login SRM Portal หรือวาง token เอง</span></div>`)).replace('class="card','id="tokInfo" class="card');
     loadSettings();
