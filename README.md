@@ -24,7 +24,9 @@ Windows มี 2 ไฟล์: `nhso-right-check.exe` (หน้าต่าง�
 | ตรวจสอบสิทธิ | **SRM** `GET /api/ucws/v1/right-search?pid=` | API Specification ตรวจสอบสิทธิ v1.5 (5 ส.ค. 2568) — ใช้แทน `ucws.nhso.go.th` ที่ **ยุติ 15 ม.ค. 2570** |
 | ปิดสิทธิ / ยกเลิก | **NHSO ENDPOINT FOR SINGLE CLAIM** (แฟม 6–9) | DataSet v8.0 (07/12/2023) |
 
-> Phase 2 (ไฟล์ถัดไป): เชื่อม NHSO Secure SmartCard Agent v2.0 (`localhost:8189`, `/api/nhso-service/save-endpoint`)
+| เสียบบัตรยืนยันตัวตน + ปิดสิทธิ | **NHSO Secure SmartCard Agent** `localhost:8189` (`/api/smartcard/read`, `/api/nhso-service/save-endpoint`) | คู่มือ Secure SmartCard Agent v2.0 |
+
+> โปรแกรมตัวอย่าง (เดโม) เพื่อเรียนรู้ API ของ สปสช. แต่ละเส้น — จากคู่มือ สปสช. สู่ตัวอย่างโปรแกรม · หน่วยบริการที่ HIS เชื่อมแล้วใช้ HIS ต่อได้ตามปกติ · ไม่ใช่โปรแกรมทางการของ สปสช.
 
 ## ขั้นตอนการทำงาน
 
