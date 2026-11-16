@@ -1,0 +1,3 @@
+pid,service_code,privilege_amount,paid_amount,service_datetime,visit_number,main_inscl
+1101700203450,PG0060001,700,0,2026-11-16 08:30:00,VN0001,
+1101700203450,PG0060001,350.50,100,2026-11-16 09:15:00,VN0002,UCS

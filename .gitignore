@@ -1,0 +1,21 @@
+# ความลับ — ห้ามขึ้น GitHub
+.env
+.srm_token.txt
+token.txt
+*.token
+
+# ข้อมูลผู้ป่วย / ผลลัพธ์
+*.sqlite3
+*_result.csv
+data/
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+dist/
+build/
+*.egg-info/
