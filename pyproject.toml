@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nhso-claim-tool"
-version = "0.1.0"
+version = "0.2.0"
 description = "ตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)"
+authors = [{ name = "arthit.f" }]
 requires-python = ">=3.9"
 dependencies = ["requests>=2.31"]
 
@@ -17,6 +18,9 @@ nhso-claim = "nhso_claim.cli:main"
 
 [tool.setuptools]
 packages = ["nhso_claim"]
+
+[tool.setuptools.package-data]
+nhso_claim = ["static/*.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

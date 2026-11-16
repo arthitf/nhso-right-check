@@ -1,6 +1,20 @@
 # nhso-claim-tool
 
-โปรแกรมตรวจสอบสิทธิและปิดสิทธิ สปสช. (Phase 1)
+โปรแกรมตรวจสอบสิทธิและปิดสิทธิ สปสช. — **พัฒนาโดย arthit.f**
+
+📖 คู่มือหน้าเว็บ: [`docs/index.html`](docs/index.html) (เปิด GitHub Pages ได้)
+
+## หน้าจอ
+
+```
+run.bat            ← ดับเบิลคลิก/รันเปล่า = เปิดหน้าจอในเบราว์เซอร์ (http://127.0.0.1:8765)
+```
+
+แท็บ: 01 ตรวจสอบสิทธิ · 02 ปิดสิทธิ (ปุ่ม **กดปิดสิทธิ**) · 03 ยกเลิกปิดสิทธิ · 04 ประวัติ · 05 ตั้งค่า Token
+
+## ดาวน์โหลดโปรแกรม (ไม่ต้องลง Python)
+
+หน้า **Releases** ของ repo: `nhso-claim-windows-setup.exe` (ตัวติดตั้ง) · `nhso-claim-windows-x64.zip` (แตกไฟล์ใช้ได้เลย) · `nhso-claim-macos-arm64.zip` (Mac M1 ขึ้นไป) · `nhso-claim-linux-x64.zip`
 
 | ส่วน | API ที่ใช้ | เอกสารอ้างอิง |
 |---|---|---|
@@ -93,8 +107,17 @@ run.bat history -n 50
 - **path ของ API ปิดสิทธิ**: เอกสาร v8.0 ระบุแค่ base URL ไม่ได้บอก path ค่าที่ตั้งไว้ (`api/nhso-claim-detail`, ยกเลิกใช้ `PUT`) ต้องเทียบกับ Swagger ก่อน ที่ https://test.nhso.go.th/nhsoendpoint/swagger-ui.html แล้วแก้ใน `.env` ได้ (`NHSO_CLAIM_PATH`, `NHSO_CANCEL_PATH`, `NHSO_CANCEL_METHOD`)
 - ทดสอบใน **Test Zone** ให้ผ่านก่อนเปลี่ยนเป็น `NHSO_ENV=prod`
 - TOKEN KEY ของ ENDPOINT ใช้ได้เฉพาะ HCODE ที่ยื่นขอเท่านั้น (ใช้แบบฟอร์มขอ TOKEN KEY ส่งไปที่ newauthen@nhso.go.th)
-- **ห้าม commit** `.env`, token, `*.sqlite3`, ไฟล์ผลลัพธ์ CSV (มีอยู่ใน `.gitignore` แล้ว และ CI จะเช็กซ้ำ) ควรตั้ง repo เป็น **Private**
+- repo เป็น **Public** ได้ (โค้ดเรียกเฉพาะ API เปิดของ สปสช.) แต่ **ห้าม commit** `.env`, token, `*.sqlite3`, ไฟล์ผลลัพธ์ CSV ที่มีข้อมูลผู้ป่วย — กันไว้ใน `.gitignore` แล้ว และ CI ตรวจซ้ำทุกครั้งที่ push
 - เลขบัตรใน log และในหน้าจอจะถูกปิดบางส่วน (`1-xxxx-xxxxx-45-0`) แต่ในฐานข้อมูล SQLite จะเก็บเลขเต็ม เพราะต้องใช้ตอนยกเลิก
+
+## Build โปรแกรมเอง
+
+```bash
+pip install -r requirements.txt pyinstaller
+python build.py        # ได้ dist/nhso-claim(.exe) ของ OS ที่รัน
+```
+
+หรือสร้าง tag `v*` บน GitHub แล้ว Actions (`release.yml`) จะ build ครบ 3 OS แล้วแนบเข้า Release ให้
 
 ## พัฒนา
 
@@ -115,5 +138,9 @@ nhso_claim/
   validation.py  ตรวจ pid, จำนวนเงิน, hcode
   store.py       ประวัติ SQLite
   cli.py         คำสั่ง
+  web.py         หน้าจอ (local web server, stdlib)
+  static/index.html  หน้าจอ UI
+docs/index.html  คู่มือหน้าเว็บ
+build.py         build ไฟล์โปรแกรม (PyInstaller)
 tests/           pytest (mock HTTP ไม่มีการยิง API จริง)
 ```

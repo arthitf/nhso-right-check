@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>คู่มือ NHSO Claim Tool — ตรวจสอบสิทธิ / ปิดสิทธิ</title>
+<meta name="description" content="คู่มือดาวน์โหลด ติดตั้ง และใช้งานโปรแกรมตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT) พัฒนาโดย arthit.f">
+<style>
+:root{--paper:#f3ecdc;--panel:#fffaf0;--ink:#1d1b16;--mute:#6b6457;--line:#1d1b16;--red:#d9472b;--green:#2f8f5b;--amber:#e8a33d;--blue:#2d5d8a;
+--mono:ui-monospace,"Cascadia Mono",Consolas,Menlo,"DejaVu Sans Mono",monospace;
+--thai:"Leelawadee UI","Thonburi","Noto Sans Thai","Sarabun","TH Sarabun New",Tahoma,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--thai);
+  background-image:radial-gradient(rgba(29,27,22,.07) 1px,transparent 1px);background-size:14px 14px}
+a{color:var(--blue)}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 60px;display:grid;grid-template-columns:220px 1fr;gap:22px}
+@media(max-width:820px){.wrap{grid-template-columns:1fr}nav.toc{position:static!important}}
+.win{background:var(--panel);border:2px solid var(--line);box-shadow:5px 5px 0 var(--line);border-radius:6px}
+.titlebar{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:2px solid var(--line);
+  background:repeating-linear-gradient(0deg,var(--panel) 0 3px,#e9e0cc 3px 4px);border-radius:4px 4px 0 0}
+.dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border:2px solid var(--line);border-radius:3px;display:block}
+.dots i:nth-child(1){background:var(--red)}.dots i:nth-child(2){background:var(--amber)}.dots i:nth-child(3){background:var(--green)}
+.tt{font:700 13px var(--mono);letter-spacing:.06em;background:var(--panel);padding:0 8px;margin:0 auto}
+header.hero{grid-column:1/-1}
+.hero .in{padding:26px 26px 22px}
+.hero h1{margin:0;font-size:30px;line-height:1.25}
+.hero h1 span{font:700 14px var(--mono);display:block;color:var(--mute);letter-spacing:.1em;margin-bottom:6px}
+.hero p{margin:10px 0 0;color:var(--mute)}
+.by{display:inline-block;margin-top:12px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:999px;padding:2px 12px;background:var(--amber)}
+nav.toc{position:sticky;top:16px;align-self:start}
+nav.toc .in{padding:10px 0}
+nav.toc a{display:block;padding:5px 14px;color:var(--ink);text-decoration:none;font-size:14px}
+nav.toc a:hover{background:#efe6d2}
+nav.toc a b{font:700 11px var(--mono);color:var(--mute);margin-right:6px}
+main{display:flex;flex-direction:column;gap:22px;min-width:0}
+section .in{padding:18px 22px}
+h2{margin:0 0 10px;font-size:21px}
+h2 b{font:700 13px var(--mono);color:var(--mute);margin-right:8px}
+h3{font-size:16px;margin:18px 0 6px}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}
+.dl a{display:block;text-decoration:none;color:var(--ink);border:2px solid var(--line);border-radius:6px;padding:14px;background:#fff;box-shadow:3px 3px 0 var(--line);transition:transform .05s}
+.dl a:active{transform:translate(3px,3px);box-shadow:none}
+.dl a:hover{background:#f6edd9}
+.dl .os{font-weight:700;font-size:17px}.dl .f{font:12px var(--mono);color:var(--mute);word-break:break-all}
+.dl .go{display:inline-block;margin-top:8px;font:700 13px var(--mono);background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;border:2px solid var(--line)}
+code,kbd{font:14px var(--mono);background:#efe6d2;padding:1px 5px;border-radius:3px}
+kbd{border:1.5px solid var(--line);background:#fff}
+pre{font:13.5px/1.55 var(--mono);background:#1d1b16;color:#efe8d8;padding:12px 14px;border-radius:5px;overflow:auto;margin:8px 0}
+pre .c{color:#a59d8d}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+ol.steps>li{counter-increment:s;position:relative;padding:4px 0 10px 44px}
+ol.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:4px;font:700 13px var(--mono);border:2px solid var(--line);border-radius:4px;padding:1px 5px;background:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{border:1.5px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#efe6d2;font:700 13px var(--mono)}
+.note{border:2px solid var(--line);border-left-width:8px;border-radius:4px;padding:8px 12px;margin:10px 0;background:#fff}
+.note.warn{border-left-color:var(--red)}.note.tip{border-left-color:var(--green)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:13px var(--mono);margin:10px 0}
+.flow span{border:2px solid var(--line);border-radius:4px;padding:5px 10px;background:#fff}
+.flow i{font-style:normal;font-weight:700}
+.btnlike{display:inline-block;font:700 14px var(--thai);padding:2px 12px;border:2px solid var(--line);border-radius:4px;background:var(--red);color:#fff;box-shadow:2px 2px 0 var(--line)}
+footer{grid-column:1/-1;text-align:center;font:13px var(--mono);color:var(--mute)}
+footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero win">
+  <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><div class="tt">MANUAL.HTML</div></div>
+  <div class="in">
+    <h1><span>NHSO CLAIM TOOL · คู่มือการใช้งาน</span>โปรแกรมตรวจสอบสิทธิ &amp; ปิดสิทธิ สปสช.</h1>
+    <p>โปรแกรมพื้นฐานที่ทำตามคู่มือ API ของ สปสช. ใช้ตรวจสอบสิทธิผ่าน <b>SRM</b> และปิดสิทธิผ่าน <b>NHSO ENDPOINT FOR SINGLE CLAIM</b> ใช้ได้บน Windows, macOS (Apple Silicon M1 ขึ้นไป) และ Linux หน้านี้ใช้เป็นตัวอย่างสำหรับคนที่อยากพัฒนาต่อได้ด้วย</p>
+    <span class="by">พัฒนาโดย arthit.f</span>
+  </div>
+</header>
+
+<nav class="toc win" aria-label="สารบัญ">
+  <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div>
+  <div class="in">
+    <a href="#download"><b>01</b>ดาวน์โหลด</a>
+    <a href="#prepare"><b>02</b>สิ่งที่ต้องมี</a>
+    <a href="#install"><b>03</b>ติดตั้ง &amp; ตั้งค่า</a>
+    <a href="#use"><b>04</b>วิธีใช้งาน</a>
+    <a href="#batch"><b>05</b>ทำทีละหลายคน</a>
+    <a href="#github"><b>06</b>อัปขึ้น GitHub</a>
+    <a href="#dev"><b>07</b>สำหรับนักพัฒนา</a>
+    <a href="#faq"><b>08</b>ปัญหาที่พบบ่อย</a>
+    <a href="#ref"><b>09</b>เอกสารอ้างอิง</a>
+  </div>
+</nav>
+
+<main>
+
+<section id="download" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>01</b>ดาวน์โหลด</h2>
+  <p>เลือกไฟล์ให้ตรงกับเครื่อง ไม่ต้องติดตั้ง Python เพิ่ม</p>
+  <div class="dl">
+    <a data-asset="nhso-claim-windows-setup.exe" href="#"><div class="os">Windows — ตัวติดตั้ง</div><div class="f">nhso-claim-windows-setup.exe</div><span class="go">↓ แนะนำ</span></a>
+    <a data-asset="nhso-claim-windows-x64.zip" href="#"><div class="os">Windows — แตกไฟล์ใช้ได้เลย</div><div class="f">nhso-claim-windows-x64.zip (portable)</div><span class="go">↓ ดาวน์โหลด</span></a>
+    <a data-asset="nhso-claim-macos-arm64.zip" href="#"><div class="os">macOS (M1 ขึ้นไป)</div><div class="f">nhso-claim-macos-arm64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
+    <a data-asset="nhso-claim-linux-x64.zip" href="#"><div class="os">Linux</div><div class="f">nhso-claim-linux-x64.zip</div><span class="go">↓ ดาวน์โหลด</span></a>
+  </div>
+  <p style="margin-top:12px">ซอร์สโค้ด: <a id="repoLink" href="#">GitHub</a> · <a id="relLink" href="#">ดูทุกเวอร์ชัน (Releases)</a></p>
+</div></section>
+
+<section id="prepare" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>02</b>สิ่งที่ต้องมีก่อนเริ่ม</h2>
+  <table>
+    <tr><th>รายการ</th><th>ใช้ทำอะไร</th><th>ขอได้ที่ไหน</th></tr>
+    <tr><td>เครื่องอ่านบัตร + บัตรประชาชนเจ้าหน้าที่ (มี PIN)</td><td>Login SRM Portal เพื่อสร้าง token ตรวจสอบสิทธิ</td><td>—</td></tr>
+    <tr><td>สิทธิเข้าใช้ <b>SRM Portal</b></td><td>ตรวจสอบสิทธิ</td><td>Test: tsrmportal.nhso.go.th · Prod: srmportal.nhso.go.th</td></tr>
+    <tr><td><b>TOKEN KEY</b> ระบบ NHSO ENDPOINT</td><td>ปิดสิทธิ / ยกเลิก (ใช้ได้เฉพาะ HCODE ที่ยื่นขอ)</td><td>แบบฟอร์มขอ TOKEN KEY ส่งไปที่ <code>newauthen@nhso.go.th</code> และ <code>saraban@nhso.go.th</code></td></tr>
+    <tr><td>รหัสหน่วยบริการ (HCODE 5 หลัก)</td><td>ใส่ในข้อมูลปิดสิทธิ</td><td>—</td></tr>
+  </table>
+  <div class="note warn"><b>สำคัญ:</b> API ตรวจสอบสิทธิเดิม (<code>ucws.nhso.go.th</code>) จะ<b>ยุติการให้บริการวันที่ 15 ม.ค. 2570</b> โปรแกรมนี้ใช้ API ใหม่ผ่าน SRM แล้ว</div>
+</div></section>
+
+<section id="install" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>03</b>ติดตั้ง &amp; ตั้งค่า</h2>
+  <h3>แบบตัวติดตั้ง (Windows)</h3>
+  <ol class="steps">
+    <li>ดับเบิลคลิก <code>nhso-claim-windows-setup.exe</code> แล้วกด Next ไปจนจบ (ไม่ต้องใช้สิทธิ Admin)</li>
+    <li>เมื่อติดตั้งเสร็จ โปรแกรมจะเปิดไฟล์ <code>.env</code> ให้กรอกค่า (ดูข้อ 2 ด้านล่าง) จากนั้นบันทึกไฟล์</li>
+    <li>เปิดโปรแกรมจากไอคอน <b>NHSO Claim Tool</b> บน Desktop หรือ Start Menu (ใน Start Menu มีเมนู “ตั้งค่า (.env)” และ “คู่มือ” ด้วย) เวลาอัปเดตเป็นเวอร์ชันใหม่ ค่าใน .env จะไม่ถูกทับ</li>
+  </ol>
+  <h3>แบบแตกไฟล์ใช้ได้เลย (Windows / macOS / Linux)</h3>
+  <ol class="steps">
+    <li>แตกไฟล์ zip ไว้ในโฟลเดอร์ เช่น <code>Desktop\nhso-claim</code></li>
+    <li>เปลี่ยนชื่อไฟล์ <code>.env.example</code> เป็น <code>.env</code> แล้วเปิดด้วย Notepad กรอกค่าตามนี้
+<pre>NHSO_ENV=test                 <span class="c"># test = ทดสอบ, prod = ใช้จริง</span>
+HCODE=xxxxx                   <span class="c"># รหัสหน่วยบริการ 5 หลัก</span>
+NHSO_ENDPOINT_TOKEN=xxxxxxxx  <span class="c"># TOKEN KEY ที่ สปสช. ส่งทางอีเมล</span>
+RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้าหน้าที่ผู้บันทึก</span></pre></li>
+    <li>เปิดโปรแกรม
+      <table>
+        <tr><th>Windows</th><td>ดับเบิลคลิก <code>nhso-claim.exe</code> ถ้า SmartScreen เตือน ให้กด “More info” แล้วกด “Run anyway”</td></tr>
+        <tr><th>macOS</th><td>คลิกขวาที่ <code>nhso-claim</code> แล้วเลือก Open (ครั้งแรกครั้งเดียว) หรือเปิด Terminal พิมพ์<br><code>xattr -d com.apple.quarantine nhso-claim &amp;&amp; ./nhso-claim</code></td></tr>
+        <tr><th>Linux</th><td><code>chmod +x nhso-claim &amp;&amp; ./nhso-claim</code></td></tr>
+      </table>
+    </li>
+    <li>เบราว์เซอร์จะเปิดหน้า <code>http://127.0.0.1:8765</code> ขึ้นมาเอง (ทำงานในเครื่องตัวเองเท่านั้น) ถ้าปิดหน้าต่างดำ โปรแกรมจะปิดตาม</li>
+  </ol>
+  <h3>Token ตรวจสอบสิทธิ (SRM)</h3>
+  <div class="flow"><span>เสียบบัตร</span><i>→</i><span>Login SRM Portal + PIN</span><i>→</i><span>กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal”</span><i>→</i><span>token.txt</span><i>→</i><span>โปรแกรมอ่านให้เอง</span></div>
+  <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>05 ตั้งค่า Token</b> แล้ววาง token เองได้</p>
+  <div class="note tip">ไฟ <b>SRM</b> / <b>ENDPOINT</b> ที่แถบล่างของโปรแกรม ถ้าเป็นสีเขียว แปลว่าตั้งค่า token ครบแล้ว</div>
+</div></section>
+
+<section id="use" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>04</b>วิธีใช้งาน</h2>
+  <h3>01 ตรวจสอบสิทธิ</h3>
+  <ol class="steps">
+    <li>กรอกเลขบัตรประชาชน 13 หลัก โปรแกรมตรวจ check digit ให้ด้วย</li>
+    <li>กด <b>ตรวจสอบสิทธิ</b> จะเห็นสิทธิหลัก (UCS / OFC / SSS / LGO …) สิทธิย่อย หน่วยบริการประจำ หน่วยปฐมภูมิ หน่วยรับส่งต่อ และสถานะเสียชีวิต</li>
+    <li>กด <b>ไปปิดสิทธิคนนี้ →</b> เพื่อนำเลขบัตรและสิทธิไปกรอกในหน้าปิดสิทธิให้อัตโนมัติ</li>
+  </ol>
+  <h3>02 ปิดสิทธิ</h3>
+  <ol class="steps">
+    <li>กรอก <b>รหัสบริการ</b> (เช่น <code>PG0060001</code>), <b>ค่าบริการที่เบิกได้</b>, ค่าบริการที่เบิกไม่ได้, วันเวลาที่รับบริการ และ VN</li>
+    <li>กด <b>ตรวจข้อมูลก่อนส่ง</b> เพื่อดูข้อมูลที่จะส่ง (ยังไม่ส่งไป สปสช.)</li>
+    <li>กด <span class="btnlike">กดปิดสิทธิ</span> แล้วตรวจข้อมูลในหน้าต่างยืนยัน จากนั้นกด <span class="btnlike">กดปิดสิทธิ</span> อีกครั้ง ถ้าเป็น Production ต้องพิมพ์ <kbd>YES</kbd> ก่อน</li>
+    <li>ถ้าสำเร็จจะได้ <b>authenCode</b> (กดคัดลอกได้) พร้อม <b>seq</b> และ <b>transactionId</b> ทุกรายการถูกบันทึกในแท็บประวัติ</li>
+  </ol>
+  <div class="note warn">ถ้าขึ้น <b>timeout</b> ตอนปิดสิทธิ อย่าเพิ่งกดซ้ำ เพราะฝั่ง สปสช. อาจบันทึกไปแล้ว ให้ตรวจสอบก่อน</div>
+  <h3>03 ยกเลิกปิดสิทธิ</h3>
+  <p>ใส่ <b>transactionId</b> แล้วกด <span class="btnlike">กดยกเลิกปิดสิทธิ</span> ถ้าไม่ใส่ seq โปรแกรมจะหาจากประวัติให้เอง (ระบบส่ง <code>paymentStatus = CANCEL</code>)</p>
+  <h3>04 ประวัติ</h3>
+  <p>แสดง 100 รายการล่าสุด ข้อมูลเก็บในไฟล์ <code>nhso_claim_log.sqlite3</code> ในเครื่อง เลขบัตรบนหน้าจอจะถูกปิดบางส่วนไว้</p>
+</div></section>
+
+<section id="batch" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>05</b>ทำทีละหลายคน (Command line)</h2>
+  <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม</p>
+<pre><span class="c"># ตรวจสอบสิทธิหลายคน (CSV มีคอลัมน์ pid)</span>
+nhso-claim check-batch examples/check_input.csv -o check_result.csv
+
+<span class="c"># ปิดสิทธิหลายคน: ไม่ใส่ --send = ทดลอง (ยังไม่ส่ง)</span>
+nhso-claim close-batch examples/close_input.csv
+nhso-claim close-batch examples/close_input.csv --send</pre>
+  <table>
+    <tr><th>คอลัมน์</th><th>บังคับ</th><th>หมายเหตุ</th></tr>
+    <tr><td>pid</td><td>✔</td><td>13 หลัก</td></tr>
+    <tr><td>service_code</td><td>✔</td><td>claimServiceCode</td></tr>
+    <tr><td>privilege_amount</td><td>✔</td><td>ค่าบริการที่เบิกได้</td></tr>
+    <tr><td>paid_amount</td><td></td><td>ค่าบริการที่เบิกไม่ได้ (ค่าเริ่มต้น 0)</td></tr>
+    <tr><td>service_datetime</td><td></td><td><code>YYYY-MM-DD HH:MM:SS</code> ปี ค.ศ.</td></tr>
+    <tr><td>visit_number, main_inscl</td><td></td><td>ถ้าใส่ main_inscl จะข้ามการตรวจสิทธิผ่าน SRM</td></tr>
+  </table>
+  <p>ไฟล์ผลลัพธ์เปิดใน Excel ได้ ภาษาไทยไม่เพี้ยน</p>
+</div></section>
+
+<section id="github" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>06</b>อัปโค้ดขึ้น GitHub + สร้างไฟล์ดาวน์โหลด</h2>
+  <h3>ก. สร้าง repo</h3>
+  <ol class="steps">
+    <li>เข้า <a href="https://github.com/new">github.com/new</a> ตั้งชื่อ <code>nhso-claim-tool</code> เลือก <b>Public</b> โดยไม่ต้องติ๊ก README แล้วกด Create repository</li>
+  </ol>
+  <h3>ข. อัปโหลดโค้ด (เลือกทางใดทางหนึ่ง)</h3>
+  <p><b>วิธีที่ 1 — ผ่านหน้าเว็บ</b> (ไม่ต้องลงโปรแกรม)</p>
+  <ol class="steps">
+    <li>ในหน้า repo ใหม่ กด <b>uploading an existing file</b></li>
+    <li>ลากไฟล์และโฟลเดอร์ทั้งหมดในโฟลเดอร์ <code>nhso-claim-tool</code> ลงไป <b>ยกเว้น</b> <code>.env</code>, token และไฟล์ <code>.sqlite3</code></li>
+    <li>โฟลเดอร์ <code>.github</code> เป็นโฟลเดอร์ซ่อน: บน Windows ให้เปิด View → Hidden items ก่อน ถ้าลากไม่ขึ้น ให้กด Add file → Create new file แล้วพิมพ์ชื่อ <code>.github/workflows/ci.yml</code> จากนั้นวางเนื้อหาไฟล์ลงไป (ทำแบบเดียวกันกับ <code>release.yml</code>)</li>
+    <li>กด <b>Commit changes</b></li>
+  </ol>
+  <p><b>วิธีที่ 2 — ใช้ git</b> (แนะนำ ใช้ไฟล์ zip ที่มีประวัติ git มาให้แล้ว)</p>
+<pre>cd nhso-claim-tool
+git remote add origin https://github.com/&lt;ชื่อผู้ใช้&gt;/nhso-claim-tool.git
+git push -u origin main</pre>
+  <h3>ค. สร้างไฟล์โปรแกรม Windows / Mac / Linux อัตโนมัติ</h3>
+  <ol class="steps">
+    <li>ในหน้า repo ไปที่ <b>Releases → Draft a new release</b></li>
+    <li>ตั้ง Tag เป็น <code>v0.2.0</code> แล้วกด <b>Publish release</b></li>
+    <li>รอประมาณ 5–10 นาที ดูความคืบหน้าได้ที่แท็บ <b>Actions</b> เสร็จแล้วไฟล์ zip ของทั้ง 3 OS จะถูกแนบไว้ใน Release และปุ่มดาวน์โหลดในหน้านี้จะใช้งานได้ทันที</li>
+  </ol>
+  <h3>ง. เปิดหน้าคู่มือนี้เป็นเว็บ (เลือกได้)</h3>
+  <p>Settings → Pages → Branch <code>main</code> / folder <code>/docs</code> → Save หรือจะนำไฟล์ <code>docs/index.html</code> ไปวางบนเว็บของตัวเองก็ได้ ให้แก้ค่า <code>GITHUB_REPO</code> ในไฟล์ให้เป็นชื่อ repo ของคุณ</p>
+  <div class="note warn">repo เป็น Public ได้ แต่ <b>ห้ามอัป</b> <code>.env</code>, token, ไฟล์ประวัติ <code>.sqlite3</code> หรือ CSV ที่มีข้อมูลผู้ป่วย (ไฟล์ <code>.gitignore</code> กันไว้ให้แล้ว และ CI จะตรวจซ้ำ)</div>
+</div></section>
+
+<section id="dev" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>07</b>สำหรับนักพัฒนา</h2>
+  <h3>API ที่ใช้ (ตามคู่มือ สปสช.)</h3>
+  <table>
+    <tr><th>งาน</th><th>Method / Path</th><th>Auth</th></tr>
+    <tr><td>ตรวจสอบสิทธิ</td><td><code>GET {SRM}/api/ucws/v1/right-search?pid=</code></td><td>Bearer access_token (token.txt)</td></tr>
+    <tr><td>ต่ออายุ token</td><td><code>POST {SRM Portal}/api/scard/access-token</code><br>form: <code>refresh_token</code></td><td>—</td></tr>
+    <tr><td>ปิดสิทธิ (แฟม 6→7)</td><td><code>POST {ENDPOINT}/api/nhso-claim-detail</code>*</td><td>Bearer TOKEN KEY</td></tr>
+    <tr><td>ยกเลิก (แฟม 8→9)</td><td><code>PUT {ENDPOINT}/api/nhso-claim-detail</code>*<br><code>{seq, transactionId, paymentStatus:"CANCEL"}</code></td><td>Bearer TOKEN KEY</td></tr>
+  </table>
+  <p class="c" style="font-size:13px;color:var(--mute)">* เอกสาร DataSet v8.0 ระบุแค่ base URL จึงต้องตรวจ path กับ Swagger ก่อน (<code>test.nhso.go.th/nhsoendpoint/swagger-ui.html</code>) ถ้าไม่ตรงแก้ได้ใน <code>.env</code> ที่ <code>NHSO_CLAIM_PATH</code> / <code>NHSO_CANCEL_PATH</code> / <code>NHSO_CANCEL_METHOD</code></p>
+  <table>
+    <tr><th>Zone</th><th>SRM</th><th>NHSO ENDPOINT</th></tr>
+    <tr><td>Test</td><td>tsrm.nhso.go.th</td><td>test.nhso.go.th/nhsoendpoint/</td></tr>
+    <tr><td>Production</td><td>srm.nhso.go.th</td><td>nhsoapi.nhso.go.th/nhsoendpoint/</td></tr>
+  </table>
+  <h3>ขั้นตอนภายในโปรแกรม</h3>
+  <div class="flow"><span>pid</span><i>→</i><span>ตรวจ check digit</span><i>→</i><span>SRM right-search</span><i>→</i><span>เลือกกองทุน fundType=Y<br>เช็คเสียชีวิต</span><i>→</i><span>สร้าง payload แฟม 6<br>transactionId = HCODE+เวลา+สุ่ม</span><i>→</i><span>POST ENDPOINT</span><i>→</i><span>seq + authenCode → SQLite</span></div>
+  <h3>รันจากซอร์สโค้ด</h3>
+<pre>git clone https://github.com/&lt;user&gt;/nhso-claim-tool.git
+cd nhso-claim-tool
+pip install -r requirements.txt      <span class="c"># ใช้แค่ requests</span>
+python -m nhso_claim                 <span class="c"># เปิดหน้าจอ</span>
+python -m nhso_claim check 1234567890123
+pip install pytest &amp;&amp; pytest -q      <span class="c"># test ใช้ mock ไม่ได้ยิง API จริง</span>
+python build.py                      <span class="c"># build ไฟล์โปรแกรมของ OS ที่ใช้อยู่</span></pre>
+  <h3>โครงสร้างโค้ด</h3>
+<pre>nhso_claim/
+  config.py      ตั้งค่า, base URL test/prod
+  srm.py         ตรวจสอบสิทธิ + จัดการ token
+  endpoint.py    ปิดสิทธิ / ยกเลิก + ตรวจข้อมูลตาม spec
+  validation.py  เลขบัตร, จำนวนเงิน (≤8 หลัก ทศนิยม 2), hcode
+  store.py       ประวัติ SQLite
+  web.py         หน้าจอ (local server ใช้ standard library)
+  static/index.html
+  cli.py         คำสั่ง command line</pre>
+  <p>แผนต่อไป: เชื่อม <b>NHSO Secure SmartCard Agent v2.0</b> (<code>localhost:8189</code>, <code>/api/nhso-service/save-endpoint</code>) เพื่อปิดสิทธิด้วยการเสียบบัตรผู้ป่วย</p>
+</div></section>
+
+<section id="faq" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>08</b>ปัญหาที่พบบ่อย</h2>
+  <table>
+    <tr><th>อาการ</th><th>วิธีแก้</th></tr>
+    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 05</td></tr>
+    <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
+    <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
+    <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>
+    <tr><td>พบการบันทึก transactionId ซ้ำ</td><td>รายการนี้เคยส่งแล้ว ให้ดูในแท็บประวัติ</td></tr>
+    <tr><td>serviceDateTime ไม่เกินวันเวลาปัจจุบัน</td><td>ตรวจวันที่ ต้องเป็นปี ค.ศ. และห้ามเป็นเวลาในอนาคต</td></tr>
+    <tr><td>เชื่อมต่อไม่ได้ / ProxyError</td><td>ตรวจอินเทอร์เน็ต, proxy หรือ VPN ของหน่วยงาน</td></tr>
+    <tr><td>Port 8765 ไม่ว่าง</td><td>โปรแกรมจะหา port ถัดไปให้เอง (8766, 8767 …)</td></tr>
+  </table>
+</div></section>
+
+<section id="ref" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
+  <h2><b>09</b>เอกสารอ้างอิง สปสช.</h2>
+  <ul>
+    <li>API Specification Document – API การตรวจสอบสิทธิ เวอร์ชัน 1.5 (5 ส.ค. 2568)</li>
+    <li>หนังสือ สปสช 6.70/ว๓๕๗ (3 พ.ย. 2569) แจ้งยุติการให้บริการระบบ API ตรวจสอบสิทธิเดิม</li>
+    <li>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM Version 8.0 (07/12/2023)</li>
+    <li>แบบฟอร์มขอ TOKEN KEY ระบบ NHSO ENDPOINT (Production Zone) — <a href="https://www.nhso.go.th/downloads">nhso.go.th/downloads</a></li>
+    <li>คู่มือ NHSO Secure SmartCard Agent v2.0 (มี.ค. 2569)</li>
+  </ul>
+  <p style="font-size:13px;color:var(--mute)">โปรแกรมนี้เป็นตัวอย่างพื้นฐานที่ทำตามคู่มือข้างต้น ก่อนใช้งานจริงควรทดสอบใน Test Zone และตรวจสอบกับเอกสารฉบับล่าสุดของ สปสช. ทุกครั้ง</p>
+</div></section>
+
+</main>
+
+<footer>NHSO Claim Tool · พัฒนาโดย <b>arthit.f</b></footer>
+</div>
+<script>
+/* แก้เป็น repo ของคุณ เช่น "arthit-f/nhso-claim-tool" */
+const GITHUB_REPO = "arthit-f/nhso-claim-tool";
+const base = "https://github.com/" + GITHUB_REPO;
+document.getElementById("repoLink").href = base;
+document.getElementById("relLink").href = base + "/releases";
+document.querySelectorAll("[data-asset]").forEach(a => a.href = base + "/releases/latest/download/" + a.dataset.asset);
+</script>
+</body>
+</html>

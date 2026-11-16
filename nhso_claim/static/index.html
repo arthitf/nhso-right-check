@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NHSO Claim Tool</title>
+<style>
+:root{
+  --paper:#f3ecdc; --panel:#fffaf0; --ink:#1d1b16; --mute:#6b6457;
+  --line:#1d1b16; --red:#d9472b; --green:#2f8f5b; --amber:#e8a33d; --blue:#2d5d8a;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,Menlo,"DejaVu Sans Mono",monospace;
+  --thai:"Leelawadee UI","Thonburi","Noto Sans Thai","Sarabun","TH Sarabun New",Tahoma,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--thai)}
+body{background-image:radial-gradient(rgba(29,27,22,.07) 1px,transparent 1px);background-size:14px 14px;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:18px 16px 64px}
+/* window */
+.win{background:var(--panel);border:2px solid var(--line);box-shadow:5px 5px 0 var(--line);border-radius:6px}
+.titlebar{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:2px solid var(--line);
+  background:repeating-linear-gradient(0deg,var(--panel) 0 3px,#e9e0cc 3px 4px);border-radius:4px 4px 0 0}
+.dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border:2px solid var(--line);border-radius:3px;display:block}
+.dots i:nth-child(1){background:var(--red)}.dots i:nth-child(2){background:var(--amber)}.dots i:nth-child(3){background:var(--green)}
+.title{font:700 14px var(--mono);letter-spacing:.08em;background:var(--panel);padding:0 8px;margin:0 auto}
+.badge{font:700 11px var(--mono);padding:2px 8px;border:2px solid var(--line);border-radius:999px;background:var(--amber)}
+.badge.prod{background:var(--red);color:#fff}
+/* tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--line);overflow-x:auto}
+.tabs button{all:unset;cursor:pointer;padding:10px 16px;font-weight:600;border-right:2px solid var(--line);white-space:nowrap}
+.tabs button:hover{background:#efe6d2}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--panel)}
+.tabs .num{font:700 11px var(--mono);opacity:.6;margin-right:6px}
+.pane{display:none;padding:18px}.pane.on{display:block}
+h2{font-size:18px;margin:0 0 12px}
+h2 small{font:12px var(--mono);color:var(--mute);font-weight:400;margin-left:8px}
+/* form */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:600;color:var(--mute)}
+label .req{color:var(--red)}
+input,select,textarea{width:100%;margin-top:4px;padding:8px 10px;font:15px var(--thai);color:var(--ink);background:#fff;
+  border:2px solid var(--line);border-radius:4px;outline:none}
+input.mono,textarea{font-family:var(--mono);font-size:14px}
+input:focus,select:focus,textarea:focus{box-shadow:3px 3px 0 var(--blue)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.btn{cursor:pointer;font:700 15px var(--thai);padding:9px 18px;border:2px solid var(--line);border-radius:4px;
+  background:var(--panel);color:var(--ink);box-shadow:3px 3px 0 var(--line);transition:transform .05s,box-shadow .05s}
+.btn:hover{background:#f6edd9}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.go{background:var(--green);color:#fff}
+.btn.danger{background:var(--red);color:#fff}
+.btn.big{font-size:17px;padding:11px 26px}
+.hint{font-size:12px;color:var(--mute)}
+/* result */
+.card{margin-top:16px;border:2px solid var(--line);border-radius:4px;background:#fff}
+.card>header{padding:6px 10px;border-bottom:2px solid var(--line);font:700 12px var(--mono);display:flex;justify-content:space-between;align-items:center}
+.card.ok>header{background:#d7eedd}.card.err>header{background:#f7d3c9}.card.dry>header{background:#f6e3b8}
+.card .body{padding:12px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:14px}
+.kv dt{color:var(--mute)}.kv dd{margin:0;font-weight:600}
+.big-code{font:700 26px var(--mono);letter-spacing:.06em}
+pre{margin:0;max-height:300px;overflow:auto;font:12.5px/1.45 var(--mono);background:#f7f3ea;padding:10px;border-radius:3px}
+details summary{cursor:pointer;font:12px var(--mono);color:var(--mute);margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border-bottom:1px solid #d9cfba;padding:6px 8px;text-align:left;white-space:nowrap}
+th{font:700 12px var(--mono);background:#efe6d2;position:sticky;top:0}
+.tbl{max-height:460px;overflow:auto;border:2px solid var(--line);border-radius:4px}
+.pill{font:700 11px var(--mono);padding:1px 7px;border-radius:999px;border:1.5px solid var(--line)}
+.pill.y{background:#bfe3c9}.pill.n{background:#f2b9a9}
+/* status bar */
+.status{display:flex;gap:16px;flex-wrap:wrap;padding:6px 12px;border-top:2px solid var(--line);font:12px var(--mono);color:var(--mute);background:#efe6d2;border-radius:0 0 4px 4px}
+.status b{color:var(--ink)}
+.status .sp{flex:1}
+.led{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);margin-right:5px;vertical-align:-1px;background:#bbb}
+.led.on{background:var(--green)}.led.off{background:var(--red)}
+/* modal */
+dialog{border:2px solid var(--line);border-radius:6px;box-shadow:6px 6px 0 var(--line);padding:0;max-width:440px;width:92vw;background:var(--panel)}
+dialog::backdrop{background:rgba(29,27,22,.45)}
+dialog .titlebar{border-radius:0}
+dialog .body{padding:16px}
+.spin{display:inline-block;width:14px;height:14px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:r .6s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes r{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:4px;font-size:14px;display:none}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#1b1a17;--panel:#25231f;--ink:#efe8d8;--mute:#a59d8d;--line:#efe8d8}
+  input,select,textarea,.card{background:#2e2b26;color:var(--ink)}
+  pre{background:#1f1d1a}.tabs button:hover,.btn:hover{background:#34312b}
+  .titlebar{background:repeating-linear-gradient(0deg,var(--panel) 0 3px,#2f2c27 3px 4px)}
+  th,.status{background:#2f2c27}.card.ok>header{background:#264a33}.card.err>header{background:#5a2a20}.card.dry>header{background:#56441f}
+  .tabs button[aria-selected=true]{color:#1b1a17}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="win">
+  <div class="titlebar">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="title">NHSO&nbsp;CLAIM&nbsp;TOOL &middot; ตรวจสอบสิทธิ / ปิดสิทธิ</div>
+    <span id="envBadge" class="badge">TEST</span>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="check" aria-selected="true"><span class="num">01</span>ตรวจสอบสิทธิ</button>
+    <button role="tab" data-tab="close"><span class="num">02</span>ปิดสิทธิ</button>
+    <button role="tab" data-tab="cancel"><span class="num">03</span>ยกเลิกปิดสิทธิ</button>
+    <button role="tab" data-tab="history"><span class="num">04</span>ประวัติ</button>
+    <button role="tab" data-tab="token"><span class="num">05</span>ตั้งค่า Token</button>
+  </nav>
+
+  <!-- 01 ตรวจสอบสิทธิ -->
+  <section class="pane on" id="p-check">
+    <h2>ตรวจสอบสิทธิ <small>SRM · right-search</small></h2>
+    <form id="fCheck" class="row" style="margin-top:0">
+      <input id="cPid" class="mono" style="max-width:260px" inputmode="numeric" maxlength="17" placeholder="เลขบัตรประชาชน 13 หลัก" autofocus>
+      <button class="btn go">ตรวจสอบสิทธิ</button>
+      <span class="hint">เสียบบัตร Login SRM Portal แล้ว โปรแกรมจะอ่าน token.txt ให้เอง</span>
+    </form>
+    <div id="rCheck"></div>
+  </section>
+
+  <!-- 02 ปิดสิทธิ -->
+  <section class="pane" id="p-close">
+    <h2>ปิดสิทธิ <small>NHSO ENDPOINT · single claim</small></h2>
+    <form id="fClose">
+      <div class="grid">
+        <label>เลขบัตรประชาชน <span class="req">*</span><input name="pid" class="mono" inputmode="numeric" maxlength="17" required></label>
+        <label>รหัสบริการ (claimServiceCode) <span class="req">*</span><input name="service_code" class="mono" value="PG0060001" required></label>
+        <label>ค่าบริการที่เบิกได้ <span class="req">*</span><input name="privilege_amount" class="mono" inputmode="decimal" required></label>
+        <label>ค่าบริการที่เบิกไม่ได้<input name="paid_amount" class="mono" inputmode="decimal" value="0"></label>
+        <label>วันเวลาที่รับบริการ<input name="service_datetime" type="datetime-local" step="1"></label>
+        <label>VN<input name="visit_number" class="mono" maxlength="30"></label>
+        <label>สิทธิ (ว่าง = ตรวจจาก SRM)
+          <select name="main_inscl"><option value="">— ตรวจอัตโนมัติ —</option>
+            <option>UCS</option><option>WEL</option><option>OFC</option><option>LGO</option>
+            <option>SSS</option><option>COR</option><option>OTH</option><option>NULL</option></select></label>
+        <label>รหัสแผนก<input name="department_code"></label>
+      </div>
+      <div class="row">
+        <button type="button" class="btn" id="bPreview">ตรวจข้อมูลก่อนส่ง</button>
+        <button type="button" class="btn danger big" id="bClose">กดปิดสิทธิ</button>
+        <span class="hint">“ตรวจข้อมูลก่อนส่ง” ยังไม่ส่งไป สปสช. / “กดปิดสิทธิ” จะส่งจริงหลังยืนยัน</span>
+      </div>
+    </form>
+    <div id="rClose"></div>
+  </section>
+
+  <!-- 03 ยกเลิก -->
+  <section class="pane" id="p-cancel">
+    <h2>ยกเลิกการปิดสิทธิ <small>paymentStatus = CANCEL</small></h2>
+    <form id="fCancel">
+      <div class="grid">
+        <label>transactionId <span class="req">*</span><input name="trans" class="mono" required></label>
+        <label>seq (ว่าง = หาจากประวัติ)<input name="seq" class="mono" inputmode="numeric"></label>
+      </div>
+      <div class="row"><button class="btn danger">กดยกเลิกปิดสิทธิ</button></div>
+    </form>
+    <div id="rCancel"></div>
+  </section>
+
+  <!-- 04 ประวัติ -->
+  <section class="pane" id="p-history">
+    <h2>ประวัติการส่ง <small>100 รายการล่าสุด</small></h2>
+    <div class="row" style="margin:0 0 12px"><button class="btn" id="bHist">โหลดใหม่</button></div>
+    <div class="tbl"><table><thead><tr><th>เวลา</th><th>ENV</th><th>รายการ</th><th>ผล</th><th>PID</th><th>authenCode</th><th>seq</th><th>transactionId</th><th>เบิกได้</th><th>error</th></tr></thead><tbody id="tHist"></tbody></table></div>
+  </section>
+
+  <!-- 05 token -->
+  <section class="pane" id="p-token">
+    <h2>ตั้งค่า Token</h2>
+    <div id="tokInfo" class="card"><header>SRM TOKEN</header><div class="body">กำลังโหลด…</div></div>
+    <form id="fToken" style="margin-top:16px">
+      <label>วาง token เอง (access_token หรือเนื้อหาทั้งไฟล์ token.txt)
+        <textarea name="text" rows="4" placeholder="ใช้เมื่อหาไฟล์ token.txt ไม่เจอ — เว้นว่างแล้วกดบันทึก = ลบ token ที่วางไว้"></textarea></label>
+      <div class="row"><button class="btn go">บันทึก Token</button><span class="hint">เก็บในเครื่องนี้เท่านั้น (.srm_token.txt)</span></div>
+    </form>
+  </section>
+
+  <div class="status">
+    <span><span id="ledSrm" class="led"></span>SRM</span>
+    <span><span id="ledEp" class="led"></span>ENDPOINT</span>
+    <span>HCODE <b id="sHcode">—</b></span>
+    <span class="sp"></span>
+    <span>พัฒนาโดย <b>arthit.f</b> · v{{VERSION}}</span>
+  </div>
+ </div>
+</div>
+
+<dialog id="dlg">
+  <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><div class="title" id="dlgTitle">ยืนยัน</div></div>
+  <div class="body">
+    <div id="dlgBody"></div>
+    <div id="dlgProd" style="display:none;margin-top:12px"><label>Production — พิมพ์ <b>YES</b> เพื่อยืนยัน<input id="dlgYes" class="mono" autocomplete="off"></label></div>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn" id="dlgNo">ยกเลิก</button>
+      <button class="btn danger" id="dlgOk">ยืนยัน</button>
+    </div>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const SESSION="{{SESSION}}";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let ENV="test";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const mask=p=>p&&p.length===13?`${p[0]}-xxxx-xxxxx-${p.slice(10,12)}-${p[12]}`:p;
+const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
+function toast(t){const e=$("#toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",1800)}
+
+async function api(name,body={}){
+  const r=await fetch("/api/"+name,{method:"POST",headers:{"Content-Type":"application/json","X-Session":SESSION},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({error:"ตอบกลับไม่ใช่ JSON"}));
+  if(!r.ok) throw j; return j;
+}
+function busy(btn,on){if(!btn)return;if(on){btn._t=btn.innerHTML;btn.innerHTML='<span class="spin"></span>กำลังทำงาน';btn.disabled=true}else{btn.innerHTML=btn._t;btn.disabled=false}}
+function card(kind,head,html,raw){
+  return `<div class="card ${kind}"><header><span>${head}</span><span>${new Date().toLocaleTimeString("th-TH")}</span></header><div class="body">${html}
+  ${raw?`<details><summary>JSON</summary><pre>${esc(JSON.stringify(raw,null,2))}</pre></details>`:""}</div></div>`;
+}
+const errCard=e=>card("err","ERROR",`<b>${esc(e.error||e)}</b>${e.detail?`<pre style="margin-top:8px">${esc(typeof e.detail==="string"?e.detail:JSON.stringify(e.detail,null,2))}</pre>`:""}`);
+const kv=o=>`<dl class="kv">${Object.entries(o).filter(([,v])=>v!==""&&v!=null).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
+function confirmBox(title,html,okLabel="ยืนยัน"){
+  return new Promise(res=>{
+    const d=$("#dlg");$("#dlgTitle").textContent=title;$("#dlgBody").innerHTML=html;
+    $("#dlgProd").style.display=ENV==="prod"?"block":"none";$("#dlgYes").value="";$("#dlgOk").textContent=okLabel;
+    $("#dlgOk").onclick=()=>{if(ENV==="prod"&&$("#dlgYes").value!=="YES"){$("#dlgYes").focus();return}d.close();res(ENV==="prod"?"YES":"ok")};
+    $("#dlgNo").onclick=()=>{d.close();res(null)};d.showModal();
+  });
+}
+
+/* tabs */
+$$(".tabs button").forEach(b=>b.onclick=()=>{
+  $$(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  $$(".pane").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.tab));
+  if(b.dataset.tab==="history")loadHist(); if(b.dataset.tab==="token")loadStatus();
+});
+const go=t=>$(`.tabs button[data-tab=${t}]`).click();
+
+/* status */
+async function loadStatus(){
+  try{
+    const s=await api("status");ENV=s.env;
+    const b=$("#envBadge");b.textContent=s.env.toUpperCase();b.classList.toggle("prod",s.env==="prod");
+    $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";
+    const srmOk=s.srmToken.length>0||s.srmTokenOverride;
+    $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
+    $("#tokInfo").outerHTML=card(srmOk?"ok":"err","SRM TOKEN",
+      (s.srmToken.length?s.srmToken.map(t=>`<div>✔ ${esc(t.source)} — อัปเดต ${t.ageMin} นาทีที่แล้ว<br><span class="hint">${esc(t.path)}</span></div>`).join(""):
+       `<div>✘ ไม่พบ token<br><span class="hint">รอไฟล์ที่ ${esc(s.tokenFile)} — เสียบบัตรแล้ว Login SRM Portal หรือวาง token ด้านล่าง</span></div>`)+
+      `<div style="margin-top:8px">ENDPOINT TOKEN: ${s.endpointToken?"✔ ตั้งค่าแล้ว":"✘ ยังไม่ตั้ง (.env → NHSO_ENDPOINT_TOKEN)"} · RECORDER_PID: ${s.recorder?"✔":"✘"}</div>`).replace('class="card','id="tokInfo" class="card');
+  }catch(e){console.error(e)}
+}
+
+/* 01 check */
+$("#fCheck").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter;busy(btn,1);
+  try{
+    const r=await api("check",{pid:$("#cPid").value.replace(/\D/g,"")});const s=r.summary;
+    $("#rCheck").innerHTML=card(s.deathDate?"err":"ok",s.deathDate?"เสียชีวิต":"พบสิทธิ",
+      `<div class="big-code">${esc(s.mainInscl||"—")} <span style="font-size:15px;font-family:var(--thai)">${esc(s.mainInsclName)}</span></div>`+
+      kv({"ชื่อ":s.name,"เลขบัตร":mask(s.pid),"วันเกิด":s.birthDate,"เสียชีวิต":s.deathDate,"สิทธิย่อย":[s.subInscl,s.subInsclName].filter(Boolean).join(" "),
+          "หน่วยบริการประจำ":[s.hospMainOp,s.hospMainOpName].filter(Boolean).join(" "),"หน่วยปฐมภูมิ":[s.hospSub,s.hospSubName].filter(Boolean).join(" "),
+          "หน่วยรับส่งต่อ":[s.hospMain,s.hospMainName].filter(Boolean).join(" "),"จังหวัด":s.purchaseProvince,"paidModel":s.paidModel,
+          "เริ่ม–หมดอายุ":[s.startDateTime,s.expireDateTime].filter(Boolean).join(" → "),"ตรวจเมื่อ":s.checkDate})+
+      (s.deathDate?"":`<div class="row"><button class="btn danger" id="toClose">ไปปิดสิทธิคนนี้ →</button></div>`),r.raw);
+    const t=$("#toClose");if(t)t.onclick=()=>{const f=$("#fClose");f.pid.value=s.pid;f.main_inscl.value=s.mainInscl||"";go("close");f.privilege_amount.focus()};
+  }catch(err){$("#rCheck").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+
+/* 02 close */
+const closeData=()=>{const d=Object.fromEntries(new FormData($("#fClose")));d.pid=d.pid.replace(/\D/g,"");return d};
+$("#bPreview").onclick=async e=>{
+  const btn=e.currentTarget;busy(btn,1);
+  try{const r=await api("close",{...closeData(),send:false});const p=r.payload;
+    $("#rClose").innerHTML=card("dry","ตรวจข้อมูลผ่าน — ยังไม่ได้ส่ง",kv({"สิทธิ":p.mainInsclCode,"เลขบัตร":mask(p.pid),"รหัสบริการ":p.claimServiceCode,
+      "ค่าบริการทั้งหมด":fmt(p.totalAmount),"เบิกได้":fmt(p.privilegeAmount),"เบิกไม่ได้":fmt(p.paidAmount),"transactionId":p.transactionId,
+      "วันที่รับบริการ":new Date(p.serviceDateTime).toLocaleString("th-TH")}),p);
+  }catch(err){$("#rClose").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+$("#bClose").onclick=async e=>{
+  const btn=e.currentTarget,d=closeData();
+  if(!d.pid||!d.privilege_amount){toast("กรอกเลขบัตรและค่าบริการที่เบิกได้ก่อน");return}
+  const ok=await confirmBox("ยืนยันกดปิดสิทธิ",`<p>ส่งข้อมูลปิดสิทธิไป สปสช. (<b>${ENV.toUpperCase()}</b>)</p>`+
+    kv({"เลขบัตร":mask(d.pid),"รหัสบริการ":d.service_code,"เบิกได้":fmt(d.privilege_amount),"เบิกไม่ได้":fmt(d.paid_amount),"สิทธิ":d.main_inscl||"ตรวจจาก SRM"}),"กดปิดสิทธิ");
+  if(!ok)return;busy(btn,1);
+  try{const r=await api("close",{...d,send:true,confirm:ok});
+    $("#rClose").innerHTML=r.success?card("ok","ปิดสิทธิสำเร็จ",`<div class="hint">authenCode</div><div class="big-code">${esc(r.authenCode)}</div>`+
+        kv({"seq":r.seq,"transactionId":r.transactionId,"สิทธิ":r.mainInsclCode})+`<div class="row"><button class="btn" id="cpy">คัดลอก authenCode</button></div>`,r)
+      :card("err","ปิดสิทธิไม่สำเร็จ",`<b>${esc(r.dataError||"ไม่ทราบสาเหตุ")}</b>`+kv({"transactionId":r.transactionId}),r);
+    const c=$("#cpy");if(c)c.onclick=()=>navigator.clipboard.writeText(r.authenCode).then(()=>toast("คัดลอกแล้ว"));
+  }catch(err){$("#rClose").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+
+/* 03 cancel */
+$("#fCancel").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter,d=Object.fromEntries(new FormData(e.target));
+  const ok=await confirmBox("ยืนยันยกเลิกปิดสิทธิ",kv({"transactionId":d.trans,"seq":d.seq||"(หาจากประวัติ)","ENV":ENV.toUpperCase()}),"กดยกเลิกปิดสิทธิ");
+  if(!ok)return;busy(btn,1);
+  try{const r=await api("cancel",{...d,send:true,confirm:ok});
+    $("#rCancel").innerHTML=card(r.success?"ok":"err",r.success?"ยกเลิกสำเร็จ":"ยกเลิกไม่สำเร็จ",kv({"status":r.status,"authenCode":r.authenCode,"dataError":r.dataError}),r);
+  }catch(err){$("#rCancel").innerHTML=errCard(err)}finally{busy(btn,0)}
+};
+
+/* 04 history */
+async function loadHist(){
+  try{const {rows}=await api("history");
+    $("#tHist").innerHTML=rows.length?rows.map(r=>`<tr><td>${esc(r.created_at.replace("T"," "))}</td><td>${esc(r.env)}</td><td>${esc(r.action)}</td>
+      <td><span class="pill ${r.success?"y":"n"}">${r.success?"OK":"ERR"}</span></td><td>${esc(r.pid)}</td><td><b>${esc(r.authen_code)}</b></td>
+      <td>${esc(r.seq)}</td><td>${esc(r.transaction_id)}</td><td>${r.privilege_amount!=null?fmt(r.privilege_amount):""}</td><td>${esc(r.data_error)}</td></tr>`).join("")
+      :`<tr><td colspan="10" class="hint">ยังไม่มีประวัติ</td></tr>`;
+  }catch(e){$("#tHist").innerHTML=`<tr><td colspan="10">${esc(e.error)}</td></tr>`}
+}
+$("#bHist").onclick=loadHist;
+
+/* 05 token */
+$("#fToken").onsubmit=async e=>{
+  e.preventDefault();const btn=e.submitter;busy(btn,1);
+  try{const r=await api("token",{text:e.target.text.value});e.target.text.value="";toast(r.cleared?"ลบ token ที่วางไว้แล้ว":"บันทึก token แล้ว");loadStatus()}
+  catch(err){toast(err.error||"บันทึกไม่สำเร็จ")}finally{busy(btn,0)}
+};
+
+/* default datetime = now (local) */
+(()=>{const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());$("#fClose").service_datetime.value=n.toISOString().slice(0,19)})();
+loadStatus();
+</script>
+</body>
+</html>

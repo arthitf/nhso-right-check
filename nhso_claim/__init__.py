@@ -1,3 +1,4 @@
 """NHSO claim tool — ตรวจสอบสิทธิ (SRM) + ปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
+__author__ = "arthit.f"

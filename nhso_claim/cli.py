@@ -21,7 +21,7 @@ import sys
 import time
 from pathlib import Path
 
-from . import __version__
+from . import __author__, __version__
 from .config import Settings
 from .endpoint import ClaimRequest, EndpointClient, EndpointError, build_claim_payload, is_success
 from .srm import MANUAL_TOKEN_FILE, SRMClient, SRMError, main_fund, parse_token_text, summarize
@@ -229,7 +229,7 @@ def cmd_history(a, s: Settings) -> int:
 # ---------------- main ----------------
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="nhso_claim", description="ตรวจสอบสิทธิ (SRM) + ปิดสิทธิ (NHSO ENDPOINT)")
-    p.add_argument("--version", action="version", version=__version__)
+    p.add_argument("--version", action="version", version=f"%(prog)s {__version__} — พัฒนาโดย {__author__}")
     p.add_argument("--env-file", default=".env")
     p.add_argument("--env", choices=["test", "prod"], help="ทับค่า NHSO_ENV")
     p.add_argument("--token", help="ใส่ SRM access token เอง (แทนการอ่าน token.txt)")
@@ -284,12 +284,29 @@ def build_parser() -> argparse.ArgumentParser:
     h = sub.add_parser("history", help="ดูประวัติการส่ง")
     h.add_argument("-n", "--limit", type=int, default=20)
     h.set_defaults(func=cmd_history)
+
+    u = sub.add_parser("ui", help="เปิดหน้าจอโปรแกรม (Web UI ในเครื่อง)")
+    u.add_argument("--port", type=int, default=8765)
+    u.add_argument("--no-browser", action="store_true")
+    u.set_defaults(func=cmd_ui)
     return p
+
+
+def cmd_ui(a, s: Settings) -> int:
+    from .web import serve
+    serve(s, port=a.port, open_browser=not a.no_browser)
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")  # ให้ Windows console แสดงภาษาไทย
+    if getattr(sys, "frozen", False):
+        # โปรแกรมที่ build แล้ว: ใช้โฟลเดอร์ของไฟล์โปรแกรมเป็นที่เก็บ .env / ประวัติ
+        import os
+        os.chdir(Path(sys.executable).resolve().parent)
+    if argv is None and len(sys.argv) == 1:
+        argv = ["ui"]  # ดับเบิลคลิก / รันเปล่าๆ = เปิดหน้าจอ
     a = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if a.verbose else logging.WARNING,
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
