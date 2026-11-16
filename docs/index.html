@@ -212,14 +212,32 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
   </ol>
   <h3>02 เสียบบัตร (NHSO Secure SmartCard Agent)</h3>
   <p>ผู้ป่วยเสียบบัตรประชาชน → อ่านบัตร + ตรวจสิทธิ → ปิดสิทธิ ในหน้าเดียว ใช้ <b>NHSO Secure SmartCard Agent</b> ของ สปสช. ที่ติดตั้งในเครื่อง (Windows) — <b>ไม่ต้องใช้ SRM token</b> เพราะ Agent ใช้ TOKEN ของหน่วยบริการเอง</p>
+  <p><b>ติดตั้ง Agent ครั้งแรก (ทำครั้งเดียว)</b> — ขั้นตอนนี้มีอยู่ในโปรแกรมด้วย ที่กล่อง “วิธีติดตั้ง NHSO Secure SmartCard Agent” ในแท็บ 02 (ถ้ายังไม่พบ Agent กล่องจะเปิดขึ้นมาเอง)</p>
   <ol class="steps">
-    <li><b>ติดตั้ง Agent ครั้งแรก:</b> แตกไฟล์ <code>secureagent-1.2.4</code> (Production) → ใส่ TOKEN ของหน่วยบริการในไฟล์ <code>userconfig.properties</code> (<code>nhso.service.token=…</code>) → คลิกขวา <code>install.bat</code> → Run as Administrator → เปิด <code>http://localhost:8189</code> ต้องเห็นหน้าสถานะ Agent</li>
-    <li>ในโปรแกรมเรา ไฟ <b>AGENT</b> ที่แถบล่างต้องเป็นสีเขียว (ถ้า Agent อยู่เครื่องอื่น ตั้งที่อยู่ได้ที่แท็บ <b>08 ตั้งค่า → D</b>)</li>
+    <li>เตรียมไฟล์ <code>secureagent-1.2.4</code> (Production) จาก สปสช. แตกไว้ เช่น <code>C:\NHSOSecureSmartCardAgent</code> — ถ้ามีเวอร์ชันเก่า ให้รัน <code>uninstall.bat</code> และลบโฟลเดอร์เดิมก่อน</li>
+    <li>เปิด <code>userconfig.properties</code> ด้วย Notepad ใส่ TOKEN ของหน่วยบริการ <code>nhso.service.token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code> แล้วบันทึก</li>
+    <li>คลิกขวา <code>install.bat</code> → <b>Run as Administrator</b> รอจนเสร็จ (Windows Services จะมี <code>NHSOSecureSmartCardAgent</code>)</li>
+    <li>เปิด <code>http://localhost:8189</code> ต้องเห็นหน้าสถานะ Agent และเครื่องอ่านบัตร</li>
+    <li>ในโปรแกรมเรา ไฟ <b>AGENT</b> ที่แถบล่างต้องเป็น<b>สีเขียว</b> (ถ้า Agent อยู่เครื่องอื่น ตั้งที่อยู่ได้ที่แท็บ <b>08 ตั้งค่า → D</b>)</li>
+  </ol>
+  <p style="font-size:13px;color:var(--mute)">ได้ TOKEN ใหม่: แก้ <code>userconfig.properties</code> แล้วคลิกขวา <code>restart.bat</code> → Run as Administrator · ใช้ proxy: แก้ <code>NHSOSecureSmartCardAgent.xml</code> ก่อนติดตั้ง · port 8189 และ 50204 ต้องว่าง</p>
+  <p><b>ใช้งาน</b></p>
+  <ol class="steps">
     <li>ให้ผู้ป่วยเสียบบัตร แล้วกด <span class="btnlike">อ่านบัตร + ตรวจสิทธิ</span> จะเห็น<b>รูปหน้าบัตร</b> ชื่อ เลขบัตร สิทธิ (พร้อมชื่อและกลุ่มจากตาราง vr_l_right) และหน่วยบริการ</li>
     <li>เลือก <b>ประเภทบริการ</b> — รายการนี้ สปสช. ส่งมาตามสิทธิของผู้ป่วยคนนั้น (มีทั้งรหัสและชื่อบริการ) กรอกค่าบริการ วันเวลาที่เบิก VN และเบอร์มือถือ (ถ้ามี)</li>
     <li>กด <b>ตรวจข้อมูลก่อนส่ง</b> แล้ว <span class="btnlike">กดปิดสิทธิ</span> → ได้ <b>authenCode</b> + seq บันทึกในแท็บประวัติ (รายการ AGENT_CLAIM)</li>
     <li>ปุ่ม <b>authen code ล่าสุดของคนนี้</b> ใช้ตรวจว่าเคยขอ authen code กับหน่วยบริการแล้วหรือยัง (เช่นหลัง timeout) · ปุ่ม <b>อ่านบัตรอย่างเดียว</b> ใช้ตอนเชื่อมต่อ สปสช. ไม่ได้ (ปิดสิทธิไม่ได้)</li>
   </ol>
+  <p><b>ปุ่มแต่ละปุ่มเรียก API ของ Agent เส้นไหน</b> (แสดงไว้ในโปรแกรมด้วย ใต้ปุ่ม และในกล่องวิธีติดตั้ง)</p>
+  <table>
+    <tr><th>ปุ่ม</th><th>API ของ Agent</th><th>ได้อะไร</th></tr>
+    <tr><td>อ่านบัตร + ตรวจสิทธิ</td><td><code>GET /api/smartcard/read?readImageFlag=true</code></td><td>ข้อมูลบัตร รูปหน้าบัตร สิทธิ หน่วยบริการ ประเภทบริการที่ใช้ได้ (claimTypes) และ correlationId</td></tr>
+    <tr><td>อ่านบัตรอย่างเดียว</td><td><code>GET /api/smartcard/read-card-only?readImageFlag=true</code></td><td>ข้อมูลในบัตร + รูป (ไม่ต่อ สปสช. ปิดสิทธิไม่ได้)</td></tr>
+    <tr><td>กดปิดสิทธิ</td><td><code>POST /api/nhso-service/save-endpoint</code></td><td>seq + authenCode</td></tr>
+    <tr><td>authen code ล่าสุดของคนนี้</td><td><code>GET /api/nhso-service/latest-authen-code/{pid}</code></td><td>authen code ล่าสุดที่หน่วยบริการเคยขอ</td></tr>
+    <tr><td>ไฟ AGENT (แถบล่าง)</td><td><code>GET /actuator/health</code></td><td>Agent ทำงานอยู่หรือไม่</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--mute)">สเปก API ทั้งหมดของ Agent ดูได้ที่ <code>http://localhost:8189/swagger</code> บนเครื่องที่ติดตั้ง Agent</p>
   <div class="note tip"><b>ความเป็นส่วนตัว:</b> รูปหน้าบัตรแสดงบนจอเท่านั้น ไม่บันทึกลงเครื่องหรือประวัติ กด <b>ล้างข้อมูลบนจอ</b> เมื่อเสร็จผู้ป่วยแต่ละราย</div>
   <div class="note warn">การยกเลิกรายการที่ปิดสิทธิผ่าน Agent: คู่มือ Agent v2.0 ยังไม่มี API ยกเลิก — ให้ติดต่อ สปสช. ตามช่องทางปกติ</div>
   <h3>03 ตรวจแบบกลุ่ม</h3>
