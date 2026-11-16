@@ -61,6 +61,11 @@ input:focus,select:focus,textarea:focus{box-shadow:3px 3px 0 var(--blue)}
 .big-code{font:700 26px var(--mono);letter-spacing:.06em}
 pre{margin:0;max-height:300px;overflow:auto;font:12.5px/1.45 var(--mono);background:#f0f5fc;padding:10px;border-radius:3px}
 details summary{cursor:pointer;font:12px var(--mono);color:var(--mute);margin-top:10px}
+details.all>summary{font:600 14px var(--thai);color:var(--blue);list-style:none}
+details.all>summary::-webkit-details-marker{display:none}
+details.all[open]>summary{margin-bottom:8px}
+.all-body{border-top:2px dashed #c8daf0;padding-top:10px}
+.all-body .card{background:var(--panel)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{border-bottom:1px solid #c8daf0;padding:6px 8px;text-align:left;white-space:nowrap}
 th{font:700 12px var(--mono);background:#dbe9f8;position:sticky;top:0}
@@ -215,6 +220,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let ENV="test";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mask=p=>p&&p.length===13?`${p[0]}-xxxx-xxxxx-${p.slice(10,12)}-${p[12]}`:p;
+const thDate=(v,t)=>{if(!v)return "";const d=new Date(v);return isNaN(d)?v:(t?d.toLocaleString("th-TH"):d.toLocaleDateString("th-TH",{dateStyle:"long"}))};
 const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
 function toast(t){const e=$("#toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",1800)}
 
@@ -224,9 +230,53 @@ async function api(name,body={}){
   if(!r.ok) throw j; return j;
 }
 function busy(btn,on){if(!btn)return;if(on){btn._t=btn.innerHTML;btn.innerHTML='<span class="spin"></span>กำลังทำงาน';btn.disabled=true}else{btn.innerHTML=btn._t;btn.disabled=false}}
+/* แสดงข้อมูลที่ สปสช. ตอบกลับเป็น UI (แทน JSON ดิบ) */
+const LABEL={checkDate:"วันที่ตรวจสอบ",pid:"เลขบัตรประชาชน",tname:"คำนำหน้า",fname:"ชื่อ",lname:"นามสกุล",nation:"สัญชาติ",
+ birthDate:"วันเกิด",sex:"เพศ",deathDate:"วันเสียชีวิต",funds:"สิทธิที่มี",transDate:"วันที่เปลี่ยนแปลงสิทธิ",fundType:"ประเภทกองทุน",
+ mainInscl:"สิทธิหลัก",subInscl:"สิทธิย่อย",startDateTime:"วันเริ่มใช้สิทธิ",expireDateTime:"วันหมดอายุสิทธิ",paidModel:"รูปแบบการจ่ายเงิน",
+ hospMainOp:"หน่วยบริการประจำ",hospSub:"หน่วยบริการปฐมภูมิ",hospMain:"หน่วยบริการรับส่งต่อ",purchaseProvince:"จังหวัดที่ลงทะเบียน",
+ department:"หน่วยงานต้นสังกัด",relation:"ความสัมพันธ์",cardId:"เลขบัตรสิทธิ",seq:"seq (เลขลำดับ สปสช.)",authenCode:"รหัสยืนยัน (authenCode)",
+ dataError:"ข้อผิดพลาด",status:"สถานะ",transactionId:"transactionId",hcode:"รหัสหน่วยบริการ",mainInsclCode:"รหัสสิทธิ",
+ serviceDateTime:"วันเวลารับบริการ",invoiceDateTime:"วันเวลาเบิก",totalAmount:"ค่าบริการทั้งหมด",paidAmount:"ค่าบริการที่เบิกไม่ได้",
+ privilegeAmount:"ค่าบริการที่เบิกได้",claimServiceCode:"รหัสบริการ",sourceId:"รหัสแหล่งที่มา",recorderPid:"เลขบัตรผู้บันทึก",
+ visitNumber:"VN",paymentStatus:"สถานะรายการ",success:"ผลการทำรายการ",_httpStatus:"HTTP status",dryRun:"ทดลอง (ยังไม่ส่ง)",
+ code:"รหัส",name:"ชื่อ",payload:"ข้อมูลที่ส่ง"};
+const MASK=new Set(["pid","recorderPid"]);
+function fmtVal(k,v){
+  if(v===null||v===undefined||v==="")return '<span class="hint">—</span>';
+  if(typeof v==="boolean")return v?"✔ ใช่":"✘ ไม่ใช่";
+  if(MASK.has(k)&&/^\d{13}$/.test(v))return esc(mask(v));
+  if(k==="fundType")return v==="Y"?"Y · กองทุนหลัก":v==="N"?"N · กองทุนอื่นที่มีสิทธิ":esc(v);
+  if(typeof v==="number"&&/DateTime$/.test(k)&&v>1e11)return esc(new Date(v).toLocaleString("th-TH"));
+  if(/Amount$/.test(k)&&typeof v==="number")return fmt(v);
+  if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}(T|$)/.test(v)){const d=new Date(v);if(!isNaN(d))return esc(v.length>10?d.toLocaleString("th-TH"):d.toLocaleDateString("th-TH",{dateStyle:"long"}))}
+  if(typeof v==="object"&&!Array.isArray(v)){
+    const id=v.id??v.hcode??v.code,nm=v.name??v.hname;
+    const extra=Object.entries(v).filter(([kk])=>!["id","name","hcode","hname","code"].includes(kk));
+    let t=[id,nm||(k==="mainInscl"&&RMAP[id]?RMAP[id].name:"")].filter(x=>x!==undefined&&x!==null&&x!=="").map(esc).join(" · ");
+    if(k==="mainInscl"&&RMAP[id])t+=` <span class="pill y">${esc(RMAP[id].groupId)}</span>`;
+    if(extra.length)t+=`<dl class="kv" style="margin-top:4px">${extra.map(([kk,vv])=>`<dt>${esc(LABEL[kk]||kk)}</dt><dd>${fmtVal(kk,vv)}</dd>`).join("")}</dl>`;
+    return t||'<span class="hint">—</span>';
+  }
+  return esc(v);
+}
+function renderData(o){
+  if(!o||typeof o!=="object")return "";
+  const rows=[],subs=[];
+  for(const [k,v] of Object.entries(o)){
+    if(Array.isArray(v)&&v.some(x=>x&&typeof x==="object")){
+      subs.push(`<div class="hint" style="margin:12px 0 6px;font-weight:700">${esc(LABEL[k]||k)} (${v.length})</div>`+
+        v.map((x,i)=>`<div class="card" style="margin-top:8px"><header><span>${k==="funds"?`สิทธิที่ ${i+1}`+(x.fundType==="Y"?" · หลัก":""):`#${i+1}`}</span><span>${esc(x.mainInscl?.id||"")}</span></header><div class="body">${renderData(x)}</div></div>`).join(""));
+    }else if(k==="payload"&&v&&typeof v==="object"){
+      subs.push(`<div class="hint" style="margin:12px 0 6px;font-weight:700">${LABEL.payload}</div>${renderData(v)}`);
+    }else rows.push(`<dt>${esc(LABEL[k]||k)}</dt><dd>${fmtVal(k,v)}</dd>`);
+  }
+  return `<dl class="kv">${rows.join("")}</dl>${subs.join("")}`;
+}
 function card(kind,head,html,raw){
   return `<div class="card ${kind}"><header><span>${head}</span><span>${new Date().toLocaleTimeString("th-TH")}</span></header><div class="body">${html}
-  ${raw?`<details><summary>JSON</summary><pre>${esc(JSON.stringify(raw,null,2))}</pre></details>`:""}</div></div>`;
+  ${raw?`<details class="all"><summary>▸ ดูข้อมูลทั้งหมดที่ สปสช. ส่งกลับ</summary><div class="all-body">${renderData(raw)}
+    <details><summary>JSON ดิบ (สำหรับนักพัฒนา)</summary><pre>${esc(JSON.stringify(raw,null,2))}</pre></details></div></details>`:""}</div></div>`;
 }
 const errCard=e=>card("err","ERROR",`<b>${esc(e.error||e)}</b>${e.detail?`<pre style="margin-top:8px">${esc(typeof e.detail==="string"?e.detail:JSON.stringify(e.detail,null,2))}</pre>`:""}`);
 const kv=o=>`<dl class="kv">${Object.entries(o).filter(([,v])=>v!==""&&v!=null).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
@@ -273,7 +323,7 @@ $("#fCheck").onsubmit=async e=>{
       kv({"ชื่อ":s.name,"เลขบัตร":mask(s.pid),"วันเกิด":s.birthDate,"เสียชีวิต":s.deathDate,"สิทธิย่อย":[s.subInscl,s.subInsclName].filter(Boolean).join(" "),"สิทธิอื่นที่มี":s.otherFunds,
           "หน่วยบริการประจำ":[s.hospMainOp,s.hospMainOpName].filter(Boolean).join(" "),"หน่วยปฐมภูมิ":[s.hospSub,s.hospSubName].filter(Boolean).join(" "),
           "หน่วยรับส่งต่อ":[s.hospMain,s.hospMainName].filter(Boolean).join(" "),"จังหวัด":s.purchaseProvince,"paidModel":s.paidModel,
-          "เริ่ม–หมดอายุ":[s.startDateTime,s.expireDateTime].filter(Boolean).join(" → "),"ตรวจเมื่อ":s.checkDate})+
+          "เริ่ม–หมดอายุ":[s.startDateTime,s.expireDateTime].filter(Boolean).map(thDate).join(" → "),"ตรวจเมื่อ":thDate(s.checkDate,1)})+
       (s.deathDate?"":`<div class="row"><button class="btn danger" id="toClose">ไปปิดสิทธิคนนี้ →</button></div>`),r.raw);
     const t=$("#toClose");if(t)t.onclick=()=>{const f=$("#fClose");f.pid.value=s.pid;f.main_inscl.value=s.mainInscl||"";f.main_inscl.oninput({target:f.main_inscl});go("close");f.privilege_amount.focus()};
   }catch(err){$("#rCheck").innerHTML=errCard(err)}finally{busy(btn,0)}
