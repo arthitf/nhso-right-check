@@ -136,8 +136,8 @@ NHSO_ENDPOINT_TOKEN=xxxxxxxx  <span class="c"># TOKEN KEY ที่ สปสช
 RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้าหน้าที่ผู้บันทึก</span></pre></li>
     <li>เปิดโปรแกรม
       <table>
-        <tr><th>Windows</th><td>ดับเบิลคลิก <code>nhso-right-check.exe</code> ถ้า SmartScreen เตือน ให้กด “More info” แล้วกด “Run anyway”</td></tr>
-        <tr><th>macOS</th><td>คลิกขวาที่ <code>nhso-right-check</code> แล้วเลือก Open (ครั้งแรกครั้งเดียว) หรือเปิด Terminal พิมพ์<br><code>xattr -d com.apple.quarantine nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
+        <tr><th>Windows</th><td>ดับเบิลคลิก <code>nhso-right-check.exe</code> (เปิดเป็นหน้าต่างเดียว ไม่มีหน้าต่างดำ) ถ้า SmartScreen เตือน ให้กด “More info” แล้วกด “Run anyway”</td></tr>
+        <tr><th>macOS</th><td>ลาก <code>nhso-right-check.app</code> ไปไว้ใน Applications แล้ว<b>คลิกขวา → Open</b> (ครั้งแรกครั้งเดียว) หรือเปิด Terminal พิมพ์<br><code>xattr -dr com.apple.quarantine nhso-right-check.app</code><br><span style="font-size:13px;color:var(--mute)">ค่าตั้งและประวัติเก็บที่ ~/Library/Application Support/nhso-right-check</span></td></tr>
         <tr><th>Linux</th><td><code>chmod +x nhso-right-check &amp;&amp; ./nhso-right-check</code></td></tr>
       </table>
     </li>
@@ -205,13 +205,15 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
 <section id="batch" class="win"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div></div><div class="in">
   <h2><b>05</b>ทำทีละหลายคน (Command line)</h2>
 <div class="note warn"><b>ข้อควรระวังการใช้งาน API:</b> การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำซ้อน อาจทำให้โควตาหมดและกระทบงานบริการ หากต้องตรวจสอบสิทธิเป็นกลุ่ม แนะนำใช้ <a href="https://srmportal.nhso.go.th/">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a></div>
-  <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม โปรแกรมจะตัดเลขบัตรซ้ำออกให้ และถ้ารายชื่อมีจำนวนมาก จะให้ยืนยันก่อน (<code>--allow-large</code>)</p>
-<pre><span class="c"># ตรวจสอบสิทธิหลายคน (CSV มีคอลัมน์ pid)</span>
-nhso-right-check check-batch examples/check_input.csv -o check_result.csv
+  <p>เตรียมไฟล์ CSV (ดูตัวอย่างในโฟลเดอร์ <code>examples</code>) แล้วเปิด Command Prompt / Terminal ในโฟลเดอร์โปรแกรม (Windows ใช้ไฟล์ <code>nhso-right-check-cli.exe</code> ซึ่งติดตั้งมาพร้อมกัน — ตัว <code>nhso-right-check.exe</code> เป็นแบบหน้าต่างอย่างเดียว) โปรแกรมจะตัดเลขบัตรซ้ำออกให้ และถ้ารายชื่อมีจำนวนมาก จะให้ยืนยันก่อน (<code>--allow-large</code>)</p>
+<pre><span class="c"># ตรวจสอบสิทธิหลายคน (CSV มีคอลัมน์ pid) — Windows</span>
+nhso-right-check-cli check-batch examples/check_input.csv -o check_result.csv
 
 <span class="c"># ปิดสิทธิหลายคน: ไม่ใส่ --send = ทดลอง (ยังไม่ส่ง)</span>
-nhso-right-check close-batch examples/close_input.csv
-nhso-right-check close-batch examples/close_input.csv --send</pre>
+nhso-right-check-cli close-batch examples/close_input.csv
+nhso-right-check-cli close-batch examples/close_input.csv --send
+
+<span class="c"># Linux / รันจากซอร์ส: ใช้ ./nhso-right-check หรือ python -m nhso_right_check แทน</span></pre>
   <table>
     <tr><th>คอลัมน์</th><th>บังคับ</th><th>หมายเหตุ</th></tr>
     <tr><td>pid</td><td>✔</td><td>13 หลัก</td></tr>

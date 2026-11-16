@@ -357,10 +357,22 @@ def cmd_ui(a, s: Settings) -> int:
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")  # ให้ Windows console แสดงภาษาไทย
+    import os
+    # โปรแกรมแบบหน้าต่าง (Windows --windowed / macOS .app) ไม่มี console: print() ต้องไม่ล่ม
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is None:
+        sys.stderr = open(os.devnull, "w", encoding="utf-8")
     if getattr(sys, "frozen", False):
-        # โปรแกรมที่ build แล้ว: ใช้โฟลเดอร์ของไฟล์โปรแกรมเป็นที่เก็บ .env / ประวัติ
-        import os
-        os.chdir(Path(sys.executable).resolve().parent)
+        exe_dir = Path(sys.executable).resolve().parent
+        if sys.platform == "darwin" and exe_dir.name == "MacOS" and exe_dir.parent.name == "Contents":
+            # macOS .app: ห้ามเขียนไฟล์ใน .app → เก็บ .env / ประวัติที่ ~/Library/Application Support
+            work = Path.home() / "Library" / "Application Support" / "nhso-right-check"
+            work.mkdir(parents=True, exist_ok=True)
+            os.chdir(work)
+        else:
+            # Windows / Linux: ใช้โฟลเดอร์ของไฟล์โปรแกรมเป็นที่เก็บ .env / ประวัติ
+            os.chdir(exe_dir)
     if argv is None and len(sys.argv) == 1:
         argv = ["ui"]  # ดับเบิลคลิก / รันเปล่าๆ = เปิดหน้าจอ
     a = build_parser().parse_args(argv)

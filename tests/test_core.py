@@ -441,3 +441,13 @@ def test_401_hint_when_test_zone(settings):
     settings.srm_access_token = "AAA"
     with pytest.raises(SRMError, match="Test Zone"):
         SRMClient(settings, FakeSession([FakeResp(401, ""), FakeResp(401, "")])).right_search(VALID_PID)
+
+
+def test_cli_runs_without_console(monkeypatch, tmp_path):
+    """โปรแกรมแบบหน้าต่าง (Windows --windowed / macOS .app) ไม่มี stdout/stderr"""
+    import sys
+    from nhso_right_check.cli import main
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "stdout", None)
+    monkeypatch.setattr(sys, "stderr", None)
+    assert main(["--env-file", str(tmp_path / ".env"), "rights", "UCS"]) == 0

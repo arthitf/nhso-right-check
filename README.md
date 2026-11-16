@@ -15,7 +15,9 @@ run.bat ui --browser   ← บังคับเปิดในเบราว�
 
 ## ดาวน์โหลดโปรแกรม (ไม่ต้องลง Python)
 
-หน้า **Releases** ของ repo: `nhso-right-check-windows-setup.exe` (ตัวติดตั้ง) · `nhso-right-check-windows-x64.zip` (แตกไฟล์ใช้ได้เลย) · `nhso-right-check-macos-arm64.zip` (Mac M1 ขึ้นไป) · `nhso-right-check-linux-x64.zip`
+หน้า **Releases** ของ repo: `nhso-right-check-windows-setup.exe` (ตัวติดตั้ง) · `nhso-right-check-windows-x64.zip` (แตกไฟล์ใช้ได้เลย)
+
+Windows มี 2 ไฟล์: `nhso-right-check.exe` (หน้าต่างโปรแกรม ไม่มีหน้าต่างดำ) และ `nhso-right-check-cli.exe` (คำสั่ง command line เช่น check-batch) · macOS เป็น `nhso-right-check.app` · `nhso-right-check-macos-arm64.zip` (Mac M1 ขึ้นไป) · `nhso-right-check-linux-x64.zip`
 
 | ส่วน | API ที่ใช้ | เอกสารอ้างอิง |
 |---|---|---|

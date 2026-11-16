@@ -1,7 +1,7 @@
 ﻿; ตัวติดตั้ง Windows (Inno Setup 6) — พัฒนาโดย arthit.f
-; build: iscc /DAppVersion=0.5.3 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
+; build: iscc /DAppVersion=0.5.4 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
 #ifndef AppVersion
-  #define AppVersion "0.5.3"
+  #define AppVersion "0.5.4"
 #endif
 
 [Setup]
@@ -31,6 +31,7 @@ Name: "desktopicon"; Description: "สร้างไอคอนบน Desktop"
 
 [Files]
 Source: "..\dist\nhso-right-check.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\nhso-right-check-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\.env.example"; DestDir: "{app}"; Flags: ignoreversion
 ; สร้าง .env ครั้งแรกเท่านั้น — อัปเดตเวอร์ชันใหม่จะไม่ทับค่าที่ตั้งไว้
 Source: "..\.env.example"; DestDir: "{app}"; DestName: ".env"; Flags: onlyifdoesntexist uninsneveruninstall
@@ -46,4 +47,4 @@ Name: "{group}\ถอนการติดตั้ง"; Filename: "{uninstallex
 Name: "{userdesktop}\ตรวจสอบสิทธิ สปสช."; Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Description: "เปิดโปรแกรม (ตั้งค่าที่แท็บ 06 ตั้งค่า)"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"; Description: "เปิดโปรแกรม (ตั้งค่าที่แท็บ 07 ตั้งค่า)"; Flags: postinstall nowait skipifsilent
