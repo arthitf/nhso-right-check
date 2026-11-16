@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- ไอคอน ตรวจสอบสิทธิ สปสช. (nhso-right-check) — ออกแบบใหม่ ธีมเรโทร น้ำเงิน/ฟ้า — พัฒนาโดย arthit.f -->
+  <!-- เงาแบบเรโทร -->
+  <rect x="44" y="52" width="440" height="440" rx="88" fill="#06183a"/>
+  <!-- พื้นหลัง -->
+  <rect x="28" y="28" width="440" height="440" rx="88" fill="#0d4da1" stroke="#0b2a55" stroke-width="16"/>
+  <!-- เส้น scanline เรโทร -->
+  <g opacity="0.18" fill="#ffffff">
+    <rect x="44" y="96" width="408" height="6"/><rect x="44" y="120" width="408" height="6"/>
+    <rect x="44" y="384" width="408" height="6"/><rect x="44" y="408" width="408" height="6"/>
+  </g>
+  <!-- บัตร (เงา) -->
+  <rect x="104" y="150" width="292" height="196" rx="24" fill="#0b2a55"/>
+  <!-- บัตร -->
+  <rect x="88" y="134" width="292" height="196" rx="24" fill="#ffffff" stroke="#0b2a55" stroke-width="12"/>
+  <!-- แถบหัวบัตร -->
+  <path d="M94 158 a18 18 0 0 1 18 -18 h244 a18 18 0 0 1 18 18 v22 h-280 z" fill="#2fa8e0"/>
+  <!-- รูปคน -->
+  <circle cx="156" cy="236" r="26" fill="#0d4da1"/>
+  <path d="M116 300 c0 -30 18 -40 40 -40 s40 10 40 40 z" fill="#0d4da1"/>
+  <!-- เส้นข้อมูล -->
+  <rect x="214" y="214" width="128" height="16" rx="8" fill="#0b2a55"/>
+  <rect x="214" y="246" width="96" height="16" rx="8" fill="#9fc3ec"/>
+  <rect x="214" y="278" width="112" height="16" rx="8" fill="#9fc3ec"/>
+  <!-- ป้ายเครื่องหมายถูก (เงา) -->
+  <circle cx="378" cy="358" r="78" fill="#0b2a55"/>
+  <!-- ป้ายเครื่องหมายถูก -->
+  <circle cx="366" cy="346" r="78" fill="#14b47a" stroke="#0b2a55" stroke-width="12"/>
+  <path d="M328 348 l26 26 l48 -54" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

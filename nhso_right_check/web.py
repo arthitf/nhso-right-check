@@ -196,8 +196,8 @@ def make_handler(app: App, port: int):
                 html = (STATIC / "index.html").read_text(encoding="utf-8")
                 html = html.replace("{{SESSION}}", app.session).replace("{{VERSION}}", __version__)
                 return self._send(200, html.encode(), "text/html; charset=utf-8")
-            if self.path == "/favicon.ico":
-                return self._send(204, b"", "image/x-icon")
+            if self.path in ("/icon.png", "/favicon.ico"):
+                return self._send(200, (STATIC / "icon.png").read_bytes(), "image/png")
             self._send(404, b"not found", "text/plain")
 
         def do_POST(self):

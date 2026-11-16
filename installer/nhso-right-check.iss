@@ -1,7 +1,7 @@
 ﻿; ตัวติดตั้ง Windows (Inno Setup 6) — พัฒนาโดย arthit.f
-; build: iscc /DAppVersion=0.4.0 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
+; build: iscc /DAppVersion=0.4.1 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
 #ifndef AppVersion
-  #define AppVersion "0.4.0"
+  #define AppVersion "0.4.1"
 #endif
 
 [Setup]
@@ -23,6 +23,8 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName=ตรวจสอบสิทธิ สปสช.
 WizardStyle=modern
+SetupIconFile=..\assets\icon.ico
+UninstallDisplayIcon={app}\nhso-right-check.exe
 
 [Tasks]
 Name: "desktopicon"; Description: "สร้างไอคอนบน Desktop"; GroupDescription: "ไอคอน:"

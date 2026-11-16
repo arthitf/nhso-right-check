@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nhso-right-check"
-version = "0.4.0"
+version = "0.4.1"
 description = "ตรวจสอบสิทธิ (SRM) และปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)"
 authors = [{ name = "arthit.f" }]
 requires-python = ">=3.10"
@@ -21,7 +21,7 @@ nhso-right-check = "nhso_right_check.cli:main"
 packages = ["nhso_right_check"]
 
 [tool.setuptools.package-data]
-nhso_right_check = ["static/*.html", "data/*.csv"]
+nhso_right_check = ["static/*.html", "static/*.png", "data/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
