@@ -6,6 +6,9 @@ name: Release
 on:
   push:
     tags: ["v*"]
+    branches: [main]
+    # build ทดสอบเมื่อไฟล์ที่เกี่ยวกับการ build เปลี่ยน (แนบเข้า Release เฉพาะตอนสร้าง tag)
+    paths: ["build.py", "launcher.py", "installer/**", ".github/workflows/release.yml"]
   workflow_dispatch:
 
 permissions:
