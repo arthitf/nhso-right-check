@@ -16,7 +16,7 @@
 
 ```bat
 cd nhso-right-check
-git remote add origin https://github.com/<ชื่อผู้ใช้>/nhso-right-check.git
+git remote add origin https://github.com/arthitf/nhso-right-check.git
 git push -u origin main
 ```
 

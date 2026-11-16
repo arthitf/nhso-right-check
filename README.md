@@ -38,7 +38,7 @@ run.bat            ← ดับเบิลคลิก/รันเปล่�
 ## ติดตั้ง (Windows)
 
 ```bat
-git clone https://github.com/<user>/nhso-right-check.git
+git clone https://github.com/arthitf/nhso-right-check.git
 cd nhso-right-check
 copy .env.example .env      &  REM แล้วแก้ค่า HCODE, NHSO_ENDPOINT_TOKEN, RECORDER_PID
 run.bat --version           &  REM สร้าง .venv และติดตั้ง requests ให้อัตโนมัติ

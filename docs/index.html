@@ -211,7 +211,7 @@ nhso-right-check close-batch examples/close_input.csv --send</pre>
   <h3>ขั้นตอนภายในโปรแกรม</h3>
   <div class="flow"><span>pid</span><i>→</i><span>ตรวจ check digit</span><i>→</i><span>SRM right-search</span><i>→</i><span>เลือกกองทุน fundType=Y<br>เช็คเสียชีวิต</span><i>→</i><span>สร้าง payload แฟม 6<br>transactionId = HCODE+เวลา+สุ่ม</span><i>→</i><span>POST ENDPOINT</span><i>→</i><span>seq + authenCode → SQLite</span></div>
   <h3>รันจากซอร์สโค้ด</h3>
-<pre>git clone https://github.com/&lt;user&gt;/nhso-right-check.git
+<pre>git clone https://github.com/arthitf/nhso-right-check.git
 cd nhso-right-check
 pip install -r requirements.txt      <span class="c"># ใช้แค่ requests</span>
 python -m nhso_right_check                 <span class="c"># เปิดหน้าจอ</span>
@@ -264,8 +264,8 @@ python build.py                      <span class="c"># build ไฟล์โป�
 <footer>ตรวจสอบสิทธิ สปสช. · พัฒนาโดย <b>arthit.f</b></footer>
 </div>
 <script>
-/* แก้เป็น repo ของคุณ เช่น "arthit-f/nhso-right-check" */
-const GITHUB_REPO = "arthit-f/nhso-right-check";
+/* แก้เป็น repo ของคุณ เช่น "arthitf/nhso-right-check" */
+const GITHUB_REPO = "arthitf/nhso-right-check";
 const base = "https://github.com/" + GITHUB_REPO;
 document.getElementById("repoLink").href = base;
 document.getElementById("relLink").href = base + "/releases";
