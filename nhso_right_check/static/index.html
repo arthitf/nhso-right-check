@@ -183,8 +183,16 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
     <form id="fClose">
       <div class="grid">
         <label>เลขบัตรประชาชน <span class="req">*</span><input name="pid" class="mono" inputmode="numeric" maxlength="17" required></label>
-        <label>รหัสบริการ (claimServiceCode) <span class="req">*</span><input name="service_code" class="mono" value="PG0060001" list="dlService" required>
-          <span class="hint" id="svcName">เข้ารับบริการรักษาทั่วไป (OPD/ IPD/ PP)</span></label>
+        <label>รหัสบริการ (claimServiceCode) <span class="req">*</span><select id="svcSel">
+            <option value="PG0060001">PG0060001 · เข้ารับบริการรักษาทั่วไป (OPD/ IPD/ PP)</option>
+            <option value="PG0130001">PG0130001 · ฟอกเลือดด้วยเครื่องไตเทียม (HD)</option>
+            <option value="PG0150001">PG0150001 · ดูแลอาการเจ็บป่วยเบื้องต้น (Common illnesses)</option>
+            <option value="PG0120001">PG0120001 · UCEP PLUS (ผู้ป่วยสีเหลือง/แดง)</option>
+            <option value="PG0110001">PG0110001 · Self Isolation</option>
+            <option value="">อื่นๆ — พิมพ์รหัสเอง</option>
+          </select>
+          <input name="service_code" class="mono" value="PG0060001" required style="display:none;margin-top:6px" placeholder="รหัสบริการตามที่ สปสช. กำหนด">
+          <span class="hint" id="svcName"></span></label>
         <label>ค่าบริการที่เบิกได้ <span class="req">*</span><input name="privilege_amount" class="mono" inputmode="decimal" required></label>
         <label>ค่าบริการที่เบิกไม่ได้<input name="paid_amount" class="mono" inputmode="decimal" value="0"></label>
         <label>วันเวลาที่รับบริการ<input name="service_datetime" type="datetime-local" step="1"></label>
@@ -639,9 +647,11 @@ $("#bQuit").onclick=async()=>{
 };
 
 /* ชื่อรหัสบริการ (ตามเอกสาร NHSO ENDPOINT v8.0 · รหัสอื่นพิมพ์เองได้ตามที่ สปสช. กำหนด) */
-$("#fClose").service_code.oninput=e=>{const v=e.target.value.trim().toUpperCase();
-  const o=[...$("#dlService").options].find(x=>x.value===v);
-  $("#svcName").textContent=o?o.textContent:(v?"รหัสอื่นตามที่ สปสช. กำหนด — ตรวจให้ถูกต้องก่อนส่ง":"")};
+$("#svcSel").onchange=e=>{const inp=$("#fClose").service_code,v=e.target.value;
+  if(v){inp.value=v;inp.style.display="none";$("#svcName").textContent=e.target.selectedOptions[0].textContent.split(" · ")[1]||""}
+  else{inp.value="";inp.style.display="block";inp.focus();$("#svcName").textContent="รหัสอื่นตามที่ สปสช. กำหนด — ตรวจให้ถูกต้องก่อนส่ง"}};
+$("#fClose").service_code.oninput=e=>{e.target.value=e.target.value.toUpperCase()};
+$("#svcSel").onchange({target:$("#svcSel")});
 
 /* default datetime = now (local) */
 (()=>{const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());$("#fClose").service_datetime.value=n.toISOString().slice(0,19)})();
