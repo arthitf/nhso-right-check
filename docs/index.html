@@ -422,6 +422,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 08 ตั้งค่า</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
     <tr><td>token ไม่ถูกต้อง ทั้งที่เพิ่ง Login</td><td>ดูว่าแท็บ 08 ตั้งค่า ตั้งระบบเป็น <b>Production</b> (token ตัวจริงใช้กับ Test Zone ไม่ได้)</td></tr>
+    <tr><td>เสียบบัตรแล้วขึ้น <code>PKIX path building failed</code> / <code>unable to find valid certification path</code> (ไฟ AGENT เขียว)</td><td>Agent ทำงานปกติ แต่<b>Java ของ Agent ไม่เชื่อใบรับรอง SSL</b> ตอนต่อ <code>authenservice.nhso.go.th</code> — ส่วนใหญ่เกิดจาก firewall/proxy ขององค์กรที่ตรวจ HTTPS (SSL inspection) · ทดสอบ: ต่อเน็ตอื่น (เช่น hotspot มือถือ) แล้วลองใหม่ ถ้าได้ แสดงว่าเป็นที่เครือข่าย · แก้ถาวร: ให้ IT ยกเว้น <code>*.nhso.go.th</code> จาก SSL inspection หรือนำ root CA ขององค์กรเข้า truststore (<code>cacerts</code>) ของ Java ที่ Agent ใช้ แล้ว restart Agent · ตรวจวันเวลาเครื่องให้ถูกด้วย</td></tr>
     <tr><td>อยากดูประวัติสิทธิย้อนหลัง</td><td>API ส่งกลับเฉพาะสิทธิ ณ วันที่ตรวจ ดูประวัติย้อนหลังได้ที่ SRM Portal</td></tr>
     <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
     <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>

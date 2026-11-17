@@ -76,6 +76,8 @@ def test_read_card_and_summary():
     ({"status": 500, "message": "th.co...NoCardAttachedException"}, "ยังไม่ได้เสียบบัตร"),
     ({"status": 500, "error": "NoReaderAttachedException"}, "ไม่พบเครื่องอ่านบัตร"),
     ({"status": 503, "message": "NhsoServiceUnavailableException"}, "เชื่อมต่อ สปสช. ไม่ได้"),
+    ({"status": 500, "message": 'I/O error on GET request for "https://authenservice.nhso.go.th/x": '
+      "sun.security.validator.ValidatorException: PKIX path building failed"}, "SSL inspection"),
 ])
 def test_agent_errors_are_thai(body, expect):
     fa = FakeAgent({("GET", "/api/smartcard/read"): R(500, body)})

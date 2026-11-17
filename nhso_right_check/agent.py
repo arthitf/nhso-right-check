@@ -49,6 +49,13 @@ _KNOWN = [
     ("NoDriverSupport", "ไดรเวอร์เครื่องอ่านบัตรไม่รองรับ"),
     ("NhsoServiceUnavailable", "Agent เชื่อมต่อ สปสช. ไม่ได้ — ตรวจอินเทอร์เน็ต/proxy ของเครื่อง"),
     ("ResourceNotFound", "ไม่พบข้อมูล"),
+    ("PKIX path", "Agent ต่อ สปสช. (authenservice.nhso.go.th) ไม่ได้ เพราะไม่เชื่อใบรับรอง SSL — มักเกิดจาก "
+                  "firewall/proxy ขององค์กรที่ตรวจ HTTPS (SSL inspection) · ทดลองต่อเน็ตอื่น (เช่น hotspot มือถือ) "
+                  "หรือให้ IT ยกเว้น *.nhso.go.th จาก SSL inspection / นำ root CA ขององค์กรเข้า Java ของ Agent "
+                  "แล้ว restart Agent"),
+    ("SSLHandshake", "Agent ต่อ สปสช. แบบ HTTPS ไม่สำเร็จ (SSL handshake) — ตรวจ firewall/proxy ขององค์กร "
+                     "และวันเวลาของเครื่อง แล้ว restart Agent"),
+    ("UnknownHost", "Agent หาเซิร์ฟเวอร์ สปสช. ไม่เจอ — ตรวจอินเทอร์เน็ต/DNS ของเครื่อง"),
 ]
 
 
