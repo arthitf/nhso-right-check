@@ -306,6 +306,13 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
 
     <h3 class="sec"><span class="num">A</span>ตรวจสอบสิทธิ — SRM Token <small>เปลี่ยนบ่อย · อ่านจาก token.txt อัตโนมัติ</small></h3>
     <div id="tokInfo" class="card"><header>SRM TOKEN</header><div class="body">กำลังโหลด…</div></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="tokReload" type="button">↻ อ่าน token.txt ใหม่</button>
+      <button class="btn" id="tokRefresh" type="button">ต่ออายุ token</button>
+      <button class="btn" id="tokPick" type="button">เลือกไฟล์ token…</button>
+      <input type="file" id="tokFile" accept=".txt,text/plain" hidden>
+    </div>
+    <p class="hint" style="margin:6px 0 0">อ่านใหม่ = หลังเสียบบัตร Login SRM Portal ใหม่ · ต่ออายุ = ขอ access token ใหม่ด้วย refresh token (ใช้ได้ภายในราว 24 ชม. หลัง Login ไม่นับโควตาตรวจสิทธิ) · เลือกไฟล์ = ใช้ token.txt จากที่อื่น</p>
     <details style="margin-top:10px"><summary>วาง token เอง (ใช้เมื่อหาไฟล์ token.txt ไม่เจอ)</summary>
     <form id="fToken" style="margin-top:8px">
       <textarea name="text" rows="3" placeholder="access_token หรือเนื้อหาทั้งไฟล์ token.txt — เว้นว่างแล้วกดบันทึก = ลบ token ที่วางไว้"></textarea>
@@ -590,9 +597,11 @@ async function loadStatus(){
     $("#sHcode").textContent=s.hcode||"ยังไม่ตั้ง";$("#sUsage").textContent=(s.usageToday||{}).srm||0;
     const srmOk=s.srmToken.length>0||s.srmTokenOverride;
     $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
-    const old=s.srmToken.length&&s.srmToken[0].ageMin>24*60;
+    const age=s.srmToken.length?s.srmToken[0].ageMin:0, old=age>24*60, near=!old&&age>20*60;
     $("#tokInfo").outerHTML=card(srmOk&&!old?"ok":"err","SRM TOKEN",
       (s.srmToken.length?s.srmToken.map(t=>`<div>${t.ageMin>24*60?"⚠":"✔"} ${esc(t.source)} — อัปเดต<b> ${ago(t.ageMin)}</b><br><span class="hint">${esc(t.path)}</span></div>`).join("")+
+        (s.refreshedMin!=null?`<div style="margin-top:6px">↻ ต่ออายุ access token แล้วเมื่อ<b> ${ago(s.refreshedMin)}</b> <span class="hint">(ใช้จนปิดโปรแกรม)</span></div>`:"")+
+        (near?`<div class="note-quota" style="margin-top:8px">token ใกล้ครบ 24 ชม. — กด <b>ต่ออายุ token</b> ได้ ถ้าไม่ผ่านให้เสียบบัตร Login SRM Portal ใหม่ แล้วกด <b>อ่าน token.txt ใหม่</b></div>`:"")+
         (old?`<div class="note-quota" style="margin-top:8px">token นี้เก่าแล้ว อาจหมดอายุ — <b>เสียบบัตร → Login SRM Portal</b> → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” แล้วโปรแกรมจะอ่าน token ใหม่ให้เอง</div>`:""):
        `<div>✘ ไม่พบ token<br><span class="hint">รอไฟล์ที่ ${esc(s.tokenFile)} — เสียบบัตรแล้ว Login SRM Portal หรือวาง token เอง</span></div>`)).replace('class="card','id="tokInfo" class="card');
     loadSettings();
@@ -778,6 +787,16 @@ $("#rQ").oninput=renderRights;$("#rG").onchange=renderRights;
 $("#fClose").main_inscl.oninput=e=>{const v=e.target.value.toUpperCase();const x=RMAP[v];$("#inscName").textContent=v?(x?x.name:"⚠ ไม่พบรหัสนี้ในตารางสิทธิ"):""};
 
 /* 07 token */
+$("#tokReload").onclick=async e=>{const btn=e.currentTarget;busy(btn,1);
+  try{await api("token_reload");toast("อ่าน token ใหม่แล้ว");loadStatus()}catch(err){toast(err.error||"อ่าน token ไม่สำเร็จ")}finally{busy(btn,0)}};
+$("#tokRefresh").onclick=async e=>{const btn=e.currentTarget;busy(btn,1);
+  try{await api("token_refresh");toast("ต่ออายุ token แล้ว");loadStatus()}
+  catch(err){toast((err.error||"ต่ออายุไม่สำเร็จ")+" — เสียบบัตร Login SRM Portal ใหม่ แล้วกดอ่าน token.txt ใหม่")}finally{busy(btn,0)}};
+$("#tokPick").onclick=()=>$("#tokFile").click();
+$("#tokFile").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;
+  if(f.size>20000){toast("ไฟล์ใหญ่เกินไป — ต้องเป็น token.txt");return}
+  try{const r=await api("token",{text:await f.text()});toast(`ใช้ token จาก ${f.name} แล้ว`+(r.refresh?" (มี refresh token)":""));loadStatus()}
+  catch(err){toast(err.error||"อ่านไฟล์ไม่สำเร็จ")}};
 $("#fToken").onsubmit=async e=>{
   e.preventDefault();const btn=e.submitter;busy(btn,1);
   try{const r=await api("token",{text:e.target.text.value});e.target.text.value="";toast(r.cleared?"ลบ token ที่วางไว้แล้ว":"บันทึก token แล้ว");loadStatus()}

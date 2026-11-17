@@ -451,3 +451,28 @@ def test_cli_runs_without_console(monkeypatch, tmp_path):
     monkeypatch.setattr(sys, "stdout", None)
     monkeypatch.setattr(sys, "stderr", None)
     assert main(["--env-file", str(tmp_path / ".env"), "rights", "UCS"]) == 0
+
+
+def test_web_token_reload_and_refresh(tmp_path, monkeypatch):
+    from nhso_right_check.web import App
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("SRM_ACCESS_TOKEN", raising=False)
+    tok = tmp_path / "token.txt"
+    tok.write_text("access-token=AAA\nrefresh-token=RRR\n", encoding="utf-8")
+    monkeypatch.setenv("SRM_TOKEN_FILE", str(tok))
+    (tmp_path / ".env").write_text("NHSO_ENV=prod\n", encoding="utf-8")
+    app = App(Settings.load(tmp_path / ".env"))
+    app.srm.s.srm_token_file = str(tok)
+    assert app.srm.token.access_token == "AAA"
+    tok.write_text("access-token=BBB\nrefresh-token=RRR\n", encoding="utf-8")   # Login ใหม่
+    r = app.token_reload({})
+    assert r["reloaded"] and app.srm.token.access_token == "BBB" and r["refreshedMin"] is None
+
+    class Resp:
+        status_code = 200
+        text = '{"access_token":"CCC"}'
+    sent = {}
+    monkeypatch.setattr(app.srm.http, "post", lambda url, data=None, **k: sent.update(data) or Resp())
+    r = app.token_refresh({})
+    assert r["refreshed"] and r["refreshedMin"] == 0 and sent == {"refresh_token": "RRR"}
+    assert app.srm.token.access_token == "CCC" and app.srm.token.refresh_token == "RRR"

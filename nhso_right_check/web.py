@@ -58,6 +58,8 @@ class App:
             "srmToken": info, "srmTokenOverride": bool(self.s.srm_access_token),
             "endpointToken": bool(self.s.endpoint_token), "recorder": bool(self.s.recorder_pid),
             "tokenFile": str(self.s.srm_token_file),
+            "refreshedMin": (round((time.time() - self.refreshed_at) / 60)
+                             if getattr(self, "refreshed_at", None) else None),
             "usageToday": self.store.usage_today(), "cacheSeconds": self.s.srm_cache_seconds,
         }
 
@@ -173,6 +175,18 @@ class App:
         write_private(MANUAL_TOKEN_FILE, text)
         self.srm._token = pair
         return {"saved": True, "length": len(pair.access_token), "refresh": bool(pair.refresh_token)}
+
+    def token_reload(self, _b: dict) -> dict:
+        """อ่าน token.txt ใหม่ (หลังเสียบบัตร Login SRM Portal ใหม่)"""
+        self.refreshed_at = None
+        pair = self.srm.reload_token()
+        return {"reloaded": True, "refresh": bool(pair.refresh_token), **self.status({})}
+
+    def token_refresh(self, _b: dict) -> dict:
+        """ต่ออายุ access token ด้วย refresh token (ไม่เรียกตรวจสิทธิ ไม่นับโควตา)"""
+        self.srm.refresh()
+        self.refreshed_at = time.time()
+        return {"refreshed": True, **self.status({})}
 
     # ---------- ตรวจแบบกลุ่ม ----------
     def batch_parse(self, b: dict) -> dict:
@@ -320,7 +334,7 @@ class App:
     ROUTES = {"agent_status": agent_status, "agent_read": agent_read, "agent_latest": agent_latest,
               "agent_close": agent_close, "agent_save_url": agent_save_url,
               "quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
-              "history": history, "token": set_token,
+              "history": history, "token": set_token, "token_reload": token_reload, "token_refresh": token_refresh,
               "batch_parse": batch_parse, "batch_start": batch_start, "batch_status": batch_status,
               "batch_stop": batch_stop, "batch_resume": batch_resume, "batch_export": batch_export,
               "batch_open": batch_open, "batch_clear": batch_clear}

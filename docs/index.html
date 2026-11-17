@@ -259,6 +259,7 @@ RECORDER_PID=xxxxxxxxxxxxx    <span class="c"># เลขบัตรเจ้�
   <h3>Token ตรวจสอบสิทธิ (SRM)</h3>
   <div class="flow"><span>เสียบบัตร</span><i>→</i><span>Login SRM Portal + PIN</span><i>→</i><span>กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal”</span><i>→</i><span>token.txt</span><i>→</i><span>โปรแกรมอ่านให้เอง</span></div>
   <p>ไฟล์ token อยู่ที่ <code>%USERPROFILE%\SRM Smart Card Single Sign-On\token.txt</code> ไฟล์นี้จะถูกเขียนใหม่ทุกครั้งที่เสียบบัตรแล้ว Login โปรแกรมจะอ่านไฟล์ใหม่ทุกครั้งที่กดตรวจสอบสิทธิ ถ้าหาไฟล์ไม่เจอ ให้ไปที่แท็บ <b>08 ตั้งค่า</b> ส่วน A แล้ว<b>วางเนื้อหาทั้งไฟล์ token.txt ตามที่เห็น</b> (มีทั้งบรรทัด <code>access-token=…</code> และ <code>refresh-token=…</code>) โปรแกรมแยกให้เอง</p>
+  <p>ปุ่มในแท็บ <b>08 ตั้งค่า → A</b>: <b>↻ อ่าน token.txt ใหม่</b> (กดหลังเสียบบัตร Login ใหม่) · <b>ต่ออายุ token</b> (ขอ access token ใหม่ด้วย refresh token ใช้ได้ภายในราว 24 ชม. หลัง Login ไม่นับโควตาตรวจสิทธิ) · <b>เลือกไฟล์ token…</b> (เลือก token.txt จากที่อื่น) — เมื่อ token ใกล้ครบ 24 ชม. โปรแกรมจะขึ้นเตือน</p>
   <ul>
     <li><b>อายุ token:</b> access token ใช้ได้ประมาณ 30 นาที โปรแกรมต่ออายุให้เองด้วย refresh token ซึ่งใช้ได้ประมาณ 24 ชั่วโมง ในทางปฏิบัติคือ<b>เสียบบัตร Login SRM Portal วันละครั้ง</b> ถ้า token เก่าเกิน 24 ชั่วโมง โปรแกรมจะเตือน</li>
     <li><b>Production เท่านั้น:</b> token จาก SRM Portal ตัวจริงใช้กับ Test Zone ไม่ได้ ถ้าขึ้น “token ไม่ถูกต้อง” ให้ดูว่าแท็บ 08 ตั้งค่าเป็น Production หรือไม่</li>
@@ -419,7 +420,8 @@ python build.py                      <span class="c"># build ไฟล์โป�
   <h2><b>09</b>ปัญหาที่พบบ่อย</h2>
   <table>
     <tr><th>อาการ</th><th>วิธีแก้</th></tr>
-    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือวาง token ในแท็บ 08 ตั้งค่า</td></tr>
+    <tr><td>ไม่พบไฟล์ token</td><td>เสียบบัตร → Login SRM Portal → กด “คลิกเพื่อเข้าใช้งานระบบ SRM Portal” หรือแท็บ 08 ตั้งค่า → “เลือกไฟล์ token…” / วาง token เอง</td></tr>
+    <tr><td>token ใกล้หมด / อายุเกิน 20 ชม.</td><td>แท็บ 08 → กด “ต่ออายุ token” ถ้าไม่ผ่าน ให้เสียบบัตร Login SRM Portal ใหม่ แล้วกด “↻ อ่าน token.txt ใหม่”</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
     <tr><td>token ไม่ถูกต้อง ทั้งที่เพิ่ง Login</td><td>ดูว่าแท็บ 08 ตั้งค่า ตั้งระบบเป็น <b>Production</b> (token ตัวจริงใช้กับ Test Zone ไม่ได้)</td></tr>
     <tr><td>เสียบบัตรแล้วขึ้น <code>PKIX path building failed</code> / <code>unable to find valid certification path</code> (ไฟ AGENT เขียว)</td><td>Agent ทำงานปกติ แต่<b>Java ของ Agent ไม่เชื่อใบรับรอง SSL</b> ตอนต่อ <code>authenservice.nhso.go.th</code> — ส่วนใหญ่เกิดจาก firewall/proxy ขององค์กรที่ตรวจ HTTPS (SSL inspection) · ทดสอบ: ต่อเน็ตอื่น (เช่น hotspot มือถือ) แล้วลองใหม่ ถ้าได้ แสดงว่าเป็นที่เครือข่าย · แก้ถาวร: ให้ IT ยกเว้น <code>*.nhso.go.th</code> จาก SSL inspection หรือนำ root CA ขององค์กรเข้า truststore (<code>cacerts</code>) ของ Java ที่ Agent ใช้ แล้ว restart Agent · ตรวจวันเวลาเครื่องให้ถูกด้วย</td></tr>
