@@ -1,4 +1,4 @@
 """ตรวจสอบสิทธิ สปสช. (nhso-right-check) — ตรวจสอบสิทธิ (SRM) + ปิดสิทธิ (NHSO ENDPOINT FOR SINGLE CLAIM)."""
 
-__version__ = "0.6.3"
+__version__ = "0.6.4"
 __author__ = "arthit.f"

@@ -424,7 +424,7 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <tr><td>token ใกล้หมด / อายุเกิน 20 ชม.</td><td>แท็บ 08 → กด “ต่ออายุ token” ถ้าไม่ผ่าน ให้เสียบบัตร Login SRM Portal ใหม่ แล้วกด “↻ อ่าน token.txt ใหม่”</td></tr>
     <tr><td>401 / token หมดอายุ</td><td>เสียบบัตร Login ใหม่ (โปรแกรมจะอ่านไฟล์ใหม่และลอง refresh ให้อัตโนมัติ)</td></tr>
     <tr><td>token ไม่ถูกต้อง ทั้งที่เพิ่ง Login</td><td>ดูว่าแท็บ 08 ตั้งค่า ตั้งระบบเป็น <b>Production</b> (token ตัวจริงใช้กับ Test Zone ไม่ได้)</td></tr>
-    <tr><td>เสียบบัตรแล้วขึ้น <code>PKIX path building failed</code> / <code>unable to find valid certification path</code> (ไฟ AGENT เขียว)</td><td>Agent ทำงานปกติ แต่<b>Java ของ Agent ไม่เชื่อใบรับรอง SSL</b> ตอนต่อ <code>authenservice.nhso.go.th</code> — ส่วนใหญ่เกิดจาก firewall/proxy ขององค์กรที่ตรวจ HTTPS (SSL inspection) · ทดสอบ: ต่อเน็ตอื่น (เช่น hotspot มือถือ) แล้วลองใหม่ ถ้าได้ แสดงว่าเป็นที่เครือข่าย · แก้ถาวร: ให้ IT ยกเว้น <code>*.nhso.go.th</code> จาก SSL inspection หรือนำ root CA ขององค์กรเข้า truststore (<code>cacerts</code>) ของ Java ที่ Agent ใช้ แล้ว restart Agent · ตรวจวันเวลาเครื่องให้ถูกด้วย</td></tr>
+    <tr><td>เสียบบัตรแล้วขึ้น <code>PKIX path building failed</code> / <code>SSLHandshakeException</code> (ไฟ AGENT เขียว)</td><td><b>สาเหตุ:</b> JRE 8 รุ่นเก่าที่มากับ Agent ไม่รู้จักใบรับรอง SSL รุ่นใหม่ของ สปสช. · <b>แนวทางของ สปสช. (11 พ.ย. 2569):</b> ให้ IT อัปเดต JRE 8 (Eclipse Temurin) โดยไม่ต้องติดตั้ง Agent ใหม่ — ① ดาวน์โหลด JRE 8 แบบ ZIP (Windows x64) จาก <a href="https://adoptium.net/temurin/releases?version=8&amp;os=any&amp;arch=any">adoptium.net</a> ② Stop service <code>NHSOSecureSmartCardAgent</code> ③ เปลี่ยนชื่อโฟลเดอร์ <code>jre</code> เดิมเป็น <code>jre_old</code> แล้ววางโฟลเดอร์ jre ใหม่แทน ④ Start service แล้วทดสอบที่ <code>http://localhost:8189</code> · ใช้ JRE 8 เท่านั้น (คู่มือ Agent ระบุว่า JRE 11 ขึ้นไปอาจผิดพลาด) · ถ้ายังไม่หาย ให้ IT ตรวจ firewall ที่ทำ SSL inspection</td></tr>
     <tr><td>อยากดูประวัติสิทธิย้อนหลัง</td><td>API ส่งกลับเฉพาะสิทธิ ณ วันที่ตรวจ ดูประวัติย้อนหลังได้ที่ SRM Portal</td></tr>
     <tr><td>404 ไม่พบข้อมูล</td><td>ตรวจเลขบัตรประชาชนอีกครั้ง</td></tr>
     <tr><td>dataError: Invalid Token</td><td>TOKEN KEY ใน <code>.env</code> ไม่ถูกต้อง หรือไม่ใช่ของ HCODE นี้</td></tr>
@@ -443,7 +443,8 @@ python build.py                      <span class="c"># build ไฟล์โป�
   <h2><b>10</b>เอกสารอ้างอิง สปสช.</h2>
   <ul>
     <li>API Specification Document – API การตรวจสอบสิทธิ เวอร์ชัน 1.5 (5 ส.ค. 2568)</li>
-    <li>หนังสือ สปสช 6.70/ว๓๕๗ (3 พ.ย. 2569) แจ้งยุติการให้บริการระบบ API ตรวจสอบสิทธิเดิม</li>
+    <li>หนังสือ สปสช 6.70/ว๓๕๗ (3 พ.ย. 2569) แจ้งยุติการให้บริการระบบ API ตรวจสอบสิทธิเดิม · <a href="https://www.nhso.go.th/th/communicate-th/thnewsforperson/api-erm-15-2570">ประกาศบนเว็บ สปสช.</a></li>
+    <li>สปสช. แนะนำการติดตั้ง NHSO Secure SmartCard Agent และวิธีแก้ปัญหาเชื่อมต่อไม่ได้ (PKIX) — ข้อมูล ณ 11 พ.ย. 2569</li>
     <li>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM Version 8.0 (07/12/2023)</li>
     <li>แบบฟอร์มขอ TOKEN KEY ระบบ NHSO ENDPOINT (Production Zone) — <a href="https://www.nhso.go.th/downloads">nhso.go.th/downloads</a></li>
     <li>คู่มือ NHSO Secure SmartCard Agent v2.0 (มี.ค. 2569)</li>

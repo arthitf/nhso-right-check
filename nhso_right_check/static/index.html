@@ -160,6 +160,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
           <li>กลับมาที่โปรแกรมนี้ ไฟ <b>AGENT</b> ที่แถบล่างต้องเป็น<b>สีเขียว</b> → เสียบบัตรแล้วกด “อ่านบัตร + ตรวจสิทธิ” ได้เลย</li>
         </ol>
         <div class="hint" style="margin:6px 0 10px">ได้ TOKEN ใหม่: แก้ <code>userconfig.properties</code> แล้วคลิกขวา <code>restart.bat</code> → Run as Administrator · ต้องใช้ proxy: แก้ <code>NHSOSecureSmartCardAgent.xml</code> ก่อนติดตั้ง · port 8189 และ 50204 ต้องว่าง · Agent อยู่เครื่องอื่น: ตั้งที่อยู่ที่แท็บ 08 ตั้งค่า → D</div>
+        <div class="note-quota" style="margin:0 0 10px">อ่านบัตรแล้วขึ้น <b>PKIX path building failed</b>: JRE ที่มากับ Agent เก่า — ให้ IT อัปเดต <b>JRE 8 (Eclipse Temurin)</b> จาก adoptium.net → Stop service → เปลี่ยนชื่อโฟลเดอร์ <code>jre</code> เดิมเป็น <code>jre_old</code> → วาง jre ใหม่แทน → Start service (แนวทาง สปสช. 11 พ.ย. 2569)</div>
         <table>
           <tr><th>ปุ่มในหน้านี้</th><th>API ของ Agent ที่เรียก</th><th>ได้อะไร</th></tr>
           <tr><td>อ่านบัตร + ตรวจสิทธิ</td><td><code>GET /api/smartcard/read?readImageFlag=true</code></td><td>ข้อมูลบัตร รูปหน้าบัตร สิทธิ หน่วยบริการ ประเภทบริการที่ใช้ได้ (claimTypes) และ correlationId</td></tr>
