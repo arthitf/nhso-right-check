@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -69,6 +70,44 @@ def parse_token_text(text: str) -> TokenPair:
     if first.lower().startswith("bearer "):
         first = first[7:].strip()
     return TokenPair(first)
+
+
+# ติดลิมิต (HTTP 429): จำเวลาที่ต้องรอไว้ร่วมกันทุก client ในโปรแกรม เพื่อไม่เรียกซ้ำจนครบเวลา
+_BLOCKED_UNTIL = 0.0
+
+
+def _retry_after(r) -> int:
+    """อ่านเวลาที่ต้องรอจาก retryAfterSeconds / Retry-After / ข้อความ 'Retry after N second(s)'"""
+    try:
+        body = r.json()
+        if isinstance(body, dict) and str(body.get("retryAfterSeconds", "")).isdigit():
+            return int(body["retryAfterSeconds"])
+    except ValueError:
+        pass
+    h = (getattr(r, "headers", None) or {}).get("Retry-After", "")
+    if str(h).isdigit():
+        return int(h)
+    m = re.search(r"Retry after (\d+)", r.text or "")
+    return int(m.group(1)) if m else 0
+
+
+def _wait_text(sec: float) -> str:
+    sec = max(0, int(sec + 0.999))
+    h, rem = divmod(sec, 3600)
+    m, s = divmod(rem, 60)
+    if h:
+        return f"{h} ชม. {m} นาที"
+    return f"{m} นาที {s} วินาที" if m else f"{s} วินาที"
+
+
+def _limit_msg(remain: float) -> str:
+    until = time.strftime("%H:%M", time.localtime(time.time() + remain))
+    return (f"ติดลิมิตการเรียก API ตรวจสอบสิทธิ (HTTP 429) — ต้องรออีก {_wait_text(remain)} (ถึงประมาณ {until} น.) "
+            "โปรแกรมจะไม่เรียกซ้ำจนครบเวลา · ระหว่างรอใช้เสียบบัตรผ่าน Agent หรือ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม")
+
+
+def rate_limit_remaining() -> float:
+    return max(0.0, _BLOCKED_UNTIL - time.time())
 
 
 class SRMClient:
@@ -151,6 +190,9 @@ class SRMClient:
                 self.last_cached_age = age
                 log.info("SRM right-search %s -> cache (%.0fs)", mask_pid(pid), age)
                 return hit[1]
+        remain = rate_limit_remaining()
+        if remain > 0:
+            raise SRMError(_limit_msg(remain), 429)
         url = self.s.srm_api_base.rstrip("/") + self.s.srm_rights_path
         for attempt in (1, 2):
             try:
@@ -176,8 +218,11 @@ class SRMClient:
         if self.on_call:
             self.on_call("srm")
         if r.status_code == 429:
-            raise SRMError("ระบบ สปสช. แจ้งว่าเรียกใช้งานถี่/มากเกินไป (HTTP 429) — หยุดสักพัก "
-                           "และใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม สำหรับรายชื่อจำนวนมาก", 429, r.text)
+            global _BLOCKED_UNTIL
+            wait = _retry_after(r) or 300
+            _BLOCKED_UNTIL = max(_BLOCKED_UNTIL, time.time() + wait)
+            log.warning("SRM rate limit: รอ %s วินาที", wait)
+            raise SRMError(_limit_msg(wait), 429, r.text)
         if r.status_code == 200:
             data = r.json()
             self._cache[pid] = (time.time(), data)

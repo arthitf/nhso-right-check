@@ -155,8 +155,7 @@ class BatchJob:
             except SRMError as e:
                 cached = False
                 if e.status == 429:
-                    return self._pause("สปสช. แจ้งว่าเรียกถี่/มากเกินไป (HTTP 429) — พักสักครู่แล้วกด “ตรวจต่อ” "
-                                       "หรือใช้ SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม")
+                    return self._pause(str(e) + " — ครบเวลาแล้วกด “ตรวจต่อ”")
                 if e.status == 401:
                     return self._pause("token หมดอายุ — เสียบบัตร Login SRM Portal ใหม่ แล้วกด “ตรวจต่อ”")
                 if e.status is None and "token" in str(e):

@@ -378,6 +378,11 @@ def test_batch_job_runs_and_pauses_on_429(settings):
     s = job.snapshot(masked=False)
     assert s["state"] == "paused" and "429" in s["message"] and s["done"] == 2
     assert s["counts"] == {"INVALID": 1, "OK": 1, "NOTFOUND": 1}
+    job.start(); job.wait(5)                     # กดตรวจต่อก่อนครบเวลารอ: ไม่เรียก สปสช. ซ้ำ
+    s = job.snapshot(masked=False)
+    assert s["state"] == "paused" and len(sess.calls) == 3
+    import nhso_right_check.srm as srm_mod
+    srm_mod._BLOCKED_UNTIL = 0.0                 # จำลองว่าครบเวลารอแล้ว
     job.start(); job.wait(5)                     # ตรวจต่อ: คนที่โดน 429 ถูกตรวจใหม่
     s = job.snapshot(masked=False)
     assert s["state"] == "done" and s["done"] == 4 and len(sess.calls) == 5
@@ -476,3 +481,30 @@ def test_web_token_reload_and_refresh(tmp_path, monkeypatch):
     r = app.token_refresh({})
     assert r["refreshed"] and r["refreshedMin"] == 0 and sent == {"refresh_token": "RRR"}
     assert app.srm.token.access_token == "CCC" and app.srm.token.refresh_token == "RRR"
+
+
+def test_srm_rate_limit_waits_and_does_not_recall(settings, monkeypatch):
+    import nhso_right_check.srm as srm_mod
+    monkeypatch.setattr(srm_mod, "_BLOCKED_UNTIL", 0.0)
+    calls = []
+
+    class R:
+        status_code = 429
+        headers = {}
+        text = '{"status":429,"message":"Rate limit exceeded. Retry after 7448 second(s).","retryAfterSeconds":7448}'
+        def json(self):
+            return json.loads(self.text)
+
+    class S:
+        def get(self, *a, **k):
+            calls.append(1)
+            return R()
+    c = SRMClient(settings, session=S())
+    c._token = parse_token_text("access-token=A\nrefresh-token=B")
+    with pytest.raises(SRMError, match="2 ชม. 4 นาที") as e:
+        c.right_search("1103700123458")
+    assert e.value.status == 429 and len(calls) == 1
+    with pytest.raises(SRMError, match="HTTP 429"):
+        SRMClient(settings, session=S()).right_search("1103700123458")   # client อื่นก็ไม่เรียกซ้ำ
+    assert len(calls) == 1
+    monkeypatch.setattr(srm_mod, "_BLOCKED_UNTIL", 0.0)
