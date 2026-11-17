@@ -1,7 +1,7 @@
 ﻿; ตัวติดตั้ง Windows (Inno Setup 6) — พัฒนาโดย arthit.f
-; build: iscc /DAppVersion=0.6.4 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
+; build: iscc /DAppVersion=0.6.5 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
 #ifndef AppVersion
-  #define AppVersion "0.6.4"
+  #define AppVersion "0.6.5"
 #endif
 
 [Setup]

@@ -78,7 +78,7 @@ th{font:700 12px var(--mono);background:#dbe9f8;position:sticky;top:0}
 .status b{color:var(--ink)}
 .status .sp{flex:1}
 .led{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);margin-right:5px;vertical-align:-1px;background:#bbb}
-.led.on{background:var(--green)}.led.off{background:var(--red)}
+.led.on{background:var(--green)}.led.off{background:var(--red)}.led.warn{background:var(--amber)}
 /* modal */
 dialog{border:2px solid var(--line);border-radius:6px;box-shadow:6px 6px 0 var(--line);padding:0;max-width:440px;width:92vw;background:var(--panel)}
 dialog::backdrop{background:rgba(11,42,85,.45)}
@@ -139,6 +139,7 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
       <button class="btn go">ตรวจสอบสิทธิ</button>
       <span class="hint">เสียบบัตร Login SRM Portal แล้ว โปรแกรมจะอ่าน token.txt ให้เอง</span>
     </form>
+    <div id="tokWarn" class="note-quota" style="display:none"></div>
     <div class="note-quota">⚠ การตรวจสอบสิทธิผ่าน API ใช้<b>โควตาของหน่วยบริการ</b> การตรวจจำนวนมากหรือตรวจซ้ำ อาจทำให้โควตาหมด
       — ถ้าต้องตรวจหลายคน ใช้แท็บ <a href="#" id="toBatch">03 ตรวจแบบกลุ่ม</a> หรือ <a href="https://srmportal.nhso.go.th/" target="_blank" rel="noopener noreferrer">SRM Portal → ตรวจสอบสิทธิแบบกลุ่ม</a> (รายชื่อจำนวนมาก)</div>
     <div id="rCheck"></div>
@@ -599,6 +600,7 @@ async function loadStatus(){
     const srmOk=s.srmToken.length>0||s.srmTokenOverride;
     $("#ledSrm").className="led "+(srmOk?"on":"off");$("#ledEp").className="led "+(s.endpointToken?"on":"off");
     const age=s.srmToken.length?s.srmToken[0].ageMin:0, old=age>24*60, near=!old&&age>20*60;
+    tokAlert(s);
     $("#tokInfo").outerHTML=card(srmOk&&!old?"ok":"err","SRM TOKEN",
       (s.srmToken.length?s.srmToken.map(t=>`<div>${t.ageMin>24*60?"⚠":"✔"} ${esc(t.source)} — อัปเดต<b> ${ago(t.ageMin)}</b><br><span class="hint">${esc(t.path)}</span></div>`).join("")+
         (s.refreshedMin!=null?`<div style="margin-top:6px">↻ ต่ออายุ access token แล้วเมื่อ<b> ${ago(s.refreshedMin)}</b> <span class="hint">(ใช้จนปิดโปรแกรม)</span></div>`:"")+
@@ -785,6 +787,24 @@ function renderRights(){
   $("#tRights").innerHTML=list.map(x=>`<tr><td><b>${esc(x.id)}</b></td><td>${esc(x.groupId)} ${esc(x.groupName)}</td><td style="white-space:normal">${esc(x.name)}</td><td style="white-space:normal" class="hint">${esc(x.en)}</td></tr>`).join("")||'<tr><td colspan="4" class="hint">ไม่พบ</td></tr>';
 }
 $("#rQ").oninput=renderRights;$("#rG").onchange=renderRights;
+/* แจ้งเตือน token SRM ใกล้หมด (refresh token อายุราว 24 ชม. นับจากเวลาที่ Login) */
+let TOK_NOTIFIED="";
+function tokAlert(s){
+  if(s.srmTokenOverride||!s.srmToken.length)return;
+  const age=s.srmToken[0].ageMin, lvl=age>24*60?"old":age>20*60?"near":"";
+  const led=$("#ledSrm");led.className="led "+(lvl==="old"?"off":lvl==="near"?"warn":"on");
+  led.parentElement.title=`token.txt อัปเดต ${ago(age)} · access token ราว 30 นาที (ต่ออายุอัตโนมัติ) · refresh token ราว 24 ชม. นับจาก Login`;
+  const w=$("#tokWarn");
+  if(!lvl){w.style.display="none";return}
+  w.style.display="";
+  w.innerHTML=(lvl==="old"?`⛔ token SRM อายุ <b>${ago(age)}</b> — refresh token น่าจะหมดแล้ว ให้<b>เสียบบัตร Login SRM Portal ใหม่</b> แล้วกด `:
+    `⏰ token SRM อายุ <b>${ago(age)}</b> ใกล้ครบ 24 ชม. — กดต่ออายุได้ ถ้าไม่ผ่านให้เสียบบัตร Login SRM Portal ใหม่ แล้วกด `)+
+    `<a href="#" id="tokWarnReload">อ่าน token.txt ใหม่</a>`+(lvl==="near"?` · <a href="#" id="tokWarnRefresh">ต่ออายุ token</a>`:"");
+  $("#tokWarnReload").onclick=e=>{e.preventDefault();$("#tokReload").click()};
+  const r=$("#tokWarnRefresh");if(r)r.onclick=e=>{e.preventDefault();$("#tokRefresh").click()};
+  if(TOK_NOTIFIED!==lvl){TOK_NOTIFIED=lvl;toast(lvl==="old"?"token SRM หมดอายุแล้ว — Login SRM Portal ใหม่":"token SRM ใกล้ครบ 24 ชม.")}
+}
+setInterval(async()=>{try{tokAlert(await api("status"))}catch(e){}},5*60*1000);
 $("#fClose").main_inscl.oninput=e=>{const v=e.target.value.toUpperCase();const x=RMAP[v];$("#inscName").textContent=v?(x?x.name:"⚠ ไม่พบรหัสนี้ในตารางสิทธิ"):""};
 
 /* 07 token */

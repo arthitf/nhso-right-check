@@ -31,7 +31,7 @@ git push -u origin main
 ## ค. สร้างไฟล์โปรแกรม Windows / Mac / Linux อัตโนมัติ
 
 1. ไปที่ **Releases → Draft a new release**
-2. ตั้ง Tag เป็น `v0.6.4` แล้วกด **Publish release**
+2. ตั้ง Tag เป็น `v0.6.5` แล้วกด **Publish release**
 3. รอประมาณ 5–10 นาที (ดูความคืบหน้าได้ที่แท็บ **Actions**) เสร็จแล้วไฟล์เหล่านี้จะถูกแนบไว้ใน Release
 
 | ไฟล์ | สำหรับ |
