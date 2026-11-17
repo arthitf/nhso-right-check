@@ -197,7 +197,7 @@ footer b{color:var(--ink)}
     <tr><td><code>GET /api/smartcard/read?readImageFlag=true</code> (ผู้ป่วยเสียบบัตร)</td><td>02 → อ่านบัตร + ตรวจสิทธิ</td><td>แสดงรูปให้เจ้าหน้าที่เทียบหน้า · เก็บ <code>correlationId</code> · ให้เลือก <code>claimType</code> จาก <code>claimTypes</code> ที่ได้</td></tr>
     <tr><td><code>POST /api/nhso-service/save-endpoint</code></td><td>02 → กดปิดสิทธิ</td><td>ผูก <code>authenCode</code> กับ VN ของการรับบริการ · กันส่งซ้ำ</td></tr>
     <tr><td><code>GET /api/nhso-service/latest-authen-code/{pid}</code></td><td>02 → authen code ล่าสุด</td><td>ใช้เช็คหลัง timeout ก่อนส่งใหม่</td></tr>
-    <tr><td rowspan="3"><b>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM v8.0</b><br><small>+ แบบฟอร์มขอ TOKEN KEY</small></td>
+    <tr><td rowspan="3"><b>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM v8.0 / DataSet v10.1 (ล่าสุด)</b><br><small>+ แบบฟอร์มขอ TOKEN KEY</small></td>
         <td>ขอ TOKEN KEY (ผูกกับ HCODE)</td><td>08 ตั้งค่า → B</td><td>เก็บ TOKEN KEY ฝั่ง server ห้ามอยู่ในเครื่องลูกข่าย</td></tr>
     <tr><td>แฟ้ม 6 → 7 ปิดสิทธิ</td><td>04 ปิดสิทธิ</td><td>ส่งสิทธิ (mainInsclCode) + รหัสบริการ + ยอดเงิน · เก็บ <code>seq</code> + <code>transactionId</code> + <code>authenCode</code></td></tr>
     <tr><td>แฟ้ม 8 → 9 ยกเลิก</td><td>05 ยกเลิกปิดสิทธิ</td><td>ยกเลิกด้วย seq + transactionId ที่เก็บไว้ · บันทึกเหตุผล</td></tr>
@@ -445,9 +445,10 @@ python build.py                      <span class="c"># build ไฟล์โป�
     <li>API Specification Document – API การตรวจสอบสิทธิ เวอร์ชัน 1.5 (5 ส.ค. 2568)</li>
     <li>หนังสือ สปสช 6.70/ว๓๕๗ (3 พ.ย. 2569) แจ้งยุติการให้บริการระบบ API ตรวจสอบสิทธิเดิม · <a href="https://www.nhso.go.th/th/communicate-th/thnewsforperson/api-erm-15-2570">ประกาศบนเว็บ สปสช.</a></li>
     <li>สปสช. แนะนำการติดตั้ง NHSO Secure SmartCard Agent และวิธีแก้ปัญหาเชื่อมต่อไม่ได้ (PKIX) — ข้อมูล ณ 11 พ.ย. 2569</li>
-    <li>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM Version 8.0 (07/12/2023)</li>
+    <li><a href="https://www.nhso.go.th/th/communicate-th/new/2024-10-30-15-39-50/57091-api-dataset20241220-for-org-v10-1">API ปิดสิทธิ DataSet20241220 For ORG v10.1</a> — ฉบับล่าสุดบนเว็บ สปสช. (ใช้เทียบฟิลด์/path ก่อนเชื่อม HIS)</li>
+    <li>รายละเอียดโครงสร้างชุดข้อมูล API NHSO ENDPOINT FOR SINGLE CLAIM Version 8.0 (07/12/2023) — ฉบับที่ใช้พัฒนาโปรแกรมตัวอย่างนี้</li>
     <li>แบบฟอร์มขอ TOKEN KEY ระบบ NHSO ENDPOINT (Production Zone) — <a href="https://www.nhso.go.th/downloads">nhso.go.th/downloads</a></li>
-    <li>คู่มือ NHSO Secure SmartCard Agent v2.0 (มี.ค. 2569)</li>
+    <li><a href="https://www.nhso.go.th/th/communicate-th/new/2024-10-30-15-39-50/56724-3-0-nhso-securesmartcardagent-v2-0-manual-final">คู่มือ NHSO Secure SmartCard Agent v2.0 (Manual Final)</a></li>
   </ul>
   <h3>ความปลอดภัย &amp; ข้อมูลส่วนบุคคล</h3>
   <ul>
