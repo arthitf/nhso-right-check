@@ -1,7 +1,7 @@
 ﻿; ตัวติดตั้ง Windows (Inno Setup 6) — พัฒนาโดย arthit.f
-; build: iscc /DAppVersion=0.6.6 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
+; build: iscc /DAppVersion=0.7.0 installer\nhso-right-check.iss   (ต้อง build dist\nhso-right-check.exe ก่อน)
 #ifndef AppVersion
-  #define AppVersion "0.6.6"
+  #define AppVersion "0.7.0"
 #endif
 
 [Setup]
@@ -38,6 +38,7 @@ Source: "..\.env.example"; DestDir: "{app}"; DestName: ".env"; Flags: onlyifdoes
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\index.html"; DestDir: "{app}"; DestName: "คู่มือ.html"; Flags: ignoreversion
 Source: "..\examples\*"; DestDir: "{app}\examples"; Flags: ignoreversion
+Source: "..\nhso_right_check\tools\fix-agent.*"; DestDir: "{app}\tools"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\ตรวจสอบสิทธิ สปสช."; Filename: "{app}\nhso-right-check.exe"; WorkingDir: "{app}"

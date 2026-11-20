@@ -20,7 +20,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-from . import __author__, __version__
+from . import __author__, __version__, agent_doctor
 from .agent import AgentClient, AgentError, build_endpoint_payload, normalize_agent_url, summarize_card
 from .batch import BatchJob, export_folder, export_name, parse_input, write_xlsx
 from .config import Settings, save_env
@@ -296,6 +296,33 @@ class App:
         no_img = {k: v for k, v in raw.items() if k != "image"}
         return {"summary": summary, "raw": no_img, "image": image, "cardOnly": bool(b.get("cardOnly"))}
 
+    # ---------- ตรวจ / ซ่อม Agent (อัปเดต JRE 8 ตามแนวทาง สปสช.) ----------
+    def _agent_dir_from(self, b: dict) -> str:
+        d = (b.get("dir") or "").strip()
+        if d:
+            if len(d) > 260 or any(c in d for c in "\r\n\"'`$;&|<>"):
+                raise ValidationError("โฟลเดอร์ Agent ไม่ถูกต้อง")
+            if d != self.s.agent_dir and agent_doctor.find_agent_dir(d):
+                save_env(self.s.env_file, {"AGENT_DIR": d})
+                self.s.agent_dir = d
+            return d
+        return self.s.agent_dir
+
+    def agent_diag(self, b: dict) -> dict:
+        d = self._agent_dir_from(b)
+        ping = self.agent_status({})
+        return {**agent_doctor.diagnose(d, ping.get("online"), str(b.get("lastError") or "")[:2000]), "url": self.s.agent_url}
+
+    def agent_fix(self, b: dict) -> dict:
+        mode = b.get("mode") if b.get("mode") in ("fix", "rollback") else "fix"
+        try:
+            return agent_doctor.launch(mode, self._agent_dir_from(b))
+        except (RuntimeError, ValueError, OSError) as e:
+            raise ValidationError(str(e)) from None
+
+    def agent_fix_result(self, _b: dict) -> dict:
+        return {"result": agent_doctor.last_result()}
+
     def agent_latest(self, b: dict) -> dict:
         return {"latest": self._agent().latest_authen(b.get("pid", ""))}
 
@@ -332,6 +359,7 @@ class App:
         return {"url": self.s.agent_url, **self.agent_status({})}
 
     ROUTES = {"agent_status": agent_status, "agent_read": agent_read, "agent_latest": agent_latest,
+              "agent_diag": agent_diag, "agent_fix": agent_fix, "agent_fix_result": agent_fix_result,
               "agent_close": agent_close, "agent_save_url": agent_save_url,
               "quit": quit, "settings": settings, "save_settings": save_settings, "rights": rights, "status": status, "check": check, "close": close, "cancel": cancel,
               "history": history, "token": set_token, "token_reload": token_reload, "token_refresh": token_refresh,

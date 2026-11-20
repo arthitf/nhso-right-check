@@ -173,6 +173,16 @@ h3.sec small{font:12px var(--mono);color:var(--mute);font-weight:400}
         <div class="hint" style="margin-top:8px">ดูสเปก API ทั้งหมดของ Agent ได้ที่ <a href="http://localhost:8189/swagger" target="_blank" rel="noopener noreferrer">http://localhost:8189/swagger</a></div>
       </div>
     </details>
+    <details id="agDoc" class="card" style="margin-top:10px"><summary style="padding:8px 12px;margin:0;font:600 14px var(--thai);color:var(--blue)">ตรวจ / ซ่อม Agent — แก้ PKIX path building failed (อัปเดต JRE 8)</summary>
+      <div class="body">
+        <div class="hint" style="margin:0 0 8px">ตรวจโฟลเดอร์ Agent รุ่น Java และ service · ถ้า Java เก่า โปรแกรมอัปเดต JRE 8 (Eclipse Temurin) ให้ตามแนวทาง สปสช. (11 พ.ย. 2569) — Windows จะขอสิทธิ์ Administrator</div>
+        <div class="row" style="margin-top:0;align-items:flex-end">
+          <label style="flex:1;margin:0">โฟลเดอร์ Agent <span class="hint">(เว้นว่าง = หาเองจาก service)</span><input id="agDir" class="mono" placeholder="เช่น C:\NHSOSecureSmartCardAgent"></label>
+          <button class="btn" id="agDiag" type="button">ตรวจ Agent</button>
+        </div>
+        <div id="agDocOut"></div>
+      </div>
+    </details>
     <div class="row">
       <button class="btn go big" id="agRead">อ่านบัตร + ตรวจสิทธิ</button>
       <button class="btn" id="agReadOnly" title="ใช้ตอนเชื่อมต่อ สปสช. ไม่ได้ — อ่านได้แต่ข้อมูลในบัตร ปิดสิทธิไม่ได้">อ่านบัตรอย่างเดียว</button>
@@ -537,9 +547,51 @@ async function agentRead(cardOnly,btn){
       f.style.display="block";f.privilegeAmount.focus();
     }else f.style.display="none";
     $("#ledAg").className="led on";
-  }catch(err){AG=null;$("#fAgClose").style.display="none";$("#agResult").innerHTML=errCard(err);agentPing()}
+  }catch(err){AG=null;$("#fAgClose").style.display="none";$("#agResult").innerHTML=errCard(err);agentPing();
+    AG_LAST_ERR=String(err.error||"")+" "+String(typeof err.detail==="string"?err.detail:JSON.stringify(err.detail||""));
+    if(/PKIX|SSLHandshake/.test(AG_LAST_ERR)){$("#agDoc").open=true;agentDiag($("#agDiag"));$("#agDoc").scrollIntoView({behavior:"smooth"})}}
   finally{busy(btn,0)}
 }
+/* ---------- ตรวจ / ซ่อม Agent ---------- */
+let AG_LAST_ERR="";
+async function agentDiag(btn){
+  busy(btn,1);
+  try{renderDiag(await api("agent_diag",{dir:$("#agDir").value.trim(),lastError:AG_LAST_ERR}))}
+  catch(err){$("#agDocOut").innerHTML=errCard(err)}finally{busy(btn,0)}
+}
+function renderDiag(d){
+  if(d.agentDir&&!$("#agDir").value)$("#agDir").value=d.agentDir;
+  const rows=kv({"โฟลเดอร์ Agent":d.agentDir||"ไม่พบ","Java ที่ Agent ใช้":d.javaVersion?d.javaVersion+(d.javaOld?" — เก่า ควรอัปเดต":" ✓"):"ไม่ทราบ",
+    "Service":d.service||"-",["เชื่อมต่อ "+(d.url||"")]:d.online?"ได้":"ไม่ได้","สำรองไว้ (jre_old)":d.hasBackup?(d.backupVersion||"มี"):"ไม่มี"});
+  const iss=d.issues.length?`<ul class="agsteps">${d.issues.map(i=>`<li>${esc(i)}</li>`).join("")}</ul>`
+    :"<p>✔ ไม่พบปัญหาจากการตรวจ — ถ้ายังอ่านบัตรไม่ได้ ให้ดู log ในโฟลเดอร์ logs ของ Agent</p>";
+  const btns=d.canFix?`<div class="row"><button class="btn${d.javaOld||/PKIX|SSL/.test(AG_LAST_ERR)?" go":""}" id="agFix" type="button">ซ่อม: อัปเดต JRE 8 (Temurin)</button>`+
+    (d.hasBackup?'<button class="btn" id="agRollback" type="button">คืนค่า Java เดิม</button>':"")+`</div>
+    <div class="hint">ขั้นตอน: ดาวน์โหลด JRE 8 จาก adoptium.net → Stop service → jre เดิมเป็น jre_old → วาง jre ใหม่ → Start service → ทดสอบ localhost:8189 ·
+    ถ้าเน็ตบล็อก ให้วางไฟล์ <code>OpenJDK8U-jre_x64_windows_*.zip</code> ไว้ที่ <code>C:\\ProgramData\\nhso-right-check</code> แล้วกดซ่อมอีกครั้ง ·
+    ใช้เองได้ที่ <code>tools\\fix-agent.bat</code> (คลิกขวา Run as administrator) · ไม่ใช่เครื่องมือทางการของ สปสช.</div>`:"";
+  const L=d.last;const last=L?`<div class="hint" style="margin-top:6px">ผลครั้งล่าสุด (${esc(new Date(L.mtime*1000).toLocaleString("th-TH"))}): ${L.ok?"✔":"✘"} ${esc(L.message||"")}</div>`:"";
+  $("#agDocOut").innerHTML=card(d.issues.length?"err":"ok",d.issues.length?"พบปัญหา":"Agent ปกติ",rows+iss+btns+last);
+  const f=$("#agFix");if(f)f.onclick=e=>agentFix("fix",e.currentTarget);
+  const r=$("#agRollback");if(r)r.onclick=e=>agentFix("rollback",e.currentTarget);
+}
+async function agentFix(mode,btn){
+  busy(btn,1);
+  try{
+    await api("agent_fix",{mode,dir:$("#agDir").value.trim()});
+    $("#agDocOut").insertAdjacentHTML("beforeend",`<div class="note-quota" id="agFixWait" style="margin-top:8px">⏳ เปิดหน้าต่าง${mode==="fix"?"ซ่อม":"คืนค่า"}แล้ว — กดยืนยันสิทธิ์ Administrator ของ Windows แล้วรอจนหน้าต่างปิดเอง (ประมาณ 1–3 นาที)</div>`);
+    const t0=Date.now();
+    const poll=async()=>{
+      try{const x=await api("agent_fix_result");
+        if(x.result&&x.result.mode===mode){toast(x.result.ok?"เสร็จแล้ว":"ไม่สำเร็จ — ดูรายละเอียด");AG_LAST_ERR="";await agentPing();await agentDiag($("#agDiag"));return}}catch(e){}
+      if(Date.now()-t0<6*60*1000)setTimeout(poll,3000);
+      else{const w=$("#agFixWait");if(w)w.textContent="ยังไม่ได้ผลจากหน้าต่างซ่อม — ถ้ากดยกเลิกสิทธิ์ Administrator ให้กดซ่อมอีกครั้ง หรือกด “ตรวจ Agent”"}
+    };
+    setTimeout(poll,3000);
+  }catch(err){toast(err.error||"เปิดตัวซ่อมไม่สำเร็จ");$("#agDocOut").insertAdjacentHTML("beforeend",errCard(err))}
+  finally{busy(btn,0)}
+}
+$("#agDiag").onclick=e=>agentDiag(e.currentTarget);
 $("#agRead").onclick=e=>agentRead(false,e.currentTarget);
 $("#agReadOnly").onclick=e=>agentRead(true,e.currentTarget);
 $("#agClear").onclick=()=>{AG=null;$("#agResult").innerHTML="";$("#agCloseResult").innerHTML="";$("#fAgClose").style.display="none";toast("ล้างข้อมูลบนจอแล้ว")};

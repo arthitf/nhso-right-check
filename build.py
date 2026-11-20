@@ -18,11 +18,13 @@ here = os.path.dirname(os.path.abspath(__file__))
 system = platform.system()
 static = os.path.join(here, "nhso_right_check", "static")
 data = os.path.join(here, "nhso_right_check", "data")
+tools = os.path.join(here, "nhso_right_check", "tools")
 icon = {"Windows": "icon.ico", "Darwin": "icon.icns"}.get(system)
 
 common = [
     "--add-data", f"{static}{os.pathsep}nhso_right_check/static",
     "--add-data", f"{data}{os.pathsep}nhso_right_check/data",
+    "--add-data", f"{tools}{os.pathsep}nhso_right_check/tools",
     "--noconfirm",
 ] + (["--icon", os.path.join(here, "assets", icon)] if icon else [])
 

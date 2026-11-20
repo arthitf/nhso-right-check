@@ -24,6 +24,23 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -e ".[dev]"
       - run: pytest -q
+      # สคริปต์ซ่อม Agent: ตรวจ syntax ด้วย Windows PowerShell 5.1 และลองโหมด check กับโฟลเดอร์จำลอง
+      - name: fix-agent.ps1 (syntax + check mode)
+        if: runner.os == 'Windows' && matrix.python == '3.12'
+        shell: powershell
+        run: |
+          $errs = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\nhso_right_check\tools\fix-agent.ps1", [ref]$null, [ref]$errs) | Out-Null
+          if ($errs.Count) { $errs | ForEach-Object { $_.ToString() }; exit 1 }
+          $d = Join-Path $env:RUNNER_TEMP 'fakeagent'
+          New-Item -ItemType Directory -Force -Path "$d\jre" | Out-Null
+          Set-Content "$d\secureagent.jar" 'x'
+          Set-Content "$d\jre\release" 'JAVA_VERSION="1.8.0_202"'
+          $rf = Join-Path $env:RUNNER_TEMP 'r.json'
+          powershell -NoProfile -ExecutionPolicy Bypass -File nhso_right_check\tools\fix-agent.ps1 -Mode check -AgentDir $d -ResultFile $rf -NoPause
+          $r = Get-Content $rf -Raw -Encoding UTF8 | ConvertFrom-Json
+          if (-not $r.ok -or $r.javaVersion -ne '1.8.0_202') { Get-Content $rf; exit 1 }
+          Write-Host "check mode OK: $($r.javaVersion)"
       # กันพลาด: ห้ามมีไฟล์ความลับใน repo
       - name: Check no secrets committed
         shell: bash

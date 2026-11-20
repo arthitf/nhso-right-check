@@ -71,6 +71,7 @@ class Settings:
     env_file: Path = Path(".env")
     open_mode: str = "window"               # window = หน้าต่างโปรแกรม, browser = เปิดในเบราว์เซอร์
     agent_url: str = "http://localhost:8189"  # NHSO Secure SmartCard Agent (เสียบบัตร)
+    agent_dir: str = ""                       # โฟลเดอร์ที่ติดตั้ง Agent (ว่าง = หาเองจาก service)
 
     @classmethod
     def load(cls, env_file: str | os.PathLike | None = ".env") -> "Settings":
@@ -104,6 +105,7 @@ class Settings:
         s.batch_limit = int(g("BATCH_LIMIT", s.batch_limit))
         s.open_mode = "browser" if (g("OPEN_MODE", "window") or "").lower() == "browser" else "window"
         s.agent_url = (g("AGENT_URL", s.agent_url) or s.agent_url).strip()
+        s.agent_dir = (g("AGENT_DIR", "") or "").strip()
         if g("DB_PATH"):
             s.db_path = Path(g("DB_PATH"))
         return s

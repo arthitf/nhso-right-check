@@ -47,7 +47,7 @@ jobs:
           A=pkg/${{ matrix.asset }}
           mkdir -p $A
           case "${{ runner.os }}" in
-            Windows) cp dist/nhso-right-check.exe dist/nhso-right-check-cli.exe $A/ ;;
+            Windows) cp dist/nhso-right-check.exe dist/nhso-right-check-cli.exe $A/ && mkdir -p $A/tools && cp nhso_right_check/tools/fix-agent.* $A/tools/ ;;
             macOS)   cp -R dist/nhso-right-check.app $A/ ;;
             *)       cp dist/nhso-right-check $A/ && chmod +x $A/nhso-right-check ;;
           esac
